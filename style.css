@@ -64,3 +64,24 @@ footer {
   padding: 20px 24px;
   margin: 24px 0;
 }
+details {
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0;
+}
+details:last-of-type { border-bottom: none; }
+summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 17px;
+  list-style: none;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after {
+  content: "+";
+  float: right;
+  color: var(--muted);
+  font-weight: 400;
+}
+details[open] summary::after { content: "–"; }
+details p, details ul { margin: 10px 0 4px; color: var(--fg); }
+details ul { margin-bottom: 8px; }
