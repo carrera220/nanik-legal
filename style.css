@@ -38,7 +38,7 @@ header.site nav {
   display: flex;
   flex-wrap: wrap;
   gap: 16px 20px;
-  align-items: baseline;
+  align-items: center;
 }
 header.site a {
   color: var(--fg);
