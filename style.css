@@ -78,6 +78,12 @@ footer {
   margin-top: 8px;
 }
 .btn:hover { opacity: 0.92; }
+.ph-badge {
+  display: block;
+  width: 250px;
+  margin: 16px auto 0;
+}
+.ph-badge img { display: block; }
 .hero {
   text-align: center;
   padding: 24px 0 8px;
