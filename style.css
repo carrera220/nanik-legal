@@ -103,6 +103,12 @@ footer {
   margin: 16px auto 0;
 }
 .ph-badge img { display: block; }
+.ph-badge-nav { line-height: 0; }
+.ph-badge-nav img {
+  display: block;
+  width: 148px;
+  height: 32px;
+}
 .hero-cta {
   display: flex;
   flex-direction: column;
