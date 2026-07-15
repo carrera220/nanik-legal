@@ -105,6 +105,13 @@ footer {
   border: 1px solid var(--border);
 }
 .btn-secondary:hover { border-color: var(--fg); opacity: 1; }
+.btn-disabled {
+  background: transparent;
+  color: var(--muted) !important;
+  border: 1px dashed var(--border);
+  cursor: default;
+}
+.btn-disabled:hover { opacity: 1; }
 .hero-cta .ph-badge {
   margin: 0;
   flex-shrink: 0;
