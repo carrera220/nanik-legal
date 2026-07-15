@@ -103,7 +103,7 @@ footer {
   margin: 16px auto 0;
 }
 .ph-badge img { display: block; }
-.ph-badge-nav { line-height: 0; }
+.ph-badge-nav { line-height: 0; margin-left: auto; }
 .ph-badge-nav img {
   display: block;
   width: 148px;
@@ -125,8 +125,7 @@ footer {
 .hero-cta .btn {
   display: inline-flex;
   align-items: center;
-  height: 54px; /* match Product Hunt badge height */
-  padding: 0 26px;
+  padding: 18px 40px;
   margin-top: 0;
 }
 .btn-secondary {
@@ -152,6 +151,7 @@ footer {
   line-height: 1.25;
   gap: 1px;
 }
+.hero-cta .btn-stacked { padding: 11px 40px; }
 .btn-stacked small {
   font-weight: 400;
   font-size: 11px;
