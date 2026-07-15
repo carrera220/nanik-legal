@@ -84,6 +84,25 @@ footer {
   margin: 16px auto 0;
 }
 .ph-badge img { display: block; }
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px 18px;
+  margin-top: 10px;
+}
+.hero-cta .btn {
+  display: inline-flex;
+  align-items: center;
+  height: 54px; /* match Product Hunt badge height */
+  padding: 0 26px;
+  margin-top: 0;
+}
+.hero-cta .ph-badge {
+  margin: 0;
+  flex-shrink: 0;
+}
 .hero {
   text-align: center;
   padding: 24px 0 8px;
