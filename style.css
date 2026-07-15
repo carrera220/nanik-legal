@@ -110,8 +110,10 @@ footer {
   color: var(--muted) !important;
   border: 1px dashed var(--border);
   cursor: default;
+  pointer-events: none;
+  opacity: 0.6;
 }
-.btn-disabled:hover { opacity: 1; }
+.btn-disabled:hover { opacity: 0.6; }
 .btn-stacked {
   display: inline-flex;
   flex-direction: column;
