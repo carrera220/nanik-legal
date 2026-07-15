@@ -112,6 +112,19 @@ footer {
   cursor: default;
 }
 .btn-disabled:hover { opacity: 1; }
+.btn-stacked {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.25;
+  gap: 1px;
+}
+.btn-stacked small {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--muted);
+}
 .hero-cta .ph-badge {
   margin: 0;
   flex-shrink: 0;
