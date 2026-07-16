@@ -20,12 +20,12 @@
 </header>
 <main class="legal-main">
 <h1>Privacy Policy</h1>
-<p class="effective">Effective date: April 30, 2026</p>
+<p class="effective">Effective date: July 16, 2026</p>
 
 <p>This Privacy Policy describes how Nanik ("we", "us", or "our") collects, uses, discloses, and protects personal information when you use the Nanik mobile application and related services (the "Service").</p>
 
 <h2>1. Who We Are</h2>
-<p>Nanik is a storytelling app that helps parents generate personalized stories and narration experiences for children.</p>
+<p>Nanik is a storytelling app that helps parents generate personalized stories, illustrations, and narration experiences for children. The Service is designed to be operated by adults (parents or guardians).</p>
 <p>Website: <a href="https://nanik.app/">https://nanik.app</a></p>
 <p>If you have questions about this Privacy Policy, contact us at: <a href="mailto:info@nanik.app">info@nanik.app</a></p>
 
@@ -34,38 +34,44 @@
 
 <h3>2.1 Information You Provide</h3>
 <ul>
-  <li>Account and sign-in information (for example, Apple Sign-In data and account identifiers)</li>
-  <li>Child profile data you enter (such as name, age, and interests)</li>
-  <li>Story prompts and context you provide</li>
-  <li>Photos you choose to submit as story hero references (for example, a photo of a toy)</li>
+  <li>Account and sign-in information (for example, Sign in with Apple data and account identifiers). Some features also work with a guest / anonymous session without Sign in with Apple.</li>
+  <li>Child profile data you enter (such as name, age, interests, and story preferences)</li>
+  <li>Story prompts, world/hero descriptions, and support context you provide</li>
+  <li>Photos you choose to submit as story hero references (for example, a photo of a child or toy used only to generate claymation-style cover art)</li>
+  <li>Voice recordings you submit to create a cloned storytelling voice</li>
   <li>Subscription and purchase selections</li>
   <li>Support messages or feedback you send us</li>
 </ul>
 
 <h3>2.2 Content and Usage Data</h3>
 <ul>
-  <li>Story requests and generated story output</li>
-  <li>Voice-related content you submit when using voice features (for example, voice samples and text-to-speech input text)</li>
-  <li>Usage metrics related to feature consumption (for example, stories used and remaining under free or Nanik Plus plan limits, and billing cycle usage)</li>
-  <li>Entitlement/subscription status and purchase event metadata</li>
+  <li>Story requests, generated story text, and related metadata</li>
+  <li>Cover illustrations generated from your prompts and optional hero photos</li>
+  <li>Voice-related content (voice samples, cloned-voice identifiers, and text used for narration)</li>
+  <li>Usage metrics for plan limits (for example, free lifetime stories used/remaining, Nanik Plus stories used/remaining in the current billing period, and voice-clone slot usage). Story quotas are counted in whole stories. Listening to narration (voiceover) is not separately metered.</li>
+  <li>Entitlement / subscription status and purchase event metadata</li>
+  <li>Library stories synced to your account when you are signed in with Apple (text and cover URLs; narration audio files are typically kept on device)</li>
 </ul>
 
 <h3>2.3 Technical Information</h3>
 <ul>
-  <li>Device/app metadata needed to operate the Service</li>
-  <li>Authentication/session tokens and user IDs</li>
+  <li>Device and app metadata needed to operate the Service</li>
+  <li>Authentication / session tokens and user IDs (including anonymous session identifiers for guest use)</li>
+  <li>Limited device integrity signals used to prevent freemium abuse (for example, Apple DeviceCheck where available)</li>
   <li>Error and operational logs necessary for reliability and abuse prevention</li>
-  <li>Analytics and crash-diagnostic data used to improve app quality and stability (for example, Firebase Analytics and Crashlytics)</li>
+  <li>Analytics and crash-diagnostic data used to improve app quality and stability (for example, Firebase Analytics and Crashlytics). We do not use the App Tracking Transparency advertising identifier for cross-app tracking.</li>
 </ul>
 
 <h2>3. How We Use Information</h2>
 <p>We use information to:</p>
 <ul>
   <li>Provide and maintain the Service</li>
-  <li>Generate personalized stories and narration</li>
-  <li>Authenticate users and secure accounts</li>
-  <li>Manage subscriptions, entitlements, and usage limits</li>
+  <li>Generate personalized stories, cover illustrations, and narration in your (or a cloned) voice</li>
+  <li>Authenticate users, secure accounts, and support guest sessions</li>
+  <li>Sync signed-in library content across devices</li>
+  <li>Manage subscriptions, entitlements, and story / voice-clone limits</li>
   <li>Process and validate in-app purchases</li>
+  <li>Prevent fraud and freemium abuse</li>
   <li>Improve app quality, performance, and safety</li>
   <li>Respond to support inquiries and enforce our terms</li>
 </ul>
@@ -75,26 +81,29 @@
 <ul>
   <li>Performance of a contract (providing the Service you request)</li>
   <li>Legitimate interests (security, fraud prevention, analytics, service improvement)</li>
-  <li>Consent (where required by law)</li>
+  <li>Consent (where required by law, including optional camera, microphone, and photo-library access)</li>
   <li>Legal obligations (compliance with applicable law)</li>
 </ul>
 
 <h2>5. How We Share Information</h2>
 <p>We do not sell personal information. We share data only as needed to provide the Service, including with:</p>
 <ul>
-  <li>Cloud infrastructure and database providers</li>
-  <li>AI and speech service providers used to generate story and voice features</li>
-  <li>Subscription/purchase platforms and processors</li>
-  <li>Analytics, security, and error-monitoring providers</li>
-  <li>Legal/regulatory authorities when required by law</li>
+  <li><strong>Supabase</strong> — authentication, database, and backend APIs</li>
+  <li><strong>OpenRouter</strong> (and model providers such as Google Gemini) — story text generation</li>
+  <li><strong>fal.ai</strong> — story cover illustration generation</li>
+  <li><strong>Boson AI / Higgs</strong> — narration (text-to-speech) and voice cloning</li>
+  <li><strong>RevenueCat</strong> and <strong>Apple App Store / Google Play</strong> — subscriptions and entitlements</li>
+  <li><strong>Firebase</strong> — analytics and crash diagnostics</li>
+  <li>Legal / regulatory authorities when required by law</li>
 </ul>
-<p>Third-party processing is limited to the purposes described in this policy and subject to contractual/privacy safeguards where applicable.</p>
+<p>Photos, voice samples, and story prompts are sent to the relevant AI or media providers only to fulfill the feature you request. Third-party processing is limited to those purposes and subject to contractual / privacy safeguards where applicable.</p>
 
 <h2>6. Payments and Subscriptions</h2>
-<p>In-app purchases are processed by Apple App Store and/or Google Play. We do not receive or store full payment card details. We may process subscription event metadata (for example, entitlement state, renewal/cancellation events, and purchase identifiers) to manage access and limits.</p>
+<p>In-app purchases are processed by Apple App Store and/or Google Play. We do not receive or store full payment card details. We may process subscription event metadata (for example, entitlement state, renewal / cancellation events, and purchase identifiers) via RevenueCat to manage access and limits.</p>
+<p>Current plan outlines (also shown in the app and Terms of Service): the free experience includes a limited lifetime number of personalized stories and a limited number of voice clones; Nanik Plus is an auto-renewing subscription with a higher monthly story allotment, additional voice clones, and advanced storytelling features. Exact numbers are shown in the app before purchase.</p>
 
 <h2>7. Children's Privacy</h2>
-<p>Nanik is intended to be used by parents or guardians. We expect adults to provide child-related information and supervise use. We collect only the information reasonably necessary to provide personalized storytelling features.</p>
+<p>Nanik is intended to be used by parents or guardians. We expect adults to provide child-related information, record voices, and supervise use. We collect only the information reasonably necessary to provide personalized storytelling features. Nanik is not submitted as an App Store Kids Category app.</p>
 <p>If you believe a child provided personal information without appropriate authorization, contact us at <a href="mailto:info@nanik.app">info@nanik.app</a> and we will take appropriate steps.</p>
 
 <h2>8. Data Retention</h2>
@@ -104,7 +113,7 @@
   <li>Resolve disputes and enforce agreements</li>
   <li>Meet legal, tax, accounting, and security obligations</li>
 </ul>
-<p>Retention periods vary by data type and legal requirements.</p>
+<p>Retention periods vary by data type and legal requirements. Freemium usage may remain associated with your identity (for example, email or device integrity signals) so free limits cannot be reset by deleting and recreating an account.</p>
 
 <h2>9. Security</h2>
 <p>We use reasonable technical and organizational safeguards to protect personal information. No method of transmission or storage is 100% secure, so we cannot guarantee absolute security.</p>
@@ -118,10 +127,10 @@
   <li>Access, correct, or delete personal information</li>
   <li>Restrict or object to certain processing</li>
   <li>Request data portability</li>
-  <li>Withdraw consent (where processing is consent-based)</li>
+  <li>Withdraw consent (where processing is consent-based), including by denying or later changing microphone, camera, or photos permission in system Settings</li>
   <li>Appeal decisions or lodge a complaint with a supervisory authority</li>
 </ul>
-<p>You can delete your account and associated data at any time from the Account screen in the app. To exercise other rights, contact <a href="mailto:info@nanik.app">info@nanik.app</a>.</p>
+<p>If you are signed in with Apple, you can delete your account and associated server data from the Account screen in the app. Guest users can clear local data on the device. Deleting your Nanik account does not cancel an App Store or Google Play subscription; manage or cancel that subscription in the store account settings. To exercise other rights, contact <a href="mailto:info@nanik.app">info@nanik.app</a>.</p>
 
 <h2>12. California Privacy Notice (if applicable)</h2>
 <p>California residents may have rights under applicable law (including CCPA/CPRA), such as the right to know, delete, and correct certain personal information. We do not sell personal information as defined by applicable California law.</p>
