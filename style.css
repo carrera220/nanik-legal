@@ -193,6 +193,92 @@ footer {
   color: var(--muted);
   font-size: 17px;
 }
+.fact-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 14px;
+  list-style: none;
+  padding: 0;
+  margin: 22px auto 0;
+  max-width: 640px;
+}
+.fact-strip li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: var(--card);
+}
+.fact-strip li a:hover { border-color: var(--accent); }
+.fact-strip li strong { color: var(--accent); }
+.definition-card {
+  max-width: 720px;
+  margin: 28px auto 0;
+  text-align: left;
+  font-size: 17px;
+}
+.definition-card p { margin: 0; }
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px 14px;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+}
+.lang-grid li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+}
+.lang-grid .flag { font-size: 18px; line-height: 1; }
+.lang-grid.featured li { border-color: rgba(224, 179, 76, 0.5); }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin: 24px 0;
+}
+@media (min-width: 640px) {
+  .pricing-grid { grid-template-columns: 1fr 1fr; }
+}
+.plan-card {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 18px;
+  padding: 24px;
+}
+.plan-card.plus { border-color: rgba(224, 179, 76, 0.6); }
+.plan-card h3 { font-size: 22px; margin-bottom: 10px; }
+.plan-card .price { font-size: 15px; color: var(--muted); margin-bottom: 14px; }
+.plan-card ul { padding-left: 20px; margin: 0; }
+.plan-card li { margin-bottom: 6px; }
+.voice-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 14px 0 0;
+  list-style: none;
+}
+.voice-pool li {
+  font-size: 14px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+}
 .feature {
   display: grid;
   grid-template-columns: 1fr;

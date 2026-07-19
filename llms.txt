@@ -1,0 +1,30 @@
+# Nanik
+
+> Personalized bedtime stories for kids, narrated in a parent's true voice, in 100+ languages.
+
+Nanik is an iOS app where a parent or guardian creates a personalized bedtime story starring a hero they describe, or a photo of a child's favorite toy. Nanik writes the story, illustrates it, and narrates it aloud. Parents can clone their own voice from a short recording so the story is read in a familiar voice, or choose a storyteller style inspired by classic children's authors (for example Hans Christian Andersen, the Brothers Grimm, Astrid Lindgren, Roald Dahl, and Hovhannes Tumanyan).
+
+## Key facts
+
+- Story text and narration are available in 100+ languages (Boson Higgs TTS, 102 languages), with Armenian, English, and Russian as the primary/featured languages in the app UI.
+- True voice: parents record about a 10-second voice sample once, then Nanik clones that voice for narrating stories to their child.
+- Storyteller styles: stories can be told in the spirit of classic children's authors and folktale traditions, not celebrity or actor voices.
+- Hero creation: type a description of a hero, or take a photo of a favorite toy/object, which Nanik turns into an illustrated story character.
+- Worlds: Forest, Cave, Village, City, Mars, underwater, or a custom place typed by the parent.
+- Emotional support themes: stories can gently weave in a feeling or habit the child needs that day (calm, courage, healthy habits, etc.).
+- Stories are saved to a personal library, can be continued as new chapters with the same hero, and are designed for about a 3-minute read-aloud.
+- Free plan: 2 personalized stories (lifetime) and 1 voice clone. Background music while listening/reading is free for everyone.
+- Nanik Plus (subscription): 30 personalized stories per month, up to 3 voice clones, and advanced storytelling. Yearly Nanik Plus includes a 3-day free trial (offered by Apple).
+- Nanik is operated by a parent or guardian, not a child-solo "Kids Category" app.
+- Platform: iOS (TestFlight demo build currently available). Android/Play Market is planned.
+
+## Key URLs
+
+- Homepage: https://nanik.app/
+- Languages: https://nanik.app/languages.html
+- True voice: https://nanik.app/true-voice.html
+- Pricing: https://nanik.app/pricing.html
+- Support / FAQ: https://nanik.app/support.html
+- Privacy Policy: https://nanik.app/privacy.html
+- Terms of Service: https://nanik.app/terms.html
+- Contact: info@nanik.app
