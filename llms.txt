@@ -6,7 +6,7 @@ Nanik is an iOS app where a parent or guardian creates a personalized bedtime st
 
 ## Key facts
 
-- Story text and narration are available in 100+ languages (Boson Higgs TTS, 102 languages), with Armenian, English, and Russian as the primary/featured languages in the app UI.
+- Story text and narration are available in 100+ languages (102 languages), with Armenian, English, and Russian as the primary/featured languages in the app UI.
 - True voice: parents record about a 10-second voice sample once, then Nanik clones that voice for narrating stories to their child.
 - Storyteller styles: stories can be told in the spirit of classic children's authors and folktale traditions, not celebrity or actor voices.
 - Hero creation: type a description of a hero, or take a photo of a favorite toy/object, which Nanik turns into an illustrated story character.
