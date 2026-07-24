@@ -2,37 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nanik.app/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-07-24</lastmod>
   </url>
   <url>
     <loc>https://nanik.app/languages.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-07-24</lastmod>
   </url>
   <url>
     <loc>https://nanik.app/true-voice.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-07-19</lastmod>
   </url>
   <url>
     <loc>https://nanik.app/pricing.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-07-24</lastmod>
   </url>
   <url>
     <loc>https://nanik.app/support.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-07-24</lastmod>
   </url>
   <url>
     <loc>https://nanik.app/privacy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <lastmod>2026-07-19</lastmod>
   </url>
   <url>
     <loc>https://nanik.app/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <lastmod>2026-07-19</lastmod>
   </url>
 </urlset>

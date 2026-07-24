@@ -16,11 +16,12 @@ Nanik is an iOS app where a parent or guardian creates a personalized bedtime st
 - Free plan: 2 personalized stories (lifetime) and 1 voice clone. Background music while listening/reading is free for everyone.
 - Nanik Plus (subscription): 30 personalized stories per month, up to 3 voice clones, and advanced storytelling. Yearly Nanik Plus includes a 3-day free trial (offered by Apple).
 - Nanik is operated by a parent or guardian, not a child-solo "Kids Category" app.
-- Platform: iOS (TestFlight demo build currently available). Android/Play Market is planned.
+- Platform: iOS, officially released on the App Store (https://apps.apple.com/app/id6762894314). Android/Play Market is planned.
 
 ## Key URLs
 
 - Homepage: https://nanik.app/
+- App Store: https://apps.apple.com/app/id6762894314
 - Languages: https://nanik.app/languages.html
 - True voice: https://nanik.app/true-voice.html
 - Pricing: https://nanik.app/pricing.html
