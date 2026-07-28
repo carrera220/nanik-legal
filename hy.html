@@ -12,24 +12,37 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260728bk">
+<link rel="stylesheet" href="style.css?v=20260728bz">
 <script>
 (function () {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   function toTop() {
-    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
     window.scrollTo(0, 0);
+  }
+  function clearHashAndTop() {
+    if (location.hash) {
+      try {
+        history.replaceState(null, '', location.pathname + location.search);
+      } catch (err) {}
+    }
+    toTop();
   }
   var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
   var isReload = (nav && nav.type === 'reload') || (performance.navigation && performance.navigation.type === 1);
-  if (isReload || !location.hash) {
+  if (isReload) {
+    clearHashAndTop();
+    document.addEventListener('DOMContentLoaded', clearHashAndTop);
+    window.addEventListener('load', clearHashAndTop);
+  } else if (!location.hash) {
     toTop();
     document.addEventListener('DOMContentLoaded', toTop);
     window.addEventListener('load', toTop);
-    window.addEventListener('pageshow', function (e) {
-      if (e.persisted || isReload) toTop();
-    });
   }
+  window.addEventListener('pageshow', function (e) {
+    if (!e.persisted) return;
+    if (location.hash && location.hash.length > 1) return;
+    toTop();
+  });
 })();
 </script>
 <meta property="og:type" content="website">
@@ -111,6 +124,7 @@
     <div id="site-nav-links" class="site-nav-links">
       <a href="hy.html#features">Հնարավորություններ</a>
       <a href="languages.html">Լեզուներ</a>
+      <a href="pricing.html">Գներ</a>
       <a href="/" hreflang="en" lang="en">English</a>
     </div>
     <div id="site-lang-slot" class="site-lang-slot"></div>
@@ -158,12 +172,6 @@
         <a class="btn" href="https://apps.apple.com/app/id6762894314"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>Ներբեռնել App Store-ից</a>
         <span class="btn btn-disabled btn-stacked" aria-disabled="true"><span class="btn-label"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>Ներբեռնել Play Market-ից</span><small>շուտով</small></span>
       </div>
-      <ul class="fact-strip">
-        <li><a href="languages.html"><strong>100+</strong> լեզու</a></li>
-        <li><a href="true-voice.html"><strong>Իսկական ձայն</strong> 10 վրկ նմուշից</a></li>
-        <li><a href="hy.html#features"><strong>Խաղալիքի լուսանկար</strong> հերոս</a></li>
-        <li><a href="pricing.html"><strong>Անվճար</strong> փորձելու համար</a></li>
-      </ul>
     </div>
   </section>
 
@@ -172,6 +180,7 @@
       <div class="feature-copy">
         <h2>Անհատական հեքիաթներ <strong>ձեր ձայնով</strong></h2>
         <p>Մեկ անգամ ձայնագրեք մոտ 10 վայրկյան։ Nanik-ը կպատմի նոր արկածներ, որ երեխան լսի ծանոթ ձայն, նույնիսկ երբ զբաղված եք։ Չե՞ք ուզում ձայնագրել — ընտրեք դասական մանկական հեղինակների ոճ։</p>
+        <button type="button" class="btn feature-voice-cta" data-open-voice-magic aria-haspopup="dialog" aria-controls="voice-magic-modal">Փորձիր իմ ձայնով</button>
       </div>
       <div class="feature-media">
         <img class="feature-mockup" src="images/feature-voice.png" width="440" height="906" alt="Nanik-ի հեռարձակիչ՝ հեքիաթը նվագարկվում է ձեր ձայնով" loading="lazy">
@@ -298,6 +307,7 @@
       <div class="feature-copy">
         <h2>100+ <strong>աջակցվող լեզուներ</strong></h2>
         <p>Գրեք և պատմեք հեքիաթներ ավելի քան 100 լեզվով՝ հայերենից, անգլերենից և ռուսերենից մինչև իսպաներեն, արաբերեն, չինարեն, հինդի և շատ ավելին։ Ընտրեք այն լեզուն, որով խոսում եք տանը։</p>
+        <a class="btn feature-voice-cta" href="languages.html">Տեսնել բոլոր լեզուները</a>
       </div>
       <div class="feature-media feature-media--langs">
         <div class="lang-collage" aria-label="Աջակցվող լեզուներ">
@@ -513,9 +523,9 @@
 <footer>
 <a class="ph-badge-nav" href="https://www.producthunt.com/products/nanik-bedtime-stories-for-kids?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-nanik-bedtime-stories-for-kids" target="_blank" rel="noopener noreferrer"><img alt="Nanik on Product Hunt" width="148" height="32" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1197393&amp;theme=light&amp;t=1784128424442"></a>
 &copy; 2026 Nanik · <a href="support.html">Աջակցություն</a> · <a href="privacy.html">Գաղտնիություն</a> · <a href="terms.html">Պայմաններ</a> · <a href="mailto:info@nanik.app">info@nanik.app</a></footer>
-<script src="nanik-api-config.js?v=20260728bk"></script>
-<script src="site-nav.js?v=20260728bk" defer></script>
-<script src="voice-magic.js?v=20260728bk" defer></script>
-<script src="world-slider.js?v=20260728bk" defer></script>
+<script src="nanik-api-config.js?v=20260728bw"></script>
+<script src="site-nav.js?v=20260728bz" defer></script>
+<script src="voice-magic.js?v=20260728bw" defer></script>
+<script src="world-slider.js?v=20260728bw" defer></script>
 </body>
 </html>

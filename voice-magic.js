@@ -473,7 +473,7 @@
   }
 
   function setMagicCta(mode) {
-    if (!magicCtaLabel) return;
+    if (!magicCtaLabel || !openBtn) return;
     if (mode === 'wait') {
       magicCtaLabel.removeAttribute('data-i18n');
       magicCtaLabel.textContent = magicCtaWait;
@@ -845,7 +845,7 @@
 
   function openModal() {
     if (phase === 'processing') return;
-    if (openBtn.disabled && openBtn.classList.contains('is-waiting')) return;
+    if (openBtn && openBtn.disabled && openBtn.classList.contains('is-waiting')) return;
     if (previewAudio && !previewAudio.paused) pauseHeroPlayback();
     if (typeof modal.showModal === 'function') modal.showModal();
     else modal.setAttribute('open', '');
@@ -1114,7 +1114,9 @@
     }
   }
 
-  openBtn.addEventListener('click', function (e) {
+  document.addEventListener('click', function (e) {
+    var trigger = e.target.closest && e.target.closest('#open-voice-magic, [data-open-voice-magic]');
+    if (!trigger) return;
     e.preventDefault();
     openModal();
   });

@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-itunes-app" content="app-id=6762894314">
 <title>Pricing - Nanik Free vs Nanik Plus</title>
-<meta name="description" content="Nanik is free to try: 2 personalized stories and 1 voice clone. Nanik Plus unlocks 30 stories a month, up to 3 voice clones, and a 3-day free trial on yearly.">
+<meta name="description" content="Nanik is free to try: 2 personalized stories and 1 voice clone. Nanik Plus: $14.99/mo or $89.99/yr (Save 50%), 30–35 stories a month, unlimited voice clones, and a 3-day free trial on yearly.">
 <link rel="canonical" href="https://nanik.app/pricing.html">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260728m">
+<link rel="stylesheet" href="style.css?v=20260728cf">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nanik">
 <meta property="og:url" content="https://nanik.app/pricing.html">
 <meta property="og:title" content="Nanik Pricing — Free vs Nanik Plus">
-<meta property="og:description" content="Nanik is free to try: 2 personalized stories and 1 voice clone. Nanik Plus unlocks 30 stories a month, up to 3 voice clones, and a 3-day free trial on yearly.">
+<meta property="og:description" content="Nanik is free to try: 2 personalized stories and 1 voice clone. Nanik Plus: $14.99/mo or $89.99/yr (Save 50%), 30–35 stories a month, unlimited voice clones, and a 3-day free trial on yearly.">
 <meta property="og:image" content="https://nanik.app/images/og-share.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nanik Pricing — Free vs Nanik Plus">
@@ -29,6 +29,7 @@
     <div id="site-nav-links" class="site-nav-links">
       <a href="/#features" data-i18n="nav.features">Features</a>
       <a href="languages.html" data-i18n="nav.languages">Languages</a>
+      <a href="pricing.html" data-i18n="nav.pricing">Pricing</a>
     </div>
     <div id="site-lang-slot" class="site-lang-slot"></div>
   </div>
@@ -37,33 +38,95 @@
 <h1 data-i18n="price.h1">Simple pricing, free to start</h1>
 <p class="effective" data-i18n="price.lead">Try Nanik free, then upgrade to Nanik Plus for more stories, more voice clones, and advanced storytelling.</p>
 
-<div class="pricing-grid">
-  <div class="plan-card">
-    <h3 data-i18n="price.free.h">Free</h3>
-    <p class="price">$0</p>
-    <ul>
-      <li data-i18n="price.free.1">2 personalized stories, lifetime</li>
-      <li data-i18n="price.free.2">1 voice clone</li>
-      <li data-i18n="price.free.3">Story text + narration in 100+ languages</li>
-      <li data-i18n="price.free.4">Background music while listening or reading</li>
-      <li data-i18n="price.free.5">1 bundled sample story, works offline</li>
-    </ul>
-  </div>
-  <div class="plan-card plus">
-    <h3 data-i18n="price.plus.h">Nanik Plus</h3>
-    <p class="price" data-i18n="price.plus.price">Monthly or yearly · yearly includes a 3-day free trial*</p>
-    <ul>
-      <li data-i18n="price.plus.1">30 personalized stories per month</li>
-      <li data-i18n="price.plus.2">Up to 3 voice clones</li>
-      <li data-i18n="price.plus.3">Story text + narration in 100+ languages</li>
-      <li data-i18n="price.plus.4">Advanced storytelling and storyteller styles</li>
-      <li data-i18n="price.plus.5">New chapters / story series with the same hero</li>
-    </ul>
-    <p style="margin-top:14px"><a class="btn" href="https://apps.apple.com/app/id6762894314"><span data-i18n="cta.appStore">Download on the App Store</span></a></p>
-  </div>
+<div class="pricing-matrix-wrap">
+  <table class="pricing-matrix">
+    <thead>
+      <tr>
+        <th scope="col" data-i18n="price.matrix.feature">Feature</th>
+        <th scope="col" data-i18n="price.free.h">Free</th>
+        <th scope="col" class="plus" data-i18n="price.plus.monthly.h">Plus Monthly</th>
+        <th scope="col" class="plus plus-yearly" data-i18n="price.plus.yearly.h">Plus Yearly</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.price">Price</th>
+        <td>$0</td>
+        <td class="plus">
+          <div class="matrix-price">
+            <span class="matrix-price-amount" data-i18n="price.plus.monthly.price">$14.99/mo*</span>
+          </div>
+        </td>
+        <td class="plus plus-yearly">
+          <div class="matrix-price">
+            <span class="matrix-discount" data-i18n="price.plus.yearly.discount">Save 50%</span>
+            <span class="matrix-price-amount" data-i18n="price.plus.yearly.price">$89.99/yr*</span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.trial">3-day free trial</th>
+        <td><span class="matrix-no" aria-label="Not included">—</span></td>
+        <td class="plus"><span class="matrix-no" aria-label="Not included">—</span></td>
+        <td class="plus plus-yearly"><span class="matrix-yes" aria-label="Included">✓</span></td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.stories">Personalized stories</th>
+        <td data-i18n="price.matrix.stories.free">2 lifetime</td>
+        <td class="plus" data-i18n="price.matrix.stories.monthly">30 per month</td>
+        <td class="plus plus-yearly" data-i18n="price.matrix.stories.yearly">35 per month</td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.voices">Voice clones</th>
+        <td data-i18n="price.matrix.voices.free">1</td>
+        <td class="plus" data-i18n="price.matrix.voices.plus">Unlimited</td>
+        <td class="plus plus-yearly" data-i18n="price.matrix.voices.plus">Unlimited</td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.langs">100+ languages</th>
+        <td><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus"><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus plus-yearly"><span class="matrix-yes" aria-label="Included">✓</span></td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.music">Background music</th>
+        <td><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus"><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus plus-yearly"><span class="matrix-yes" aria-label="Included">✓</span></td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.sample">Sample story offline</th>
+        <td><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus"><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus plus-yearly"><span class="matrix-yes" aria-label="Included">✓</span></td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.advanced">Advanced storytelling & styles</th>
+        <td><span class="matrix-no" aria-label="Not included">—</span></td>
+        <td class="plus"><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus plus-yearly"><span class="matrix-yes" aria-label="Included">✓</span></td>
+      </tr>
+      <tr>
+        <th scope="row" data-i18n="price.matrix.series">New chapters / story series</th>
+        <td><span class="matrix-no" aria-label="Not included">—</span></td>
+        <td class="plus"><span class="matrix-yes" aria-label="Included">✓</span></td>
+        <td class="plus plus-yearly"><span class="matrix-yes" aria-label="Included">✓</span></td>
+      </tr>
+      <tr class="matrix-cta-row">
+        <th scope="row"></th>
+        <td></td>
+        <td class="plus">
+          <a class="btn btn-secondary" href="https://apps.apple.com/app/id6762894314"><span data-i18n="price.cta.monthly">Get Nanik Plus</span></a>
+        </td>
+        <td class="plus plus-yearly">
+          <a class="btn" href="https://apps.apple.com/app/id6762894314"><span data-i18n="price.cta">Activate 3-day trial</span></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<p style="font-size:13px;color:var(--muted)" data-i18n="price.note">*Free trial is offered by Apple on the yearly plan when available. Live prices, billing period, and trial length are shown in the app before purchase. Subscriptions auto-renew unless cancelled at least 24 hours before the period ends.</p>
+<p style="font-size:13px;color:var(--muted)" data-i18n="price.note">*Prices vary by country. USD amounts shown are a reference; your App Store region may show a different local price. Free trial is offered by Apple on the yearly plan when available. Subscriptions auto-renew unless cancelled at least 24 hours before the period ends.</p>
 
 <h2 data-i18n="price.what.h">What counts as a story?</h2>
 <p data-i18n="price.what.p">Each personalized story you create counts toward your plan's story limit. Listening to narration (voiceover) is not separately metered. Stories are designed for about a 3-minute read-aloud; age bands change vocabulary and complexity, not the overall length.</p>
@@ -71,7 +134,7 @@
 <h2 data-i18n="price.faq.h">Frequently asked questions</h2>
 <details>
   <summary data-i18n="price.faq1.q">What is included for free vs Nanik Plus?</summary>
-  <p data-i18n="price.faq1.a">Free includes 2 personalized stories lifetime and 1 voice clone. Nanik Plus unlocks 30 stories per month, up to 3 voice clones, and advanced storytelling. Live prices appear on the in-app paywall.</p>
+  <p data-i18n="price.faq1.a">Free includes 2 personalized stories lifetime and 1 voice clone. Plus Monthly: 30 stories/month at $14.99. Plus Yearly: 35 stories/month at $89.99 (Save 50%), unlimited voice clones, and advanced storytelling.</p>
 </details>
 <details>
   <summary data-i18n="price.faq2.q">Is there a free trial?</summary>
@@ -97,7 +160,7 @@
     {
       "@type": "Question",
       "name": "What is included for free vs Nanik Plus?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Free includes 2 personalized stories lifetime and 1 voice clone. Nanik Plus unlocks 30 stories per month, up to 3 voice clones, and advanced storytelling." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Free includes 2 personalized stories lifetime and 1 voice clone. Plus Monthly: 30 stories/month at $14.99. Plus Yearly: 35 stories/month at $89.99 (Save 50%), unlimited voice clones, and advanced storytelling." }
     },
     {
       "@type": "Question",
@@ -117,7 +180,7 @@
   ]
 }
 </script>
-<script src="site-nav.js?v=20260728m" defer></script>
-<script src="i18n.js?v=20260728m" defer></script>
+<script src="site-nav.js?v=20260728cf" defer></script>
+<script src="i18n.js?v=20260728cf" defer></script>
 </body>
 </html>

@@ -323,6 +323,14 @@ footer {
   padding: 14px 24px;
   border-radius: 999px;
   margin-top: 8px;
+  text-align: center;
+  line-height: 1.25;
+  box-sizing: border-box;
+}
+.btn > span,
+.btn-magic > span {
+  text-align: center;
+  line-height: 1.25;
 }
 .btn svg {
   width: 1em;
@@ -516,7 +524,9 @@ footer {
 body.hero-narrating .hero-magic-sub {
   opacity: 0.7;
 }
-.hero-magic .btn-magic {
+.hero-magic .btn-magic,
+.feature-copy .btn-magic,
+.btn-magic {
   --magic-border: linear-gradient(105deg, #F3A69D 0%, #F5C842 100%);
   position: relative;
   z-index: 0;
@@ -526,7 +536,7 @@ body.hero-narrating .hero-magic-sub {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px 26px 12px 18px;
+  padding: 12px 22px;
   min-height: 48px;
   border: none;
   border-radius: 999px;
@@ -535,6 +545,8 @@ body.hero-narrating .hero-magic-sub {
   font-weight: 700;
   letter-spacing: 0.01em;
   text-decoration: none;
+  text-align: center;
+  line-height: 1.25;
   cursor: pointer;
   background: rgba(0, 0, 0, 0.42);
   box-shadow:
@@ -542,7 +554,9 @@ body.hero-narrating .hero-magic-sub {
     0 8px 22px rgba(0, 0, 0, 0.22),
     0 0 18px rgba(243, 166, 157, 0.28);
 }
-.hero-magic .btn-magic::before {
+.hero-magic .btn-magic::before,
+.feature-copy .btn-magic::before,
+.btn-magic::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -560,7 +574,9 @@ body.hero-narrating .hero-magic-sub {
   pointer-events: none;
   z-index: -1;
 }
-.hero-magic .btn-magic::after {
+.hero-magic .btn-magic::after,
+.feature-copy .btn-magic::after,
+.btn-magic::after {
   content: "";
   position: absolute;
   inset: -5px;
@@ -704,24 +720,31 @@ body.hero-narrating .hero-magic-sub {
   padding: 18px 20px;
   border-radius: 20px;
   color: #ffffff;
-  background: rgba(26, 15, 53, 0.28);
-  box-shadow: 0 0 24px rgba(243, 166, 157, 0.18);
+  background: rgba(26, 15, 53, 0.34);
+  box-shadow:
+    0 0 18px rgba(243, 166, 157, 0.45),
+    0 0 42px rgba(245, 200, 66, 0.28),
+    0 0 70px rgba(167, 139, 250, 0.32),
+    0 0 110px rgba(243, 166, 157, 0.18),
+    inset 0 0 24px rgba(255, 255, 255, 0.06);
 }
 .hero p.lead.lead-glow::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.5px;
+  padding: 2.5px;
   background: conic-gradient(
     from var(--lead-glow-angle),
-    rgba(255, 255, 255, 0.12),
-    rgba(243, 166, 157, 0.95),
-    rgba(255, 255, 255, 0.18),
-    rgba(210, 190, 255, 0.85),
-    rgba(255, 255, 255, 0.12),
-    rgba(243, 166, 157, 0.75),
-    rgba(255, 255, 255, 0.12)
+    rgba(255, 255, 255, 0.55),
+    #F3A69D 40deg,
+    #F5C842 90deg,
+    rgba(255, 255, 255, 0.4) 130deg,
+    #A78BFA 180deg,
+    #F3A69D 230deg,
+    #F5C842 280deg,
+    #7DD3FC 320deg,
+    rgba(255, 255, 255, 0.55) 360deg
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -733,29 +756,31 @@ body.hero-narrating .hero-magic-sub {
   mask-composite: exclude;
   pointer-events: none;
   z-index: -1;
-  animation: lead-glow-spin 14s linear infinite;
-  opacity: 0.9;
+  animation: lead-glow-spin 10s linear infinite;
+  opacity: 1;
 }
 .hero p.lead.lead-glow::after {
   content: "";
   position: absolute;
-  inset: -6px;
-  border-radius: 26px;
+  inset: -14px;
+  border-radius: 34px;
   background: conic-gradient(
     from var(--lead-glow-angle),
     transparent 0deg,
-    rgba(243, 166, 157, 0.35) 60deg,
-    transparent 120deg,
-    rgba(210, 190, 255, 0.28) 200deg,
-    transparent 280deg,
-    rgba(243, 166, 157, 0.22) 320deg,
+    rgba(243, 166, 157, 0.7) 45deg,
+    rgba(245, 200, 66, 0.55) 90deg,
+    transparent 140deg,
+    rgba(167, 139, 250, 0.6) 190deg,
+    rgba(125, 211, 252, 0.45) 240deg,
+    transparent 290deg,
+    rgba(243, 166, 157, 0.5) 330deg,
     transparent 360deg
   );
-  filter: blur(10px);
-  opacity: 0.55;
+  filter: blur(18px);
+  opacity: 0.9;
   pointer-events: none;
   z-index: -2;
-  animation: lead-glow-spin 14s linear infinite;
+  animation: lead-glow-spin 10s linear infinite;
 }
 @keyframes lead-glow-spin {
   to { --lead-glow-angle: 360deg; }
@@ -764,6 +789,11 @@ body.hero-narrating .hero-magic-sub {
   .hero p.lead.lead-glow::before,
   .hero p.lead.lead-glow::after {
     animation: none;
+  }
+  .hero p.lead.lead-glow {
+    box-shadow:
+      0 0 22px rgba(243, 166, 157, 0.4),
+      0 0 48px rgba(167, 139, 250, 0.28);
   }
 }
 .fact-strip {
@@ -830,6 +860,106 @@ body.hero-narrating .hero-magic-sub {
 .plan-card .price { font-size: 15px; color: var(--muted); margin-bottom: 14px; }
 .plan-card ul { padding-left: 20px; margin: 0; }
 .plan-card li { margin-bottom: 6px; }
+.pricing-matrix-wrap {
+  margin: 28px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+.pricing-matrix {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.pricing-matrix th,
+.pricing-matrix td {
+  padding: 14px 12px;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.pricing-matrix thead th {
+  font-size: 15px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.04);
+}
+.pricing-matrix tbody th[scope="row"] {
+  text-align: left;
+  font-weight: 600;
+  width: 28%;
+}
+.pricing-matrix td,
+.pricing-matrix thead th:not(:first-child) {
+  width: 24%;
+}
+.pricing-matrix th.plus,
+.pricing-matrix td.plus {
+  background: rgba(224, 179, 76, 0.07);
+  border-left: 1px solid rgba(224, 179, 76, 0.22);
+}
+.pricing-matrix th.plus-yearly,
+.pricing-matrix td.plus-yearly {
+  background: rgba(224, 179, 76, 0.12);
+  border-left: 1px solid rgba(224, 179, 76, 0.35);
+}
+.pricing-matrix thead th.plus,
+.pricing-matrix thead th.plus-yearly {
+  color: #e0b34c;
+}
+.pricing-matrix tbody tr:last-child th,
+.pricing-matrix tbody tr:last-child td {
+  border-bottom: none;
+}
+.pricing-matrix .matrix-yes {
+  color: #7ddea5;
+  font-size: 20px;
+  font-weight: 700;
+}
+.pricing-matrix .matrix-no {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 18px;
+}
+.pricing-matrix .matrix-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.pricing-matrix .matrix-price-amount {
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.pricing-matrix .matrix-discount {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(125, 222, 165, 0.22);
+  color: #7ddea5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.pricing-matrix .matrix-cta-row td,
+.pricing-matrix .matrix-cta-row th {
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+.pricing-matrix .matrix-cta-row .btn {
+  margin-top: 0;
+  white-space: normal;
+  padding: 10px 14px;
+  font-size: 13px;
+  min-height: 44px;
+  height: auto;
+  text-align: center;
+}
 .voice-pool {
   display: flex;
   flex-wrap: wrap;
@@ -862,6 +992,14 @@ body.hero-narrating .hero-magic-sub {
   .feature.reverse .feature-media { order: 1; }
 }
 .feature-copy p { color: var(--muted); margin: 0; }
+.feature-voice-cta {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.25;
+}
 .feature-media {
   max-width: 320px;
   margin-inline: auto;
@@ -1399,6 +1537,27 @@ details[open] summary::after { content: "–"; }
 details p, details ul { margin: 10px 0 4px; color: var(--fg); }
 details ul { margin-bottom: 8px; }
 .legal-main { max-width: 720px; }
+.languages-hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.languages-hero h1 {
+  margin-inline: auto;
+  text-wrap: balance;
+}
+.languages-hero .effective {
+  text-align: center;
+  margin-inline: auto;
+  max-width: 40em;
+}
+.languages-hero-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px !important;
+}
+.languages-hero-cta .btn {
+  margin-top: 0;
+}
 
 /* Voice clone style popup */
 .voice-magic-modal {

@@ -1,7 +1,6 @@
 (function () {
   var LABEL_BY_FILE = {
     'languages.html': { key: 'nav.languages', en: 'Languages', hy: 'Լեզուներ' },
-    'true-voice.html': { key: 'nav.trueVoice', en: 'True Voice', hy: 'Իսկական ձայն' },
     'pricing.html': { key: 'nav.pricing', en: 'Pricing', hy: 'Գներ' },
     'support.html': { key: 'nav.support', en: 'Support', hy: 'Աջակցություն' },
     'privacy.html': { key: 'nav.privacy', en: 'Privacy', hy: 'Գաղտնիություն' },
@@ -90,49 +89,135 @@
     }
   }
 
-  /** Same-page #features taps shouldn't jump scroll if you're already in/past Features. */
-  function initFeaturesStayPut() {
-    var features = document.getElementById('features');
-    if (!features) return;
-
+  /** Smooth-scroll same-page hash links (Features, fact chips, etc.) so motion is visible. */
+  function initSmoothSectionScroll() {
     function normalizePath(path) {
       return String(path || '/')
         .replace(/\/index\.html$/i, '/')
         .replace(/\/+$/, '') || '/';
     }
 
-    function isSamePageFeaturesLink(link) {
-      var href = link.getAttribute('href') || '';
-      if (href.indexOf('#features') === -1) return false;
+    function headerOffset() {
+      var header = document.querySelector('header.site');
+      if (!header) return 12;
+      return Math.ceil(header.getBoundingClientRect().height) + 12;
+    }
+
+    function prefersReduce() {
       try {
-        var url = new URL(href, location.href);
-        return url.origin === location.origin
-          && normalizePath(url.pathname) === normalizePath(location.pathname)
-          && url.hash === '#features';
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       } catch (err) {
-        return href === '#features' || /#features$/.test(href);
+        return false;
       }
     }
 
-    document.querySelectorAll('a[href*="#features"]').forEach(function (link) {
-      if (!isSamePageFeaturesLink(link)) return;
-      link.addEventListener('click', function (e) {
-        var rect = features.getBoundingClientRect();
-        var alreadyThere = rect.top < (window.innerHeight || 0) * 0.55;
-        if (!alreadyThere) return;
+    function scrollToId(id, behavior) {
+      var target = document.getElementById(id);
+      if (!target) return false;
+      var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset();
+      top = Math.max(0, Math.round(top));
+      window.scrollTo({
+        top: top,
+        behavior: behavior || (prefersReduce() ? 'auto' : 'smooth')
+      });
+      return true;
+    }
+
+    function scrollHomeTop(behavior) {
+      window.scrollTo({
+        top: 0,
+        behavior: behavior || (prefersReduce() ? 'auto' : 'smooth')
+      });
+    }
+
+    function isLandingPath(pathname) {
+      var n = normalizePath(pathname);
+      var file = String(pathname || '/').replace(/\/+$/, '').split('/').pop() || '';
+      return n === '/' || file === 'index.html' || file === 'hy.html' || file === '';
+    }
+
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest && e.target.closest('a[href]');
+      if (!link || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (link.target && link.target !== '' && link.target !== '_self') return;
+
+      var href = link.getAttribute('href') || '';
+      var url;
+      try {
+        url = new URL(href, location.href);
+      } catch (err) {
+        return;
+      }
+      if (url.origin !== location.origin) return;
+
+      var samePath = normalizePath(url.pathname) === normalizePath(location.pathname);
+
+      // Same-page section link (e.g. #features)
+      if (samePath && url.hash && url.hash !== '#') {
+        var id = decodeURIComponent(url.hash.slice(1));
+        if (!id || !document.getElementById(id)) return;
+        e.preventDefault();
+        scrollToId(id);
+        try {
+          if (history.pushState) history.pushState(null, '', url.pathname + url.search + url.hash);
+          else location.hash = url.hash;
+        } catch (err) {}
+        return;
+      }
+
+      // Home / brand while on landing with a hash — clear hash and return to top
+      // (browsers keep scroll when only the hash is removed).
+      if (samePath && isLandingPath(url.pathname) && (!url.hash || url.hash === '#') && location.hash) {
         e.preventDefault();
         try {
-          if (history.replaceState) {
-            history.replaceState(null, '', location.pathname + location.search + '#features');
-          }
+          if (history.pushState) history.pushState(null, '', url.pathname + url.search);
+          else history.replaceState(null, '', url.pathname + url.search);
         } catch (err) {}
-      });
+        scrollHomeTop();
+      }
+    });
+
+    window.addEventListener('popstate', function () {
+      if (location.hash && location.hash.length > 1) {
+        scrollToId(decodeURIComponent(location.hash.slice(1)), 'auto');
+      } else {
+        scrollHomeTop('auto');
+      }
+    });
+
+    window.addEventListener('hashchange', function () {
+      if (!location.hash || location.hash === '#') {
+        scrollHomeTop('auto');
+      }
     });
   }
 
   function init() {
     initNavToggle();
-    initFeaturesStayPut();
+    initSmoothSectionScroll();
+    // Arrive via /#features from another page — smooth scroll after layout.
+    if (location.hash && location.hash.length > 1) {
+      var id = decodeURIComponent(location.hash.slice(1));
+      var target = document.getElementById(id);
+      if (target) {
+        var header = document.querySelector('header.site');
+        var offset = header ? Math.ceil(header.getBoundingClientRect().height) + 12 : 12;
+        var reduce = false;
+        try {
+          reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        } catch (err) {}
+        // Jump to section without first flashing the top of the page.
+        var top = Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - offset));
+        window.scrollTo(0, top);
+        requestAnimationFrame(function () {
+          top = Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - offset));
+          window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+        });
+      }
+    } else if (!location.hash) {
+      // Back/forward or in-page return to home without a hash should start at top.
+      window.scrollTo(0, 0);
+    }
   }
 
   if (document.readyState === 'loading') {
