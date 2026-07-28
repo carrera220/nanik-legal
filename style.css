@@ -871,7 +871,7 @@ body.hero-narrating .hero-magic-sub {
   max-width: 380px;
 }
 .feature-media--world {
-  max-width: 280px;
+  max-width: 196px;
 }
 .feature-media--support {
   max-width: 420px;
@@ -903,15 +903,25 @@ body.hero-narrating .hero-magic-sub {
   gap: 10px;
   padding: 2px 0;
   will-change: transform;
+  animation-play-state: paused;
+}
+.support-collage.is-running .support-marquee-track {
+  animation-play-state: running;
 }
 .support-marquee--left .support-marquee-track {
-  animation: support-slide-left 28s linear infinite;
+  animation: support-slide-left 52s linear infinite;
+  animation-play-state: paused;
 }
 .support-marquee--right .support-marquee-track {
-  animation: support-slide-right 32s linear infinite;
+  animation: support-slide-right 58s linear infinite;
+  animation-play-state: paused;
 }
 .support-marquee--slow .support-marquee-track {
-  animation-duration: 38s;
+  animation-duration: 68s;
+}
+.support-collage.is-running .support-marquee--left .support-marquee-track,
+.support-collage.is-running .support-marquee--right .support-marquee-track {
+  animation-play-state: running;
 }
 .support-chip {
   display: inline-flex;
@@ -978,17 +988,117 @@ body.hero-narrating .hero-magic-sub {
     display: none;
   }
 }
+.feature-media--langs {
+  max-width: 420px;
+}
+.lang-collage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transform: none;
+}
+.lang-marquee {
+  overflow: hidden;
+  margin: 8px 0;
+  mask-image: linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+.lang-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 10px;
+  padding: 2px 0;
+  will-change: transform;
+  animation-play-state: paused;
+}
+.lang-collage.is-running .lang-marquee-track {
+  animation-play-state: running;
+}
+.lang-marquee--left .lang-marquee-track {
+  animation: lang-slide-left 60s linear infinite;
+  animation-play-state: paused;
+}
+.lang-marquee--right .lang-marquee-track {
+  animation: lang-slide-right 66s linear infinite;
+  animation-play-state: paused;
+}
+.lang-marquee--slow .lang-marquee-track {
+  animation-duration: 78s;
+}
+.lang-collage.is-running .lang-marquee--left .lang-marquee-track,
+.lang-collage.is-running .lang-marquee--right .lang-marquee-track {
+  animation-play-state: running;
+}
+.lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.lang-chip:nth-child(odd) {
+  transform: rotate(-2deg);
+}
+.lang-chip:nth-child(even) {
+  transform: rotate(2.5deg);
+}
+.lang-chip-flag {
+  font-size: 18px;
+  line-height: 1;
+}
+@keyframes lang-slide-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes lang-slide-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lang-marquee-track {
+    animation: none !important;
+    transform: none !important;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+    padding: 0 16px;
+  }
+  .lang-marquee {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
 @media (min-width: 760px) {
   .feature-media--world {
-    max-width: 300px;
+    max-width: 210px;
   }
   .feature-media--support {
+    max-width: 460px;
+  }
+  .feature-media--langs {
     max-width: 460px;
   }
 }
 .world-slider {
   position: relative;
   width: 100%;
+  max-width: 100%;
 }
 .world-slider-viewport {
   position: relative;
@@ -1015,7 +1125,7 @@ body.hero-narrating .hero-magic-sub {
   border-radius: 0 !important;
   background: transparent !important;
   opacity: 0;
-  transition: opacity 0.28s ease;
+  transition: opacity 0.2s ease;
   pointer-events: none;
 }
 .world-slider-slide.is-active {
@@ -1123,7 +1233,11 @@ body.hero-narrating .hero-magic-sub {
     0 0 56px rgba(245, 200, 66, 0.4),
     0 0 80px rgba(255, 255, 255, 0.18),
     0 18px 36px rgba(0, 0, 0, 0.4);
-  animation: toy-alive-glow 3.2s ease-in-out infinite;
+  animation: toy-alive-glow 4.8s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.toy-alive.is-running .toy-alive-ai {
+  animation-play-state: running;
 }
 .toy-sparkle {
   position: absolute;
@@ -1137,7 +1251,11 @@ body.hero-narrating .hero-magic-sub {
     0 0 14px 4px rgba(245, 200, 66, 0.75),
     0 0 22px 6px rgba(243, 166, 157, 0.45);
   opacity: 0;
-  animation: toy-sparkle-twinkle 2.4s ease-in-out infinite;
+  animation: toy-sparkle-twinkle 3.6s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.toy-alive.is-running .toy-sparkle {
+  animation-play-state: running;
 }
 .toy-sparkle::before,
 .toy-sparkle::after {
@@ -1219,6 +1337,9 @@ body.hero-narrating .hero-magic-sub {
   }
   .feature-media--alive {
     max-width: 420px;
+  }
+  .feature-media--world {
+    max-width: 210px;
   }
 }
 .shot {

@@ -1,6 +1,52 @@
 (function () {
-  var INTERVAL_SLOW_MS = 1800;
-  var INTERVAL_FAST_MS = 650;
+  var INTERVAL_MS = 700;
+
+  function prefersReducedMotion() {
+    try {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /** Subtle CSS animations while section is in view; paused when off-screen. */
+  function bindInViewAnimations(root, opts) {
+    if (prefersReducedMotion()) return;
+
+    var selector = opts.selector;
+    var rate = opts.rate != null ? opts.rate : 0.45;
+    var threshold = opts.threshold != null ? opts.threshold : 0.25;
+    var section = root.closest('.feature') || root;
+
+    function applyRate(next) {
+      root.querySelectorAll(selector).forEach(function (el) {
+        if (!el.getAnimations) return;
+        el.getAnimations().forEach(function (anim) {
+          anim.playbackRate = next;
+        });
+      });
+    }
+
+    function setRunning(on) {
+      root.classList.toggle('is-running', !!on);
+      if (on) {
+        requestAnimationFrame(function () {
+          applyRate(rate);
+        });
+      }
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          setRunning(entry.isIntersecting && entry.intersectionRatio >= threshold);
+        });
+      }, { threshold: [0, threshold, 0.5, 0.75, 1] });
+      io.observe(section);
+    } else {
+      setRunning(true);
+    }
+  }
 
   function initSlider(root) {
     var slides = Array.prototype.slice.call(root.querySelectorAll('.world-slider-slide'));
@@ -13,12 +59,7 @@
     var started = false;
     var inView = false;
     var hovering = false;
-    var currentInterval = INTERVAL_SLOW_MS;
-    var reduceMotion = false;
-
-    try {
-      reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    } catch (e) {}
+    var reduceMotion = prefersReducedMotion();
 
     function show(i) {
       index = ((i % slides.length) + slides.length) % slides.length;
@@ -36,35 +77,11 @@
       timer = null;
     }
 
-    /** 0 at edges / barely in view → 1 when section center is near viewport middle */
-    function centeredness() {
-      var rect = section.getBoundingClientRect();
-      var vh = window.innerHeight || 1;
-      var sectionMid = rect.top + rect.height / 2;
-      var viewMid = vh / 2;
-      var dist = Math.abs(sectionMid - viewMid) / (vh * 0.45);
-      return Math.max(0, Math.min(1, 1 - dist));
-    }
-
-    function desiredInterval() {
-      var c = centeredness();
-      // Ease into fast speed once you're toward the middle of the section.
-      var t = c * c;
-      return Math.round(INTERVAL_SLOW_MS + (INTERVAL_FAST_MS - INTERVAL_SLOW_MS) * t);
-    }
-
     function start() {
-      if (reduceMotion || !started || !inView || hovering) return;
-      var nextInterval = desiredInterval();
-      if (timer && nextInterval === currentInterval) return;
-      stop();
-      currentInterval = nextInterval;
+      if (reduceMotion || !started || !inView || hovering || timer) return;
       timer = setInterval(function () {
         show(index + 1);
-        // Re-tune speed as the user keeps scrolling while timer fires.
-        var refreshed = desiredInterval();
-        if (refreshed !== currentInterval) start();
-      }, currentInterval);
+      }, INTERVAL_MS);
     }
 
     function beginWhenInView() {
@@ -76,21 +93,11 @@
       start();
     }
 
-    var ticking = false;
-    function onScroll() {
-      if (!started || !inView) return;
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        ticking = false;
-        start();
-      });
-    }
-
     dots.forEach(function (dot, n) {
       dot.addEventListener('click', function () {
         if (!started) beginWhenInView();
         show(n);
+        stop();
         start();
       });
     });
@@ -146,10 +153,22 @@
     } else {
       beginWhenInView();
     }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
   }
 
   document.querySelectorAll('[data-world-slider]').forEach(initSlider);
+
+  document.querySelectorAll('.support-collage, .lang-collage').forEach(function (root) {
+    bindInViewAnimations(root, {
+      selector: '.support-marquee-track, .lang-marquee-track',
+      rate: 0.45
+    });
+  });
+
+  document.querySelectorAll('.toy-alive').forEach(function (root) {
+    bindInViewAnimations(root, {
+      selector: '.toy-sparkle, .toy-alive-ai',
+      rate: 0.5,
+      threshold: 0.2
+    });
+  });
 })();
