@@ -166,21 +166,23 @@ footer {
 }
 .hero-cta {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   gap: 12px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 .hero-cta .btn,
 .hero-cta .btn-disabled {
-  min-width: 280px;
+  min-width: auto;
   justify-content: center;
+  font-size: 14px;
 }
 .hero-cta .btn {
   display: inline-flex;
   align-items: center;
-  padding: 18px 40px;
+  padding: 12px 20px;
   margin-top: 0;
 }
 .btn-secondary {
@@ -206,7 +208,7 @@ footer {
   line-height: 1.25;
   gap: 1px;
 }
-.hero-cta .btn-stacked { padding: 11px 40px; }
+.hero-cta .btn-stacked { padding: 10px 16px; }
 .btn-stacked small {
   font-weight: 400;
   font-size: 11px;
