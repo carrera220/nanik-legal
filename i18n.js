@@ -9,26 +9,30 @@
   var STORAGE_KEY = 'nanik-site-lang';
 
   var LOCALES = [
-    { code: 'hy', native: 'Հայերեն', group: 'primary' },
-    { code: 'en', native: 'English', group: 'primary' },
-    { code: 'ru', native: 'Русский', group: 'primary' },
-    { code: 'de', native: 'Deutsch', group: 'european' },
-    { code: 'fr', native: 'Français', group: 'european' },
-    { code: 'es', native: 'Español', group: 'european' },
-    { code: 'it', native: 'Italiano', group: 'european' },
-    { code: 'pt', native: 'Português', group: 'european' },
-    { code: 'nl', native: 'Nederlands', group: 'european' },
-    { code: 'pl', native: 'Polski', group: 'european' },
-    { code: 'uk', native: 'Українська', group: 'european' },
-    { code: 'cs', native: 'Čeština', group: 'european' },
-    { code: 'ro', native: 'Română', group: 'european' },
-    { code: 'el', native: 'Ελληνικά', group: 'european' },
-    { code: 'hu', native: 'Magyar', group: 'european' },
-    { code: 'sv', native: 'Svenska', group: 'european' },
-    { code: 'no', native: 'Norsk', group: 'european' },
-    { code: 'da', native: 'Dansk', group: 'european' },
-    { code: 'fi', native: 'Suomi', group: 'european' },
+    { code: 'hy', native: 'Հայերեն', flag: '🇦🇲', group: 'primary' },
+    { code: 'en', native: 'English', flag: '🇺🇸', group: 'primary' },
+    { code: 'ru', native: 'Русский', flag: '🇷🇺', group: 'primary' },
+    { code: 'de', native: 'Deutsch', flag: '🇩🇪', group: 'european' },
+    { code: 'fr', native: 'Français', flag: '🇫🇷', group: 'european' },
+    { code: 'es', native: 'Español', flag: '🇪🇸', group: 'european' },
+    { code: 'it', native: 'Italiano', flag: '🇮🇹', group: 'european' },
+    { code: 'pt', native: 'Português', flag: '🇵🇹', group: 'european' },
+    { code: 'nl', native: 'Nederlands', flag: '🇳🇱', group: 'european' },
+    { code: 'pl', native: 'Polski', flag: '🇵🇱', group: 'european' },
+    { code: 'uk', native: 'Українська', flag: '🇺🇦', group: 'european' },
+    { code: 'cs', native: 'Čeština', flag: '🇨🇿', group: 'european' },
+    { code: 'ro', native: 'Română', flag: '🇷🇴', group: 'european' },
+    { code: 'el', native: 'Ελληνικά', flag: '🇬🇷', group: 'european' },
+    { code: 'hu', native: 'Magyar', flag: '🇭🇺', group: 'european' },
+    { code: 'sv', native: 'Svenska', flag: '🇸🇪', group: 'european' },
+    { code: 'no', native: 'Norsk', flag: '🇳🇴', group: 'european' },
+    { code: 'da', native: 'Dansk', flag: '🇩🇰', group: 'european' },
+    { code: 'fi', native: 'Suomi', flag: '🇫🇮', group: 'european' },
   ];
+  function localeByCode(code) {
+    for (var i = 0; i < LOCALES.length; i++) if (LOCALES[i].code === code) return LOCALES[i];
+    return LOCALES[1];
+  }
 
   var T = {
     en: {
@@ -1146,43 +1150,75 @@
     var titleKey = document.body && document.body.getAttribute('data-i18n-page-title');
     if (titleKey) document.title = t(code, titleKey);
 
-    var select = document.getElementById('site-lang');
-    if (select) select.value = code;
+    var flagBtn = document.getElementById('site-lang-current');
+    if (flagBtn) flagBtn.textContent = localeByCode(code).flag;
   }
 
   function buildSwitcher() {
     var nav = document.querySelector('header.site nav');
     if (!nav || document.getElementById('site-lang-wrap')) return;
 
-    var wrap = document.createElement('label');
+    var wrap = document.createElement('div');
     wrap.id = 'site-lang-wrap';
     wrap.className = 'site-lang-wrap';
-    wrap.setAttribute('data-i18n-title', 'nav.langLabel');
-    wrap.title = t(detect(), 'nav.langLabel');
 
-    var select = document.createElement('select');
-    select.id = 'site-lang';
-    select.setAttribute('aria-label', 'Site language');
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.id = 'site-lang-current';
+    button.className = 'site-lang-current';
+    button.setAttribute('aria-haspopup', 'listbox');
+    button.setAttribute('aria-expanded', 'false');
+    button.setAttribute('data-i18n-title', 'nav.langLabel');
+    button.title = t(detect(), 'nav.langLabel');
+    button.textContent = localeByCode(detect()).flag;
 
-    var primary = document.createElement('optgroup');
-    primary.label = t('en', 'nav.groupPrimary');
-    primary.setAttribute('data-i18n-label', 'nav.groupPrimary');
-    var european = document.createElement('optgroup');
-    european.label = t('en', 'nav.groupEuropean');
-    european.setAttribute('data-i18n-label', 'nav.groupEuropean');
+    var list = document.createElement('ul');
+    list.className = 'site-lang-list';
+    list.setAttribute('role', 'listbox');
+    list.hidden = true;
 
-    LOCALES.forEach(function (loc) {
-      var opt = document.createElement('option');
-      opt.value = loc.code;
-      opt.textContent = loc.native;
-      (loc.group === 'primary' ? primary : european).appendChild(opt);
+    function closeList() {
+      list.hidden = true;
+      button.setAttribute('aria-expanded', 'false');
+    }
+    function openList() {
+      list.hidden = false;
+      button.setAttribute('aria-expanded', 'true');
+    }
+
+    var groupLabels = { primary: null, european: null };
+    ['primary', 'european'].forEach(function (group) {
+      var heading = document.createElement('li');
+      heading.className = 'site-lang-group-label';
+      heading.setAttribute('data-i18n-label', group === 'primary' ? 'nav.groupPrimary' : 'nav.groupEuropean');
+      heading.textContent = t('en', group === 'primary' ? 'nav.groupPrimary' : 'nav.groupEuropean');
+      list.appendChild(heading);
+      LOCALES.filter(function (l) { return l.group === group; }).forEach(function (loc) {
+        var item = document.createElement('li');
+        item.setAttribute('role', 'option');
+        item.setAttribute('data-code', loc.code);
+        item.textContent = loc.flag + ' ' + loc.native;
+        item.addEventListener('click', function () {
+          apply(loc.code);
+          closeList();
+        });
+        list.appendChild(item);
+      });
     });
 
-    select.appendChild(primary);
-    select.appendChild(european);
-    select.addEventListener('change', function () { apply(select.value); });
+    button.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (list.hidden) openList(); else closeList();
+    });
+    document.addEventListener('click', function (e) {
+      if (!wrap.contains(e.target)) closeList();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeList();
+    });
 
-    wrap.appendChild(select);
+    wrap.appendChild(button);
+    wrap.appendChild(list);
     nav.appendChild(wrap);
   }
 

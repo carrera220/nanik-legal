@@ -20,12 +20,13 @@
 </head>
 <body>
 <header class="site">
-    <nav>
+  <nav>
     <a class="brand" href="/"><img src="images/favicon-64.png" width="28" height="28" alt="Nanik" style="border-radius:7px;display:block"></a>
-    <a href="/#features" data-i18n="nav.features">Features</a>
-    <a href="languages.html" data-i18n="nav.languages">Languages</a>
-    <a href="true-voice.html" data-i18n="nav.trueVoice">True Voice</a>
-    <a href="pricing.html" data-i18n="nav.pricing">Pricing</a>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav-links" aria-label="Menu"><span class="nav-toggle-label" data-i18n="nav.privacy">Privacy</span><span class="nav-toggle-caret" aria-hidden="true"></span></button>
+    <div id="site-nav-links" class="site-nav-links">
+      <a href="/#features" data-i18n="nav.features">Features</a>
+      <a href="languages.html" data-i18n="nav.languages">Languages</a>
+    </div>
   </nav>
 </header>
 <p class="effective" style="max-width:720px;margin:16px auto 0;padding:0 20px" data-i18n="support.legalNote">Privacy Policy and Terms of Service pages remain in English.</p>
@@ -155,6 +156,7 @@ Support: <a href="https://nanik.app/support.html">https://nanik.app/support.html
 Email: <a href="mailto:info@nanik.app">info@nanik.app</a></p>
 </main>
 <footer>&copy; 2026 Nanik · <a href="support.html" data-i18n="nav.support">Support</a> · <a href="privacy.html" data-i18n="nav.privacy">Privacy</a> · <a href="terms.html" data-i18n="nav.terms">Terms</a></footer>
+<script src="site-nav.js" defer></script>
 <script src="i18n.js" defer></script>
 </body>
 </html>

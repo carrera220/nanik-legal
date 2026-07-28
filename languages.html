@@ -23,12 +23,13 @@
 </head>
 <body data-i18n-page-title="lang.title">
 <header class="site">
-    <nav>
+  <nav>
     <a class="brand" href="/"><img src="images/favicon-64.png" width="28" height="28" alt="Nanik" style="border-radius:7px;display:block"></a>
-    <a href="/#features" data-i18n="nav.features">Features</a>
-    <a href="languages.html" data-i18n="nav.languages">Languages</a>
-    <a href="true-voice.html" data-i18n="nav.trueVoice">True Voice</a>
-    <a href="pricing.html" data-i18n="nav.pricing">Pricing</a>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav-links" aria-label="Menu"><span class="nav-toggle-label" data-i18n="nav.languages">Languages</span><span class="nav-toggle-caret" aria-hidden="true"></span></button>
+    <div id="site-nav-links" class="site-nav-links">
+      <a href="/#features" data-i18n="nav.features">Features</a>
+      <a href="languages.html" data-i18n="nav.languages">Languages</a>
+    </div>
   </nav>
 </header>
 <main class="legal-main">
@@ -254,6 +255,7 @@
   ]
 }
 </script>
+<script src="site-nav.js" defer></script>
 <script src="i18n.js" defer></script>
 </body>
 </html>
