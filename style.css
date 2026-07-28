@@ -254,13 +254,6 @@ footer {
 }
 .fact-strip li a:hover { border-color: var(--accent); }
 .fact-strip li strong { color: var(--accent); }
-.definition-card {
-  max-width: 720px;
-  margin: 28px auto 0;
-  text-align: left;
-  font-size: 17px;
-}
-.definition-card p { margin: 0; }
 .lang-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
