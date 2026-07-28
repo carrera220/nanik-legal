@@ -1,0 +1,1051 @@
+{
+  "author": "Brothers Grimm",
+  "source": "https://www.cs.cmu.edu/~spok/grimmtmp/",
+  "stories": [
+    {
+      "nr": 1,
+      "slug": "grimm-001-the_frog_king_or_iron_henry",
+      "title": "The Frog King, or Iron Henry"
+    },
+    {
+      "nr": 2,
+      "slug": "grimm-002-our_lady_s_child",
+      "title": "Our Lady's Child"
+    },
+    {
+      "nr": 3,
+      "slug": "grimm-003-the_story_of_a_youth_who_went_forth_to_learn_what_fear_was",
+      "title": "The Story of a Youth Who Went Forth to Learn What Fear Was"
+    },
+    {
+      "nr": 4,
+      "slug": "grimm-004-the_wolf_and_the_seven_little_kids",
+      "title": "The Wolf and the Seven Little Kids"
+    },
+    {
+      "nr": 5,
+      "slug": "grimm-005-faithful_john",
+      "title": "Faithful John"
+    },
+    {
+      "nr": 6,
+      "slug": "grimm-006-the_good_bargain",
+      "title": "The Good Bargain"
+    },
+    {
+      "nr": 7,
+      "slug": "grimm-007-the_twelve_brothers",
+      "title": "The Twelve Brothers"
+    },
+    {
+      "nr": 8,
+      "slug": "grimm-008-brother_and_sister",
+      "title": "Brother and Sister"
+    },
+    {
+      "nr": 9,
+      "slug": "grimm-009-rapunzel",
+      "title": "Rapunzel"
+    },
+    {
+      "nr": 10,
+      "slug": "grimm-010-the_three_little_men_in_the_wood",
+      "title": "The Three Little Men in the Wood"
+    },
+    {
+      "nr": 11,
+      "slug": "grimm-011-the_three_spinners",
+      "title": "The Three Spinners"
+    },
+    {
+      "nr": 12,
+      "slug": "grimm-012-hansel_and_grethel",
+      "title": "Hansel and Grethel"
+    },
+    {
+      "nr": 13,
+      "slug": "grimm-013-the_three_snake_leaves",
+      "title": "The Three Snake-Leaves"
+    },
+    {
+      "nr": 14,
+      "slug": "grimm-014-the_white_snake",
+      "title": "The White Snake"
+    },
+    {
+      "nr": 15,
+      "slug": "grimm-015-the_valiant_little_tailor",
+      "title": "The Valiant Little Tailor"
+    },
+    {
+      "nr": 16,
+      "slug": "grimm-016-cinderella",
+      "title": "Cinderella"
+    },
+    {
+      "nr": 17,
+      "slug": "grimm-017-the_riddle",
+      "title": "The Riddle"
+    },
+    {
+      "nr": 18,
+      "slug": "grimm-018-mother_holle",
+      "title": "Mother Holle"
+    },
+    {
+      "nr": 19,
+      "slug": "grimm-019-the_seven_ravens",
+      "title": "The Seven Ravens"
+    },
+    {
+      "nr": 20,
+      "slug": "grimm-020-little_red_cap",
+      "title": "Little Red-Cap"
+    },
+    {
+      "nr": 21,
+      "slug": "grimm-021-the_singing_bone",
+      "title": "The Singing Bone"
+    },
+    {
+      "nr": 22,
+      "slug": "grimm-022-the_devil_with_the_three_golden_hairs",
+      "title": "The Devil with the Three Golden Hairs"
+    },
+    {
+      "nr": 23,
+      "slug": "grimm-023-the_girl_without_hands",
+      "title": "The Girl Without Hands"
+    },
+    {
+      "nr": 24,
+      "slug": "grimm-024-clever_hans",
+      "title": "Clever Hans"
+    },
+    {
+      "nr": 25,
+      "slug": "grimm-025-the_three_languages",
+      "title": "The Three Languages"
+    },
+    {
+      "nr": 26,
+      "slug": "grimm-026-clever_elsie",
+      "title": "Clever Elsie"
+    },
+    {
+      "nr": 27,
+      "slug": "grimm-027-the_wishing_table_the_gold_ass_and_the_cudgel_in_the_sack",
+      "title": "The Wishing-Table, The Gold-Ass, and The Cudgel in the Sack"
+    },
+    {
+      "nr": 28,
+      "slug": "grimm-028-thumbling",
+      "title": "Thumbling"
+    },
+    {
+      "nr": 29,
+      "slug": "grimm-029-the_elves",
+      "title": "The Elves"
+    },
+    {
+      "nr": 30,
+      "slug": "grimm-030-the_robber_bridegroom",
+      "title": "The Robber Bridegroom"
+    },
+    {
+      "nr": 31,
+      "slug": "grimm-031-the_godfather",
+      "title": "The Godfather"
+    },
+    {
+      "nr": 32,
+      "slug": "grimm-032-frau_trude",
+      "title": "Frau Trude"
+    },
+    {
+      "nr": 33,
+      "slug": "grimm-033-godfather_death",
+      "title": "Godfather Death"
+    },
+    {
+      "nr": 34,
+      "slug": "grimm-034-thumbling_as_journeyman",
+      "title": "Thumbling as Journeyman"
+    },
+    {
+      "nr": 35,
+      "slug": "grimm-035-fitcher_s_bird",
+      "title": "Fitcher's Bird"
+    },
+    {
+      "nr": 36,
+      "slug": "grimm-036-the_juniper_tree",
+      "title": "The Juniper-Tree"
+    },
+    {
+      "nr": 37,
+      "slug": "grimm-037-old_sultan",
+      "title": "Old Sultan"
+    },
+    {
+      "nr": 38,
+      "slug": "grimm-038-the_six_swans",
+      "title": "The Six Swans"
+    },
+    {
+      "nr": 39,
+      "slug": "grimm-039-little_briar_rose",
+      "title": "Little Briar-Rose"
+    },
+    {
+      "nr": 40,
+      "slug": "grimm-040-fundevogel",
+      "title": "Fundevogel"
+    },
+    {
+      "nr": 41,
+      "slug": "grimm-041-king_thrushbeard",
+      "title": "King Thrushbeard"
+    },
+    {
+      "nr": 42,
+      "slug": "grimm-042-little_snow_white",
+      "title": "Little Snow-White"
+    },
+    {
+      "nr": 43,
+      "slug": "grimm-043-the_knapsack_the_hat_and_the_horn",
+      "title": "The Knapsack, The Hat, and The Horn"
+    },
+    {
+      "nr": 44,
+      "slug": "grimm-044-rumpelstiltskin",
+      "title": "Rumpelstiltskin"
+    },
+    {
+      "nr": 45,
+      "slug": "grimm-045-sweetheart_roland",
+      "title": "Sweetheart Roland"
+    },
+    {
+      "nr": 46,
+      "slug": "grimm-046-the_golden_bird",
+      "title": "The Golden Bird"
+    },
+    {
+      "nr": 47,
+      "slug": "grimm-047-the_two_brothers",
+      "title": "The Two Brothers"
+    },
+    {
+      "nr": 48,
+      "slug": "grimm-048-the_queen_bee",
+      "title": "The Queen Bee"
+    },
+    {
+      "nr": 49,
+      "slug": "grimm-049-the_three_feathers",
+      "title": "The Three Feathers"
+    },
+    {
+      "nr": 50,
+      "slug": "grimm-050-the_golden_goose",
+      "title": "The Golden Goose"
+    },
+    {
+      "nr": 51,
+      "slug": "grimm-051-allerleirauh",
+      "title": "Allerleirauh"
+    },
+    {
+      "nr": 52,
+      "slug": "grimm-052-the_hare_s_bride",
+      "title": "The Hare's Bride"
+    },
+    {
+      "nr": 53,
+      "slug": "grimm-053-the_twelve_huntsmen",
+      "title": "The Twelve Huntsmen"
+    },
+    {
+      "nr": 54,
+      "slug": "grimm-054-the_thief_and_his_master",
+      "title": "The Thief and His Master"
+    },
+    {
+      "nr": 55,
+      "slug": "grimm-055-the_three_sons_of_fortune",
+      "title": "The Three Sons of Fortune"
+    },
+    {
+      "nr": 56,
+      "slug": "grimm-056-how_six_men_got_on_in_the_world",
+      "title": "How Six Men Got On in the World"
+    },
+    {
+      "nr": 57,
+      "slug": "grimm-057-gossip_wolf_and_the_fox",
+      "title": "Gossip Wolf and the Fox"
+    },
+    {
+      "nr": 58,
+      "slug": "grimm-058-the_pink",
+      "title": "The Pink"
+    },
+    {
+      "nr": 59,
+      "slug": "grimm-059-the_old_man_and_his_grandson",
+      "title": "The Old Man and His Grandson"
+    },
+    {
+      "nr": 60,
+      "slug": "grimm-060-the_water_nix",
+      "title": "The Water-Nix"
+    },
+    {
+      "nr": 61,
+      "slug": "grimm-061-brother_lustig",
+      "title": "Brother Lustig"
+    },
+    {
+      "nr": 62,
+      "slug": "grimm-062-hans_in_luck",
+      "title": "Hans in Luck"
+    },
+    {
+      "nr": 63,
+      "slug": "grimm-063-hans_married",
+      "title": "Hans Married"
+    },
+    {
+      "nr": 64,
+      "slug": "grimm-064-the_gold_children",
+      "title": "The Gold-Children"
+    },
+    {
+      "nr": 65,
+      "slug": "grimm-065-the_singing_soaring_lark",
+      "title": "The Singing, Soaring Lark"
+    },
+    {
+      "nr": 66,
+      "slug": "grimm-066-the_goose_girl",
+      "title": "The Goose-Girl"
+    },
+    {
+      "nr": 67,
+      "slug": "grimm-067-the_young_giant",
+      "title": "The Young Giant"
+    },
+    {
+      "nr": 68,
+      "slug": "grimm-068-the_elves",
+      "title": "The Elves"
+    },
+    {
+      "nr": 69,
+      "slug": "grimm-069-the_king_of_the_golden_mountain",
+      "title": "The King of the Golden Mountain"
+    },
+    {
+      "nr": 70,
+      "slug": "grimm-070-the_raven",
+      "title": "The Raven"
+    },
+    {
+      "nr": 71,
+      "slug": "grimm-071-the_peasant_s_wise_daughter",
+      "title": "The Peasant's Wise Daughter"
+    },
+    {
+      "nr": 72,
+      "slug": "grimm-072-the_three_little_birds",
+      "title": "The Three Little Birds"
+    },
+    {
+      "nr": 73,
+      "slug": "grimm-073-the_water_of_life",
+      "title": "The Water of Life"
+    },
+    {
+      "nr": 74,
+      "slug": "grimm-074-the_spirit_in_the_bottle",
+      "title": "The Spirit in the Bottle"
+    },
+    {
+      "nr": 75,
+      "slug": "grimm-075-the_devil_s_sooty_brother",
+      "title": "The Devil's Sooty Brother"
+    },
+    {
+      "nr": 76,
+      "slug": "grimm-076-bearskin",
+      "title": "Bearskin"
+    },
+    {
+      "nr": 77,
+      "slug": "grimm-077-the_willow_wren_and_the_bear",
+      "title": "The Willow-Wren and the Bear"
+    },
+    {
+      "nr": 78,
+      "slug": "grimm-078-sweet_porridge",
+      "title": "Sweet Porridge"
+    },
+    {
+      "nr": 79,
+      "slug": "grimm-079-wise_folks",
+      "title": "Wise Folks"
+    },
+    {
+      "nr": 80,
+      "slug": "grimm-080-stories_about_snakes",
+      "title": "Stories About Snakes"
+    },
+    {
+      "nr": 81,
+      "slug": "grimm-081-the_poor_miller_s_boy_and_the_cat",
+      "title": "The Poor Miller's Boy and the Cat"
+    },
+    {
+      "nr": 82,
+      "slug": "grimm-082-the_two_travellers",
+      "title": "The Two Travellers"
+    },
+    {
+      "nr": 83,
+      "slug": "grimm-083-hans_the_hedgehog",
+      "title": "Hans the Hedgehog"
+    },
+    {
+      "nr": 84,
+      "slug": "grimm-084-the_shroud",
+      "title": "The Shroud"
+    },
+    {
+      "nr": 85,
+      "slug": "grimm-085-the_skilful_huntsman",
+      "title": "The Skilful Huntsman"
+    },
+    {
+      "nr": 86,
+      "slug": "grimm-086-the_two_kings_children",
+      "title": "The Two Kings' Children"
+    },
+    {
+      "nr": 87,
+      "slug": "grimm-087-the_cunning_little_tailor",
+      "title": "The Cunning Little Tailor"
+    },
+    {
+      "nr": 88,
+      "slug": "grimm-088-the_bright_sun_brings_it_to_light",
+      "title": "The Bright Sun Brings It to Light"
+    },
+    {
+      "nr": 89,
+      "slug": "grimm-089-the_blue_light",
+      "title": "The Blue Light"
+    },
+    {
+      "nr": 90,
+      "slug": "grimm-090-the_wilful_child",
+      "title": "The Wilful Child"
+    },
+    {
+      "nr": 91,
+      "slug": "grimm-091-the_king_s_son_who_feared_nothing",
+      "title": "The King's Son Who Feared Nothing"
+    },
+    {
+      "nr": 92,
+      "slug": "grimm-092-donkey_cabbages",
+      "title": "Donkey Cabbages"
+    },
+    {
+      "nr": 93,
+      "slug": "grimm-093-the_old_woman_in_the_wood",
+      "title": "The Old Woman in the Wood"
+    },
+    {
+      "nr": 94,
+      "slug": "grimm-094-the_three_brothers",
+      "title": "The Three Brothers"
+    },
+    {
+      "nr": 95,
+      "slug": "grimm-095-the_devil_and_his_grandmother",
+      "title": "The Devil and His Grandmother"
+    },
+    {
+      "nr": 96,
+      "slug": "grimm-096-ferdinand_the_faithful",
+      "title": "Ferdinand the Faithful"
+    },
+    {
+      "nr": 97,
+      "slug": "grimm-097-the_iron_stove",
+      "title": "The Iron Stove"
+    },
+    {
+      "nr": 98,
+      "slug": "grimm-098-the_four_skilful_brothers",
+      "title": "The Four Skilful Brothers"
+    },
+    {
+      "nr": 99,
+      "slug": "grimm-099-one_eye_two_eyes_and_three_eyes",
+      "title": "One-Eye, Two-Eyes, and Three-Eyes"
+    },
+    {
+      "nr": 100,
+      "slug": "grimm-100-fair_katrinelje_and_pif_paf_poltrie",
+      "title": "Fair Katrinelje and Pif-Paf-Poltrie"
+    },
+    {
+      "nr": 101,
+      "slug": "grimm-101-the_shoes_that_were_danced_to_pieces",
+      "title": "The Shoes That Were Danced to Pieces"
+    },
+    {
+      "nr": 102,
+      "slug": "grimm-102-the_six_servants",
+      "title": "The Six Servants"
+    },
+    {
+      "nr": 103,
+      "slug": "grimm-103-the_white_bride_and_the_black_one",
+      "title": "The White Bride and the Black One"
+    },
+    {
+      "nr": 104,
+      "slug": "grimm-104-iron_john",
+      "title": "Iron John"
+    },
+    {
+      "nr": 105,
+      "slug": "grimm-105-the_three_black_princesses",
+      "title": "The Three Black Princesses"
+    },
+    {
+      "nr": 106,
+      "slug": "grimm-106-knoist_and_his_three_sons",
+      "title": "Knoist and His Three Sons"
+    },
+    {
+      "nr": 107,
+      "slug": "grimm-107-the_maid_of_brakel",
+      "title": "The Maid of Brakel"
+    },
+    {
+      "nr": 108,
+      "slug": "grimm-108-domestic_servants",
+      "title": "Domestic Servants"
+    },
+    {
+      "nr": 109,
+      "slug": "grimm-109-the_lambkin_and_the_little_fish",
+      "title": "The Lambkin and the Little Fish"
+    },
+    {
+      "nr": 110,
+      "slug": "grimm-110-simeli_mountain",
+      "title": "Simeli Mountain"
+    },
+    {
+      "nr": 111,
+      "slug": "grimm-111-going_a_travelling",
+      "title": "Going A-Travelling"
+    },
+    {
+      "nr": 112,
+      "slug": "grimm-112-the_donkey",
+      "title": "The Donkey"
+    },
+    {
+      "nr": 113,
+      "slug": "grimm-113-the_ungrateful_son",
+      "title": "The Ungrateful Son"
+    },
+    {
+      "nr": 114,
+      "slug": "grimm-114-the_turnip",
+      "title": "The Turnip"
+    },
+    {
+      "nr": 115,
+      "slug": "grimm-115-the_old_man_made_young_again",
+      "title": "The Old Man Made Young Again"
+    },
+    {
+      "nr": 116,
+      "slug": "grimm-116-the_three_sluggards",
+      "title": "The Three Sluggards"
+    },
+    {
+      "nr": 117,
+      "slug": "grimm-117-the_shepherd_boy",
+      "title": "The Shepherd Boy"
+    },
+    {
+      "nr": 118,
+      "slug": "grimm-118-the_star_money",
+      "title": "The Star-Money"
+    },
+    {
+      "nr": 119,
+      "slug": "grimm-119-the_stolen_farthings",
+      "title": "The Stolen Farthings"
+    },
+    {
+      "nr": 120,
+      "slug": "grimm-120-brides_on_their_trial",
+      "title": "Brides On Their Trial"
+    },
+    {
+      "nr": 121,
+      "slug": "grimm-121-the_sparrow_and_his_four_children",
+      "title": "The Sparrow and His Four Children"
+    },
+    {
+      "nr": 122,
+      "slug": "grimm-122-snow_white_and_rose_red",
+      "title": "Snow-White and Rose-Red"
+    },
+    {
+      "nr": 123,
+      "slug": "grimm-123-the_glass_coffin",
+      "title": "The Glass Coffin"
+    },
+    {
+      "nr": 124,
+      "slug": "grimm-124-lazy_harry",
+      "title": "Lazy Harry"
+    },
+    {
+      "nr": 125,
+      "slug": "grimm-125-the_griffin",
+      "title": "The Griffin"
+    },
+    {
+      "nr": 126,
+      "slug": "grimm-126-strong_hans",
+      "title": "Strong Hans"
+    },
+    {
+      "nr": 127,
+      "slug": "grimm-127-the_hut_in_the_forest",
+      "title": "The Hut in the Forest"
+    },
+    {
+      "nr": 128,
+      "slug": "grimm-128-the_goose_girl_at_the_well",
+      "title": "The Goose-Girl at the Well"
+    },
+    {
+      "nr": 129,
+      "slug": "grimm-129-eve_s_various_children",
+      "title": "Eve's Various Children"
+    },
+    {
+      "nr": 130,
+      "slug": "grimm-130-the_nix_of_the_mill_pond",
+      "title": "The Nix of the Mill-Pond"
+    },
+    {
+      "nr": 131,
+      "slug": "grimm-131-the_poor_boy_in_the_grave",
+      "title": "The Poor Boy in the Grave"
+    },
+    {
+      "nr": 132,
+      "slug": "grimm-132-the_true_sweetheart",
+      "title": "The True Sweetheart"
+    },
+    {
+      "nr": 133,
+      "slug": "grimm-133-the_spindle_the_shuttle_and_the_needle",
+      "title": "The Spindle, The Shuttle, and The Needle"
+    },
+    {
+      "nr": 134,
+      "slug": "grimm-134-the_sea_hare",
+      "title": "The Sea-Hare"
+    },
+    {
+      "nr": 135,
+      "slug": "grimm-135-the_master_thief",
+      "title": "The Master-Thief"
+    },
+    {
+      "nr": 136,
+      "slug": "grimm-136-the_drummer",
+      "title": "The Drummer"
+    },
+    {
+      "nr": 137,
+      "slug": "grimm-137-the_ear_of_corn",
+      "title": "The Ear of Corn"
+    },
+    {
+      "nr": 138,
+      "slug": "grimm-138-old_rinkrank",
+      "title": "Old Rinkrank"
+    },
+    {
+      "nr": 139,
+      "slug": "grimm-139-the_crystal_ball",
+      "title": "The Crystal Ball"
+    },
+    {
+      "nr": 140,
+      "slug": "grimm-140-maid_maleen",
+      "title": "Maid Maleen"
+    },
+    {
+      "nr": 141,
+      "slug": "grimm-141-st_joseph_in_the_forest",
+      "title": "St. Joseph in the Forest"
+    },
+    {
+      "nr": 142,
+      "slug": "grimm-142-the_twelve_apostles",
+      "title": "The Twelve Apostles"
+    },
+    {
+      "nr": 143,
+      "slug": "grimm-143-the_rose",
+      "title": "The Rose"
+    },
+    {
+      "nr": 144,
+      "slug": "grimm-144-poverty_and_humility_lead_to_heaven",
+      "title": "Poverty and Humility Lead to Heaven"
+    },
+    {
+      "nr": 145,
+      "slug": "grimm-145-god_s_food",
+      "title": "God's Food"
+    },
+    {
+      "nr": 146,
+      "slug": "grimm-146-the_three_green_twigs",
+      "title": "The Three Green Twigs"
+    },
+    {
+      "nr": 147,
+      "slug": "grimm-147-the_aged_mother",
+      "title": "The Aged Mother"
+    },
+    {
+      "nr": 148,
+      "slug": "grimm-148-the_hazel_branch",
+      "title": "The Hazel-Branch"
+    },
+    {
+      "nr": 149,
+      "slug": "grimm-149-cat_and_mouse_in_partnership",
+      "title": "Cat and Mouse in Partnership"
+    },
+    {
+      "nr": 150,
+      "slug": "grimm-150-the_wonderful_musician",
+      "title": "The Wonderful Musician"
+    },
+    {
+      "nr": 151,
+      "slug": "grimm-151-the_pack_of_ragamuffins",
+      "title": "The Pack of Ragamuffins"
+    },
+    {
+      "nr": 152,
+      "slug": "grimm-152-the_straw_the_coal_and_the_bean",
+      "title": "The Straw, the Coal, and the Bean"
+    },
+    {
+      "nr": 153,
+      "slug": "grimm-153-the_fisherman_and_his_wife",
+      "title": "The Fisherman and His Wife"
+    },
+    {
+      "nr": 154,
+      "slug": "grimm-154-the_mouse_the_bird_and_the_sausage",
+      "title": "The Mouse, the Bird, and the Sausage"
+    },
+    {
+      "nr": 155,
+      "slug": "grimm-155-the_bremen_town_musicians",
+      "title": "The Bremen Town-Musicians"
+    },
+    {
+      "nr": 156,
+      "slug": "grimm-156-the_louse_and_the_flea",
+      "title": "The Louse and the Flea"
+    },
+    {
+      "nr": 157,
+      "slug": "grimm-157-the_tailor_in_heaven",
+      "title": "The Tailor in Heaven"
+    },
+    {
+      "nr": 158,
+      "slug": "grimm-158-the_wedding_of_mrs_fox",
+      "title": "The Wedding of Mrs. Fox"
+    },
+    {
+      "nr": 159,
+      "slug": "grimm-159-the_elves",
+      "title": "The Elves"
+    },
+    {
+      "nr": 160,
+      "slug": "grimm-160-herr_korbes",
+      "title": "Herr Korbes"
+    },
+    {
+      "nr": 161,
+      "slug": "grimm-161-the_dog_and_the_sparrow",
+      "title": "The Dog and the Sparrow"
+    },
+    {
+      "nr": 162,
+      "slug": "grimm-162-frederick_and_catherine",
+      "title": "Frederick and Catherine"
+    },
+    {
+      "nr": 163,
+      "slug": "grimm-163-the_little_peasant",
+      "title": "The Little Peasant"
+    },
+    {
+      "nr": 164,
+      "slug": "grimm-164-jorinda_and_joringel",
+      "title": "Jorinda and Joringel"
+    },
+    {
+      "nr": 165,
+      "slug": "grimm-165-the_wolf_and_the_man",
+      "title": "The Wolf and the Man"
+    },
+    {
+      "nr": 166,
+      "slug": "grimm-166-the_wolf_and_the_fox",
+      "title": "The Wolf and the Fox"
+    },
+    {
+      "nr": 167,
+      "slug": "grimm-167-the_fox_and_the_cat",
+      "title": "The Fox and the Cat"
+    },
+    {
+      "nr": 168,
+      "slug": "grimm-168-clever_grethel",
+      "title": "Clever Grethel"
+    },
+    {
+      "nr": 169,
+      "slug": "grimm-169-the_death_of_the_little_hen",
+      "title": "The Death of the Little Hen"
+    },
+    {
+      "nr": 170,
+      "slug": "grimm-170-gambling_hansel",
+      "title": "Gambling Hansel"
+    },
+    {
+      "nr": 171,
+      "slug": "grimm-171-the_fox_and_the_geese",
+      "title": "The Fox and the Geese"
+    },
+    {
+      "nr": 172,
+      "slug": "grimm-172-the_poor_man_and_the_rich_man",
+      "title": "The Poor Man and the Rich Man"
+    },
+    {
+      "nr": 173,
+      "slug": "grimm-173-old_hildebrand",
+      "title": "Old Hildebrand"
+    },
+    {
+      "nr": 174,
+      "slug": "grimm-174-doctor_knowall",
+      "title": "Doctor Knowall"
+    },
+    {
+      "nr": 175,
+      "slug": "grimm-175-the_jew_among_thorns",
+      "title": "The Jew Among Thorns"
+    },
+    {
+      "nr": 176,
+      "slug": "grimm-176-the_flail_from_heaven",
+      "title": "The Flail from Heaven"
+    },
+    {
+      "nr": 177,
+      "slug": "grimm-177-the_three_army_surgeons",
+      "title": "The Three Army-Surgeons"
+    },
+    {
+      "nr": 178,
+      "slug": "grimm-178-the_seven_swabians",
+      "title": "The Seven Swabians"
+    },
+    {
+      "nr": 179,
+      "slug": "grimm-179-the_three_apprentices",
+      "title": "The Three Apprentices"
+    },
+    {
+      "nr": 180,
+      "slug": "grimm-180-the_lazy_spinner",
+      "title": "The Lazy Spinner"
+    },
+    {
+      "nr": 181,
+      "slug": "grimm-181-the_fox_and_the_horse",
+      "title": "The Fox and the Horse"
+    },
+    {
+      "nr": 182,
+      "slug": "grimm-182-the_lord_s_animals_and_the_devil_s",
+      "title": "The Lord's Animals and the Devil's"
+    },
+    {
+      "nr": 183,
+      "slug": "grimm-183-the_beam",
+      "title": "The Beam"
+    },
+    {
+      "nr": 184,
+      "slug": "grimm-184-the_old_beggar_woman",
+      "title": "The Old Beggar-Woman"
+    },
+    {
+      "nr": 185,
+      "slug": "grimm-185-odds_and_ends",
+      "title": "Odds and Ends"
+    },
+    {
+      "nr": 186,
+      "slug": "grimm-186-the_story_of_schlauraffen_land",
+      "title": "The Story of Schlauraffen Land"
+    },
+    {
+      "nr": 187,
+      "slug": "grimm-187-the_ditmarsch_tale_of_wonders",
+      "title": "The Ditmarsch Tale of Wonders"
+    },
+    {
+      "nr": 188,
+      "slug": "grimm-188-a_riddling_tale",
+      "title": "A Riddling Tale"
+    },
+    {
+      "nr": 189,
+      "slug": "grimm-189-the_wise_servant",
+      "title": "The Wise Servant"
+    },
+    {
+      "nr": 190,
+      "slug": "grimm-190-the_peasant_in_heaven",
+      "title": "The Peasant in Heaven"
+    },
+    {
+      "nr": 191,
+      "slug": "grimm-191-lean_lisa",
+      "title": "Lean Lisa"
+    },
+    {
+      "nr": 192,
+      "slug": "grimm-192-sharing_joy_and_sorrow",
+      "title": "Sharing Joy and Sorrow"
+    },
+    {
+      "nr": 193,
+      "slug": "grimm-193-the_willow_wren",
+      "title": "The Willow-Wren"
+    },
+    {
+      "nr": 194,
+      "slug": "grimm-194-the_sole",
+      "title": "The Sole"
+    },
+    {
+      "nr": 195,
+      "slug": "grimm-195-the_bittern_and_the_hoopoe",
+      "title": "The Bittern and the Hoopoe"
+    },
+    {
+      "nr": 196,
+      "slug": "grimm-196-the_owl",
+      "title": "The Owl"
+    },
+    {
+      "nr": 197,
+      "slug": "grimm-197-the_moon",
+      "title": "The Moon"
+    },
+    {
+      "nr": 198,
+      "slug": "grimm-198-the_duration_of_life",
+      "title": "The Duration of Life"
+    },
+    {
+      "nr": 199,
+      "slug": "grimm-199-death_s_messengers",
+      "title": "Death's Messengers"
+    },
+    {
+      "nr": 200,
+      "slug": "grimm-200-master_pfriem",
+      "title": "Master Pfriem"
+    },
+    {
+      "nr": 201,
+      "slug": "grimm-201-the_little_folks_presents",
+      "title": "The Little Folks' Presents"
+    },
+    {
+      "nr": 202,
+      "slug": "grimm-202-the_giant_and_the_tailor",
+      "title": "The Giant and the Tailor"
+    },
+    {
+      "nr": 203,
+      "slug": "grimm-203-the_nail",
+      "title": "The Nail"
+    },
+    {
+      "nr": 204,
+      "slug": "grimm-204-the_hare_and_the_hedgehog",
+      "title": "The Hare and the Hedgehog"
+    },
+    {
+      "nr": 205,
+      "slug": "grimm-205-the_peasant_and_the_devil",
+      "title": "The Peasant and the Devil"
+    },
+    {
+      "nr": 206,
+      "slug": "grimm-206-the_crumbs_on_the_table",
+      "title": "The Crumbs on the Table"
+    },
+    {
+      "nr": 207,
+      "slug": "grimm-207-the_grave_mound",
+      "title": "The Grave-Mound"
+    },
+    {
+      "nr": 208,
+      "slug": "grimm-208-the_boots_of_buffalo_leather",
+      "title": "The Boots of Buffalo-Leather"
+    },
+    {
+      "nr": 209,
+      "slug": "grimm-209-the_golden_key",
+      "title": "The Golden Key"
+    }
+  ]
+}

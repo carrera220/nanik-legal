@@ -29,7 +29,7 @@
   var EDGE_FADE_MS = 10;
 
   var modal = document.getElementById('voice-magic-modal');
-  var openBtn = document.getElementById('open-voice-magic');
+  var openBtn = document.getElementById('open-voice-magic') || document.querySelector('[data-open-voice-magic]');
   var recordBtn = document.getElementById('voice-magic-record');
   var consentLabel = document.getElementById('voice-magic-consent');
   var consentCheck = document.getElementById('voice-magic-consent-check');
@@ -45,7 +45,8 @@
   var narrationProgress = document.getElementById('hero-narration-progress');
   var flowEl = document.getElementById('voice-magic-flow');
   var lockedEl = document.getElementById('voice-magic-locked');
-  if (!modal || !openBtn || !recordBtn) return;
+  if (!modal || !recordBtn) return;
+  if (!openBtn && !document.querySelector('[data-open-voice-magic]')) return;
 
   var phase = 'idle'; // idle | recording | processing | ready | hero
   var startedAt = 0;
@@ -53,7 +54,9 @@
   var startText = labelEl ? labelEl.textContent : 'Start recording';
   var stopText = startText.indexOf('Սկսել') !== -1 ? 'Կանգնեցնել' : 'Stop recording';
   var hearText = startText.indexOf('Սկսել') !== -1 ? 'Լսիր հեքիաթը իմ ձայնով' : 'Hear the tale in my voice';
-  var magicCtaLabel = openBtn.querySelector('[data-i18n="index.magic.cta"], span:last-child');
+  var magicCtaLabel = openBtn
+    ? openBtn.querySelector('[data-i18n="index.magic.cta"], span:last-child')
+    : null;
   var magicCtaDefault = magicCtaLabel ? magicCtaLabel.textContent : 'Hear the magic';
   var magicCtaWait = magicCtaDefault.indexOf('Լսիր') !== -1 ? 'Մի պահ սպասիր…' : 'Wait for a sec.';
 

@@ -6,7 +6,7 @@
     'support.html': { key: 'nav.support', en: 'Support', hy: 'Աջակցություն' },
     'privacy.html': { key: 'nav.privacy', en: 'Privacy', hy: 'Գաղտնիություն' },
     'terms.html': { key: 'nav.terms', en: 'Terms', hy: 'Պայմաններ' },
-    'hy.html': { key: null, en: 'Features', hy: 'Հնարավորություններ' }
+    'hy.html': { key: null, en: 'Home', hy: 'Գլխավոր' }
   };
   var DESKTOP_MQ = '(min-width: 721px)';
 
@@ -29,7 +29,7 @@
       label.className = 'nav-toggle-label';
       btn.insertBefore(label, btn.firstChild);
     }
-    var meta = LABEL_BY_FILE[currentFile()] || { key: 'nav.features', en: 'Features', hy: 'Հնարավորություններ' };
+    var meta = LABEL_BY_FILE[currentFile()] || { key: 'nav.home', en: 'Home', hy: 'Գլխավոր' };
     if (meta.key) {
       label.setAttribute('data-i18n', meta.key);
       label.textContent = meta.en;
@@ -90,26 +90,26 @@
     }
   }
 
+  function prefersReduce() {
+    try {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function normalizePath(path) {
+    return String(path || '/')
+      .replace(/\/index\.html$/i, '/')
+      .replace(/\/+$/, '') || '/';
+  }
+
   /** Smooth-scroll same-page hash links (Features, fact chips, etc.) so motion is visible. */
   function initSmoothSectionScroll() {
-    function normalizePath(path) {
-      return String(path || '/')
-        .replace(/\/index\.html$/i, '/')
-        .replace(/\/+$/, '') || '/';
-    }
-
     function headerOffset() {
       var header = document.querySelector('header.site');
       if (!header) return 12;
       return Math.ceil(header.getBoundingClientRect().height) + 12;
-    }
-
-    function prefersReduce() {
-      try {
-        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      } catch (err) {
-        return false;
-      }
     }
 
     function scrollToId(id, behavior) {
@@ -203,10 +203,7 @@
       if (target) {
         var header = document.querySelector('header.site');
         var offset = header ? Math.ceil(header.getBoundingClientRect().height) + 12 : 12;
-        var reduce = false;
-        try {
-          reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        } catch (err) {}
+        var reduce = prefersReduce();
         // Jump to section without first flashing the top of the page.
         var top = Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - offset));
         window.scrollTo(0, top);
