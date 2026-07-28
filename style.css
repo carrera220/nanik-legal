@@ -24,13 +24,11 @@ main {
   padding: 40px 20px 96px;
 }
 header.site {
-  border-bottom: 1px solid var(--border);
   padding: 16px 20px;
-  background: rgba(152, 105, 255, 0.92);
+  background: transparent;
   position: sticky;
   top: 0;
   z-index: 10;
-  backdrop-filter: blur(12px);
 }
 header.site nav {
   max-width: 920px;
@@ -39,6 +37,12 @@ header.site nav {
   flex-wrap: wrap;
   gap: 16px 20px;
   align-items: center;
+  background: rgba(26, 15, 53, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  padding: 12px 24px;
 }
 header.site a {
   color: var(--fg);
