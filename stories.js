@@ -175,9 +175,7 @@
 
   function renderStory(story, col) {
     titleEl.textContent = story.title;
-    metaEl.innerHTML =
-      escapeHtml(col.author) +
-      ' · <a href="' + escapeHtml(story.sourceUrl) + '" rel="noopener noreferrer" target="_blank">Source</a>';
+    metaEl.textContent = col.author;
     bodyEl.innerHTML = (story.paragraphs || [])
       .map(function (p) {
         return '<p>' + escapeHtml(p) + '</p>';
