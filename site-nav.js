@@ -56,23 +56,16 @@
     function closeMenu() {
       menu.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
-      if (!isDesktop()) menu.hidden = true;
     }
     function openMenu() {
-      menu.hidden = false;
       menu.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
     }
     function syncLayout() {
-      if (isDesktop()) {
-        menu.hidden = false;
-        menu.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-      } else if (!menu.classList.contains('is-open')) {
-        menu.hidden = true;
-      }
+      closeMenu();
     }
     function toggleMenu(e) {
+      e.preventDefault();
       e.stopPropagation();
       if (isDesktop()) return;
       if (menu.classList.contains('is-open')) closeMenu();
@@ -91,7 +84,9 @@
       link.addEventListener('click', closeMenu);
     });
     if (window.matchMedia) {
-      window.matchMedia(DESKTOP_MQ).addEventListener('change', syncLayout);
+      var mq = window.matchMedia(DESKTOP_MQ);
+      if (mq.addEventListener) mq.addEventListener('change', syncLayout);
+      else if (mq.addListener) mq.addListener(syncLayout);
     }
   }
 

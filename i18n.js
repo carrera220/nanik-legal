@@ -1151,12 +1151,15 @@
     if (titleKey) document.title = t(code, titleKey);
 
     var flagBtn = document.getElementById('site-lang-current');
-    if (flagBtn) flagBtn.textContent = localeByCode(code).flag;
+    if (flagBtn) {
+      var loc = localeByCode(code);
+      flagBtn.textContent = (loc.flag ? loc.flag + ' ' : '') + String(loc.code || code).toUpperCase();
+    }
   }
 
   function buildSwitcher() {
-    var nav = document.querySelector('header.site nav');
-    if (!nav || document.getElementById('site-lang-wrap')) return;
+    var slot = document.getElementById('site-lang-slot') || document.querySelector('header.site .nav-shell') || document.querySelector('header.site nav');
+    if (!slot || document.getElementById('site-lang-wrap')) return;
 
     var wrap = document.createElement('div');
     wrap.id = 'site-lang-wrap';
@@ -1170,7 +1173,12 @@
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('data-i18n-title', 'nav.langLabel');
     button.title = t(detect(), 'nav.langLabel');
-    button.textContent = localeByCode(detect()).flag;
+
+    function labelFor(code) {
+      var loc = localeByCode(code);
+      return (loc.flag ? loc.flag + ' ' : '') + String(loc.code || code).toUpperCase();
+    }
+    button.textContent = labelFor(detect());
 
     var list = document.createElement('ul');
     list.className = 'site-lang-list';
@@ -1186,7 +1194,6 @@
       button.setAttribute('aria-expanded', 'true');
     }
 
-    var groupLabels = { primary: null, european: null };
     ['primary', 'european'].forEach(function (group) {
       var heading = document.createElement('li');
       heading.className = 'site-lang-group-label';
@@ -1200,6 +1207,7 @@
         item.textContent = loc.flag + ' ' + loc.native;
         item.addEventListener('click', function () {
           apply(loc.code);
+          button.textContent = labelFor(loc.code);
           closeList();
         });
         list.appendChild(item);
@@ -1219,7 +1227,7 @@
 
     wrap.appendChild(button);
     wrap.appendChild(list);
-    nav.appendChild(wrap);
+    slot.appendChild(wrap);
   }
 
   function init() {

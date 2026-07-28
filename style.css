@@ -30,12 +30,12 @@ header.site {
   top: 0;
   z-index: 10;
 }
-header.site nav {
+.nav-shell {
   max-width: 920px;
   margin: 0 auto;
   display: flex;
   flex-wrap: nowrap;
-  gap: 10px 14px;
+  gap: 10px 12px;
   align-items: center;
   background: rgba(26, 15, 53, 0.55);
   backdrop-filter: blur(16px);
@@ -43,44 +43,54 @@ header.site nav {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 8px 12px;
-  justify-content: flex-start;
   position: relative;
 }
-.site-nav-links {
-  display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%);
-  min-width: 0;
-  width: max-content;
-  max-width: calc(100vw - 40px);
-  flex-direction: column;
-  align-items: stretch;
-  gap: 2px;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  z-index: 30;
-  text-align: center;
+.site-lang-slot {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
-.site-nav-links[hidden] {
-  display: none !important;
+/* Mobile: keep links out of the flex row until opened as overlay */
+.site-nav-links {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 40;
 }
 .site-nav-links.is-open {
-  display: flex;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 40px);
+  height: auto;
+  overflow: visible;
+  opacity: 1;
+  pointer-events: auto;
 }
 .site-nav-links a {
-  padding: 10px 12px;
+  display: block;
+  padding: 10px 14px;
   border-radius: 10px;
   text-align: center;
-  font-size: 13px;
-  background: transparent;
+  font-size: 14px;
+  color: var(--fg);
+  text-decoration: none;
+  background: rgba(26, 15, 53, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
 }
-.site-nav-links a:hover { background: rgba(255, 255, 255, 0.08); }
 .nav-toggle {
   display: inline-flex;
   appearance: none;
@@ -104,7 +114,6 @@ header.site nav {
 }
 .nav-toggle:hover,
 .nav-toggle:focus {
-  border-color: transparent;
   outline: none;
   opacity: 0.85;
 }
@@ -123,40 +132,36 @@ header.site nav {
   margin-top: 3px;
 }
 @media (min-width: 721px) {
-  header.site nav {
-    flex-wrap: wrap;
+  .nav-shell {
     border-radius: 999px;
     padding: 12px 24px;
     gap: 16px 20px;
   }
-  .nav-toggle { display: none; }
+  .nav-toggle { display: none !important; }
   .site-nav-links,
-  .site-nav-links.is-open,
-  .site-nav-links[hidden] {
-    display: flex !important;
+  .site-nav-links.is-open {
     position: static;
     left: auto;
+    top: auto;
     transform: none;
-    min-width: 0;
     width: auto;
+    height: auto;
     max-width: none;
+    overflow: visible;
+    opacity: 1;
+    pointer-events: auto;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     gap: 16px 20px;
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    text-align: left;
   }
   .site-nav-links a {
     padding: 0;
     border-radius: 0;
-    text-align: left;
+    background: transparent;
+    border: none;
     font-size: 15px;
   }
-  .site-nav-links a:hover { background: transparent; }
 }
 header.site a {
   color: var(--fg);
@@ -166,7 +171,6 @@ header.site a {
 header.site a.brand { font-weight: 700; font-size: 17px; flex-shrink: 0; }
 header.site a:hover { color: var(--accent); }
 .site-lang-wrap {
-  margin-left: auto;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -175,18 +179,24 @@ header.site a:hover { color: var(--accent); }
 .site-lang-current {
   appearance: none;
   -webkit-appearance: none;
-  background: var(--card);
+  background: transparent;
   color: var(--fg);
   border: 1px solid var(--border);
   border-radius: 999px;
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
+  width: auto;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .site-lang-current:hover,
 .site-lang-current:focus {
