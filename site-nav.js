@@ -1,6 +1,7 @@
 (function () {
   var LABEL_BY_FILE = {
     'languages.html': { key: 'nav.languages', en: 'Languages', hy: 'Լեզուներ' },
+    'stories.html': { key: 'nav.stories', en: 'Stories', hy: 'Հեքիաթներ' },
     'pricing.html': { key: 'nav.pricing', en: 'Pricing', hy: 'Գներ' },
     'support.html': { key: 'nav.support', en: 'Support', hy: 'Աջակցություն' },
     'privacy.html': { key: 'nav.privacy', en: 'Privacy', hy: 'Գաղտնիություն' },

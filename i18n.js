@@ -38,6 +38,7 @@
     en: {
       'nav.features': 'Features',
       'nav.languages': 'Languages',
+      'nav.stories': 'Stories',
       'nav.trueVoice': 'True Voice',
       'nav.pricing': 'Pricing',
       'nav.support': 'Support',
@@ -132,6 +133,9 @@
       'lang.faq3.q': 'Does my cloned voice work in every language?',
       'lang.faq3.a': 'Voice cloning quality is best in widely-supported languages.',
 
+            'stories.title': 'Stories - Tales from favorite authors | Nanik',
+      'stories.h1': 'Tales from favorite authors',
+
       'price.title': 'Pricing - Nanik Free vs Nanik Plus',
       'price.h1': 'Simple pricing, free to start',
       'price.lead': 'Try Nanik free, then upgrade to Nanik Plus for more stories, more voice clones, and advanced storytelling.',
@@ -222,6 +226,7 @@
     hy: {
       'nav.features': 'Հնարավորություններ',
       'nav.languages': 'Լեզուներ',
+      'nav.stories': 'Հեքիաթներ',
       'nav.trueVoice': 'Իսկական ձայն',
       'nav.pricing': 'Գներ',
       'nav.support': 'Աջակցություն',
@@ -315,6 +320,9 @@
       'lang.faq3.q': 'Իմ կլոնավորված ձայնը աշխատո՞ւմ է բոլոր լեզուներով',
       'lang.faq3.a': 'Ձայնի կլոնավորման որակը լավագույնն է լայնորեն աջակցվող լեզուներում։ Մանրամասների համար տես Իսկական ձայն էջը։',
 
+            'stories.title': 'Հեքիաթներ - Սիրելի հեղինակների հեքիաթներ | Nanik',
+      'stories.h1': 'Հեքիաթներ սիրելի հեղինակներից',
+
       'price.title': 'Գներ - Nanik Free և Nanik Plus',
       'price.h1': 'Պարզ գներ, անվճար սկիզբ',
       'price.lead': 'Փորձեք Nanik-ը անվճար, ապա անցեք Nanik Plus՝ ավելի շատ հեքիաթների, ձայնային կլոնների և առաջադեմ պատմության համար։',
@@ -405,6 +413,7 @@
     ru: {
       'nav.features': 'Возможности',
       'nav.languages': 'Языки',
+      'nav.stories': 'Сказки',
       'nav.trueVoice': 'Настоящий голос',
       'nav.pricing': 'Цены',
       'nav.support': 'Поддержка',
@@ -497,6 +506,9 @@
       'lang.faq2.a': 'Язык текста и язык озвучки выбираются отдельно, поэтому вы можете создать историю и выбрать удобный для семьи язык озвучки.',
       'lang.faq3.q': 'Работает ли мой клон голоса на всех языках?',
       'lang.faq3.a': 'Качество клонирования лучше на широко поддерживаемых языках. Подробности — на странице «Настоящий голос».',
+
+            'stories.title': 'Сказки - от любимых авторов | Nanik',
+      'stories.h1': 'Сказки любимых авторов',
 
       'price.title': 'Цены - Nanik Free и Nanik Plus',
       'price.h1': 'Простые цены, бесплатный старт',
@@ -591,6 +603,7 @@
     return {
       'nav.features': 'Features',
       'nav.languages': 'Languages',
+      'nav.stories': 'Stories',
       'nav.trueVoice': 'True Voice',
       'nav.pricing': 'Pricing',
       'nav.support': 'Support',
@@ -609,7 +622,7 @@
   }
 
   T.de = Object.assign(euroBase(), {
-    'nav.features': 'Funktionen', 'nav.languages': 'Sprachen', 'nav.trueVoice': 'Echte Stimme',
+    'nav.features': 'Funktionen', 'nav.languages': 'Sprachen', 'nav.stories': 'Geschichten', 'nav.trueVoice': 'Echte Stimme',
     'nav.pricing': 'Preise', 'nav.support': 'Hilfe', 'nav.privacy': 'Datenschutz', 'nav.terms': 'AGB',
     'nav.langLabel': 'Seitensprache', 'nav.groupPrimary': 'Primär', 'nav.groupEuropean': 'Europäisch',
     'cta.appStore': 'Im App Store laden', 'cta.play': 'Bei Play Market laden', 'cta.playSoon': 'demnächst',
@@ -653,7 +666,8 @@
     'lang.faq2.a': 'Text- und Erzählsprachen werden getrennt gewählt.',
     'lang.faq3.q': 'Funktioniert mein Stimmklon in jeder Sprache?',
     'lang.faq3.a': 'Die Qualität ist bei weit unterstützten Sprachen am besten. Details unter Echte Stimme.',
-    'price.title': 'Preise - Nanik Free vs Nanik Plus',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Preise - Nanik Free vs Nanik Plus',
     'price.h1': 'Einfache Preise, kostenlos starten',
     'price.lead': 'Testen Sie Nanik kostenlos und wechseln Sie zu Nanik Plus für mehr Geschichten und Stimmklone.',
     'price.free.h': 'Kostenlos', 'price.free.1': '2 persönliche Geschichten, lebenslang', 'price.free.2': '1 Stimmklon',
@@ -706,7 +720,7 @@
   });
 
   T.fr = Object.assign(euroBase(), {
-    'nav.features': 'Fonctionnalités', 'nav.languages': 'Langues', 'nav.trueVoice': 'Vraie voix',
+    'nav.features': 'Fonctionnalités', 'nav.languages': 'Langues', 'nav.stories': 'Histoires', 'nav.trueVoice': 'Vraie voix',
     'nav.pricing': 'Tarifs', 'nav.support': 'Aide', 'nav.privacy': 'Confidentialité', 'nav.terms': 'Conditions',
     'nav.langLabel': 'Langue du site', 'nav.groupPrimary': 'Principales', 'nav.groupEuropean': 'Européennes',
     'cta.appStore': 'Télécharger sur l’App Store', 'cta.play': 'Télécharger sur Play Market', 'cta.playSoon': 'bientôt',
@@ -750,7 +764,8 @@
     'lang.faq2.a': 'Langue du texte et langue de narration se choisissent séparément.',
     'lang.faq3.q': 'Mon clone de voix marche-t-il partout ?',
     'lang.faq3.a': 'La qualité est meilleure sur les langues largement prises en charge. Voir Vraie voix.',
-    'price.title': 'Tarifs - Nanik Free vs Nanik Plus',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Tarifs - Nanik Free vs Nanik Plus',
     'price.h1': 'Tarifs simples, gratuit pour commencer',
     'price.lead': 'Essayez Nanik gratuitement, puis passez à Nanik Plus pour plus d’histoires et de clones de voix.',
     'price.free.h': 'Gratuit', 'price.free.1': '2 histoires personnalisées, à vie', 'price.free.2': '1 clone de voix',
@@ -805,7 +820,7 @@
   });
 
   T.es = Object.assign(euroBase(), {
-    'nav.features': 'Funciones', 'nav.languages': 'Idiomas', 'nav.trueVoice': 'Voz real',
+    'nav.features': 'Funciones', 'nav.languages': 'Idiomas', 'nav.stories': 'Cuentos', 'nav.trueVoice': 'Voz real',
     'nav.pricing': 'Precios', 'nav.support': 'Ayuda', 'nav.privacy': 'Privacidad', 'nav.terms': 'Términos',
     'nav.langLabel': 'Idioma del sitio', 'nav.groupPrimary': 'Principales', 'nav.groupEuropean': 'Europeos',
     'cta.appStore': 'Descargar en App Store', 'cta.play': 'Descargar de Play Market', 'cta.playSoon': 'próximamente',
@@ -846,7 +861,8 @@
     'lang.faq1.q': '¿Admiten mi idioma?', 'lang.faq1.a': 'Casi seguro que sí. 102 idiomas. Si falta el tuyo, escribe a info@nanik.app.',
     'lang.faq2.q': '¿Puedo mezclar idiomas?', 'lang.faq2.a': 'El idioma del texto y el de la narración se eligen por separado.',
     'lang.faq3.q': '¿Mi clon de voz funciona en todos?', 'lang.faq3.a': 'La calidad es mejor en idiomas muy compatibles. Ver Voz real.',
-    'price.title': 'Precios - Nanik Free vs Nanik Plus',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Precios - Nanik Free vs Nanik Plus',
     'price.h1': 'Precios simples, empezar gratis',
     'price.lead': 'Prueba Nanik gratis y pasa a Nanik Plus para más historias y clones de voz.',
     'price.free.h': 'Gratis', 'price.free.1': '2 historias personalizadas de por vida', 'price.free.2': '1 clon de voz',
@@ -906,7 +922,7 @@
   }
 
   fillEuro('it', {
-    'nav.features': 'Funzioni', 'nav.languages': 'Lingue', 'nav.trueVoice': 'Voce vera', 'nav.pricing': 'Prezzi',
+    'nav.features': 'Funzioni', 'nav.languages': 'Lingue', 'nav.stories': 'Storie', 'nav.trueVoice': 'Voce vera', 'nav.pricing': 'Prezzi',
     'nav.support': 'Supporto', 'nav.privacy': 'Privacy', 'nav.terms': 'Termini', 'nav.langLabel': 'Lingua del sito',
     'nav.groupPrimary': 'Principali', 'nav.groupEuropean': 'Europee',
     'cta.appStore': 'Scarica sull’App Store', 'cta.play': 'Scarica da Play Market', 'cta.playSoon': 'prossimamente',
@@ -938,7 +954,8 @@
     'lang.faq1.q': 'Supportate la mia lingua?', 'lang.faq1.a': 'Quasi certamente sì. 102 lingue. Scrivi a info@nanik.app se manca.',
     'lang.faq2.q': 'Posso mescolare le lingue?', 'lang.faq2.a': 'Lingua del testo e della narrazione si scelgono separatamente.',
     'lang.faq3.q': 'Il mio clone vocale funziona ovunque?', 'lang.faq3.a': 'La qualità è migliore nelle lingue più supportate. Vedi Voce vera.',
-    'price.title': 'Prezzi - Nanik Free vs Nanik Plus', 'price.h1': 'Prezzi semplici, inizio gratis',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Prezzi - Nanik Free vs Nanik Plus', 'price.h1': 'Prezzi semplici, inizio gratis',
     'price.lead': 'Prova Nanik gratis, poi passa a Nanik Plus per più storie e cloni vocali.',
     'price.free.h': 'Gratis', 'price.free.1': '2 storie personalizzate a vita', 'price.free.2': '1 clone vocale',
     'price.free.3': 'Testo + narrazione in 100+ lingue', 'price.free.4': 'Musica di sottofondo', 'price.free.5': '1 storia campione offline',
@@ -987,7 +1004,7 @@
   });
 
   fillEuro('pt', {
-    'nav.features': 'Recursos', 'nav.languages': 'Idiomas', 'nav.trueVoice': 'Voz verdadeira', 'nav.pricing': 'Preços',
+    'nav.features': 'Recursos', 'nav.languages': 'Idiomas', 'nav.stories': 'Histórias', 'nav.trueVoice': 'Voz verdadeira', 'nav.pricing': 'Preços',
     'nav.support': 'Suporte', 'nav.privacy': 'Privacidade', 'nav.terms': 'Termos', 'nav.langLabel': 'Idioma do site',
     'nav.groupPrimary': 'Principais', 'nav.groupEuropean': 'Europeus',
     'cta.appStore': 'Descarregar na App Store', 'cta.play': 'Descarregar no Play Market', 'cta.playSoon': 'em breve',
@@ -1019,7 +1036,8 @@
     'lang.faq1.q': 'Apoiam o meu idioma?', 'lang.faq1.a': 'Quase de certeza. 102 idiomas. Se faltar, escreva para info@nanik.app.',
     'lang.faq2.q': 'Posso misturar idiomas?', 'lang.faq2.a': 'O idioma do texto e o da narração escolhem-se em separado.',
     'lang.faq3.q': 'O meu clone de voz funciona em todos?', 'lang.faq3.a': 'A qualidade é melhor em idiomas amplamente suportados. Ver Voz verdadeira.',
-    'price.title': 'Preços - Nanik Free vs Nanik Plus', 'price.h1': 'Preços simples, começar grátis',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Preços - Nanik Free vs Nanik Plus', 'price.h1': 'Preços simples, começar grátis',
     'price.lead': 'Experimente o Nanik grátis e passe ao Nanik Plus para mais histórias e clones de voz.',
     'price.free.h': 'Grátis', 'price.free.1': '2 histórias personalizadas para sempre', 'price.free.2': '1 clone de voz',
     'price.free.3': 'Texto + narração em 100+ idiomas', 'price.free.4': 'Música de fundo', 'price.free.5': '1 história de exemplo offline',
@@ -1068,7 +1086,7 @@
   });
 
   fillEuro('nl', {
-    'nav.features': 'Functies', 'nav.languages': 'Talen', 'nav.trueVoice': 'Echte stem', 'nav.pricing': 'Prijzen',
+    'nav.features': 'Functies', 'nav.languages': 'Talen', 'nav.stories': 'Verhalen', 'nav.trueVoice': 'Echte stem', 'nav.pricing': 'Prijzen',
     'nav.support': 'Support', 'nav.privacy': 'Privacy', 'nav.terms': 'Voorwaarden', 'nav.langLabel': 'Taal van de site',
     'nav.groupPrimary': 'Primair', 'nav.groupEuropean': 'Europees',
     'cta.appStore': 'Download in de App Store', 'cta.play': 'Download via Play Market', 'cta.playSoon': 'binnenkort',
@@ -1100,7 +1118,8 @@
     'lang.faq1.q': 'Ondersteunen jullie mijn taal?', 'lang.faq1.a': 'Bijna zeker. 102 talen. Ontbreekt de jouwe? Mail info@nanik.app.',
     'lang.faq2.q': 'Kan ik talen mengen?', 'lang.faq2.a': 'Tekst- en verteltaal kies je apart.',
     'lang.faq3.q': 'Werkt mijn stemkloon overal?', 'lang.faq3.a': 'Kwaliteit is het best bij breed ondersteunde talen. Zie Echte stem.',
-    'price.title': 'Prijzen - Nanik Free vs Nanik Plus', 'price.h1': 'Eenvoudige prijzen, gratis starten',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Prijzen - Nanik Free vs Nanik Plus', 'price.h1': 'Eenvoudige prijzen, gratis starten',
     'price.lead': 'Probeer Nanik gratis en upgrade naar Nanik Plus voor meer verhalen en stemklonen.',
     'price.free.h': 'Gratis', 'price.free.1': '2 persoonlijke verhalen, levenslang', 'price.free.2': '1 stemkloon',
     'price.free.3': 'Tekst + vertelling in 100+ talen', 'price.free.4': 'Achtergrondmuziek', 'price.free.5': '1 voorbeeldverhaal offline',
@@ -1149,7 +1168,7 @@
   });
 
   fillEuro('pl', {
-    'nav.features': 'Funkcje', 'nav.languages': 'Języki', 'nav.trueVoice': 'Prawdziwy głos', 'nav.pricing': 'Cennik',
+    'nav.features': 'Funkcje', 'nav.languages': 'Języki', 'nav.stories': 'Historie', 'nav.trueVoice': 'Prawdziwy głos', 'nav.pricing': 'Cennik',
     'nav.support': 'Pomoc', 'nav.privacy': 'Prywatność', 'nav.terms': 'Regulamin', 'nav.langLabel': 'Język strony',
     'nav.groupPrimary': 'Główne', 'nav.groupEuropean': 'Europejskie',
     'cta.appStore': 'Pobierz z App Store', 'cta.play': 'Pobierz z Play Market', 'cta.playSoon': 'wkrótce',
@@ -1181,7 +1200,8 @@
     'lang.faq1.q': 'Czy obsługujecie mój język?', 'lang.faq1.a': 'Prawie na pewno tak. 102 języki. Napisz na info@nanik.app, jeśli brakuje.',
     'lang.faq2.q': 'Czy mogę mieszać języki?', 'lang.faq2.a': 'Język tekstu i narracji wybiera się osobno.',
     'lang.faq3.q': 'Czy mój klon głosu działa wszędzie?', 'lang.faq3.a': 'Jakość jest najlepsza w szeroko wspieranych językach. Zobacz Prawdziwy głos.',
-    'price.title': 'Cennik - Nanik Free vs Nanik Plus', 'price.h1': 'Proste ceny, start za darmo',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Cennik - Nanik Free vs Nanik Plus', 'price.h1': 'Proste ceny, start za darmo',
     'price.lead': 'Wypróbuj Nanik za darmo, potem przejdź na Nanik Plus po więcej historii i klonów głosu.',
     'price.free.h': 'Za darmo', 'price.free.1': '2 spersonalizowane historie na zawsze', 'price.free.2': '1 klon głosu',
     'price.free.3': 'Tekst + narracja w 100+ językach', 'price.free.4': 'Muzyka w tle', 'price.free.5': '1 przykładowa historia offline',
@@ -1230,7 +1250,7 @@
   });
 
   fillEuro('uk', {
-    'nav.features': 'Можливості', 'nav.languages': 'Мови', 'nav.trueVoice': 'Справжній голос', 'nav.pricing': 'Ціни',
+    'nav.features': 'Можливості', 'nav.languages': 'Мови', 'nav.stories': 'Казки', 'nav.trueVoice': 'Справжній голос', 'nav.pricing': 'Ціни',
     'nav.support': 'Підтримка', 'nav.privacy': 'Конфіденційність', 'nav.terms': 'Умови', 'nav.langLabel': 'Мова сайту',
     'nav.groupPrimary': 'Основні', 'nav.groupEuropean': 'Європейські',
     'cta.appStore': 'Завантажити в App Store', 'cta.play': 'Завантажити з Play Market', 'cta.playSoon': 'невдовзі',
@@ -1262,7 +1282,8 @@
     'lang.faq1.q': 'Чи підтримуєте мою мову?', 'lang.faq1.a': 'Майже напевно так. 102 мови. Напишіть на info@nanik.app, якщо немає.',
     'lang.faq2.q': 'Чи можна змішувати мови?', 'lang.faq2.a': 'Мову тексту й озвучення обирають окремо.',
     'lang.faq3.q': 'Чи працює мій клон голосу скрізь?', 'lang.faq3.a': 'Якість найкраща на широко підтримуваних мовах. Див. Справжній голос.',
-    'price.title': 'Ціни - Nanik Free vs Nanik Plus', 'price.h1': 'Прості ціни, безкоштовний старт',
+        'stories.title': 'Stories - Tales from favorite authors | Nanik', 'stories.h1': 'Tales from favorite authors',
+'price.title': 'Ціни - Nanik Free vs Nanik Plus', 'price.h1': 'Прості ціни, безкоштовний старт',
     'price.lead': 'Спробуйте Nanik безкоштовно, потім перейдіть на Nanik Plus для більшої кількості історій і клонів голосу.',
     'price.free.h': 'Безкоштовно', 'price.free.1': '2 персональні історії назавжди', 'price.free.2': '1 клон голосу',
     'price.free.3': 'Текст + озвучення 100+ мовами', 'price.free.4': 'Фонова музика', 'price.free.5': '1 зразок історії офлайн',
@@ -1316,7 +1337,7 @@
   }
 
   lightEuro('cs', {
-    'nav.features': 'Funkce', 'nav.languages': 'Jazyky', 'nav.trueVoice': 'Skutečný hlas', 'nav.pricing': 'Ceník',
+    'nav.features': 'Funkce', 'nav.languages': 'Jazyky', 'nav.stories': 'Příběhy', 'nav.trueVoice': 'Skutečný hlas', 'nav.pricing': 'Ceník',
     'nav.support': 'Podpora', 'nav.privacy': 'Soukromí', 'nav.terms': 'Podmínky', 'nav.langLabel': 'Jazyk webu',
     'nav.groupPrimary': 'Hlavní', 'nav.groupEuropean': 'Evropské',
     'cta.appStore': 'Stáhnout z App Store', 'index.h1': 'Dopřejte jim každou noc nové dobrodružství, <strong>vaším vlastním hlasem</strong>',
@@ -1325,7 +1346,7 @@
     'lang.americas.h2': 'Amerika', 'lang.euro.h2': 'Evropa', 'lang.asia.h2': 'Asie', 'lang.africa.h2': 'Afrika', 'lang.oceania.h2': 'Oceánie',
   });
   lightEuro('ro', {
-    'nav.features': 'Funcții', 'nav.languages': 'Limbi', 'nav.trueVoice': 'Voce adevărată', 'nav.pricing': 'Prețuri',
+    'nav.features': 'Funcții', 'nav.languages': 'Limbi', 'nav.stories': 'Povești', 'nav.trueVoice': 'Voce adevărată', 'nav.pricing': 'Prețuri',
     'nav.support': 'Suport', 'nav.privacy': 'Confidențialitate', 'nav.terms': 'Termeni', 'nav.langLabel': 'Limba site-ului',
     'nav.groupPrimary': 'Principale', 'nav.groupEuropean': 'Europene',
     'cta.appStore': 'Descarcă din App Store', 'index.h1': 'Oferă-le o nouă aventură în fiecare noapte, cu <strong>vocea ta</strong>',
@@ -1334,7 +1355,7 @@
     'lang.americas.h2': 'Americi', 'lang.euro.h2': 'Europa', 'lang.asia.h2': 'Asia', 'lang.africa.h2': 'Africa', 'lang.oceania.h2': 'Oceania',
   });
   lightEuro('el', {
-    'nav.features': 'Χαρακτηριστικά', 'nav.languages': 'Γλώσσες', 'nav.trueVoice': 'Πραγματική φωνή', 'nav.pricing': 'Τιμές',
+    'nav.features': 'Χαρακτηριστικά', 'nav.languages': 'Γλώσσες', 'nav.stories': 'Ιστορίες', 'nav.trueVoice': 'Πραγματική φωνή', 'nav.pricing': 'Τιμές',
     'nav.support': 'Υποστήριξη', 'nav.privacy': 'Απόρρητο', 'nav.terms': 'Όροι', 'nav.langLabel': 'Γλώσσα ιστοτόπου',
     'nav.groupPrimary': 'Κύριες', 'nav.groupEuropean': 'Ευρωπαϊκές',
     'cta.appStore': 'Λήψη από το App Store', 'index.h1': 'Χαρίστε τους μια νέα περιπέτεια κάθε βράδυ, με <strong>τη δική σας φωνή</strong>',
@@ -1343,7 +1364,7 @@
     'lang.americas.h2': 'Αμερική', 'lang.euro.h2': 'Ευρώπη', 'lang.asia.h2': 'Ασία', 'lang.africa.h2': 'Αφρική', 'lang.oceania.h2': 'Ωκεανία',
   });
   lightEuro('hu', {
-    'nav.features': 'Funkciók', 'nav.languages': 'Nyelvek', 'nav.trueVoice': 'Valódi hang', 'nav.pricing': 'Árak',
+    'nav.features': 'Funkciók', 'nav.languages': 'Nyelvek', 'nav.stories': 'Mesék', 'nav.trueVoice': 'Valódi hang', 'nav.pricing': 'Árak',
     'nav.support': 'Támogatás', 'nav.privacy': 'Adatvédelem', 'nav.terms': 'Feltételek', 'nav.langLabel': 'Az oldal nyelve',
     'nav.groupPrimary': 'Elsődleges', 'nav.groupEuropean': 'Európai',
     'cta.appStore': 'Letöltés az App Store-ból', 'index.h1': 'Adj nekik minden este egy új kalandot, <strong>a saját hangodon</strong>',
@@ -1352,7 +1373,7 @@
     'lang.americas.h2': 'Amerika', 'lang.euro.h2': 'Európa', 'lang.asia.h2': 'Ázsia', 'lang.africa.h2': 'Afrika', 'lang.oceania.h2': 'Óceánia',
   });
   lightEuro('sv', {
-    'nav.features': 'Funktioner', 'nav.languages': 'Språk', 'nav.trueVoice': 'Riktig röst', 'nav.pricing': 'Priser',
+    'nav.features': 'Funktioner', 'nav.languages': 'Språk', 'nav.stories': 'Berättelser', 'nav.trueVoice': 'Riktig röst', 'nav.pricing': 'Priser',
     'nav.support': 'Support', 'nav.privacy': 'Integritet', 'nav.terms': 'Villkor', 'nav.langLabel': 'Webbplatsens språk',
     'nav.groupPrimary': 'Primära', 'nav.groupEuropean': 'Europeiska',
     'cta.appStore': 'Ladda ner från App Store', 'index.h1': 'Ge dem ett nytt äventyr varje kväll, med <strong>din egen röst</strong>',
@@ -1361,7 +1382,7 @@
     'lang.americas.h2': 'Amerika', 'lang.euro.h2': 'Europa', 'lang.asia.h2': 'Asien', 'lang.africa.h2': 'Afrika', 'lang.oceania.h2': 'Oceanien',
   });
   lightEuro('no', {
-    'nav.features': 'Funksjoner', 'nav.languages': 'Språk', 'nav.trueVoice': 'Ekte stemme', 'nav.pricing': 'Priser',
+    'nav.features': 'Funksjoner', 'nav.languages': 'Språk', 'nav.stories': 'Historier', 'nav.trueVoice': 'Ekte stemme', 'nav.pricing': 'Priser',
     'nav.support': 'Support', 'nav.privacy': 'Personvern', 'nav.terms': 'Vilkår', 'nav.langLabel': 'Nettstedets språk',
     'nav.groupPrimary': 'Primære', 'nav.groupEuropean': 'Europeiske',
     'cta.appStore': 'Last ned fra App Store', 'index.h1': 'Gi dem et nytt eventyr hver eneste kveld, med <strong>din egen stemme</strong>',
@@ -1370,7 +1391,7 @@
     'lang.americas.h2': 'Amerika', 'lang.euro.h2': 'Europa', 'lang.asia.h2': 'Asia', 'lang.africa.h2': 'Afrika', 'lang.oceania.h2': 'Oseania',
   });
   lightEuro('da', {
-    'nav.features': 'Funktioner', 'nav.languages': 'Sprog', 'nav.trueVoice': 'Ægte stemme', 'nav.pricing': 'Priser',
+    'nav.features': 'Funktioner', 'nav.languages': 'Sprog', 'nav.stories': 'Historier', 'nav.trueVoice': 'Ægte stemme', 'nav.pricing': 'Priser',
     'nav.support': 'Support', 'nav.privacy': 'Privatliv', 'nav.terms': 'Vilkår', 'nav.langLabel': 'Sidens sprog',
     'nav.groupPrimary': 'Primære', 'nav.groupEuropean': 'Europæiske',
     'cta.appStore': 'Download fra App Store', 'index.h1': 'Giv dem et nyt eventyr hver eneste aften, med <strong>din egen stemme</strong>',
@@ -1379,7 +1400,7 @@
     'lang.americas.h2': 'Amerika', 'lang.euro.h2': 'Europa', 'lang.asia.h2': 'Asien', 'lang.africa.h2': 'Afrika', 'lang.oceania.h2': 'Oceanien',
   });
   lightEuro('fi', {
-    'nav.features': 'Ominaisuudet', 'nav.languages': 'Kielet', 'nav.trueVoice': 'Aito ääni', 'nav.pricing': 'Hinnat',
+    'nav.features': 'Ominaisuudet', 'nav.languages': 'Kielet', 'nav.stories': 'Tarinat', 'nav.trueVoice': 'Aito ääni', 'nav.pricing': 'Hinnat',
     'nav.support': 'Tuki', 'nav.privacy': 'Tietosuoja', 'nav.terms': 'Ehdot', 'nav.langLabel': 'Sivuston kieli',
     'nav.groupPrimary': 'Ensisijaiset', 'nav.groupEuropean': 'Eurooppalaiset',
     'cta.appStore': 'Lataa App Storesta', 'index.h1': 'Anna heille uusi seikkailu joka ilta, <strong>omalla äänelläsi</strong>',
