@@ -1,0 +1,787 @@
+{
+  "author": "Hans Christian Andersen",
+  "source": "https://www.andersenstories.com/en/andersen_fairy-tales/list",
+  "note": "Public-domain fairy tales. Text sourced from andersenstories.com for Nanik Stories.",
+  "stories": [
+    {
+      "nr": 1,
+      "slug": "the_tinderbox",
+      "title": "The tinder-box"
+    },
+    {
+      "nr": 2,
+      "slug": "little_claus_and_big_claus",
+      "title": "Little Claus and big Claus"
+    },
+    {
+      "nr": 3,
+      "slug": "the_princess_and_the_pea",
+      "title": "The princess and the pea"
+    },
+    {
+      "nr": 4,
+      "slug": "little_idas_flowers",
+      "title": "Little Ida's flowers"
+    },
+    {
+      "nr": 5,
+      "slug": "thumbelina",
+      "title": "Thumbelina"
+    },
+    {
+      "nr": 6,
+      "slug": "the_naughty_boy",
+      "title": "The naughty boy"
+    },
+    {
+      "nr": 7,
+      "slug": "the_travelingcompanion",
+      "title": "The travelling companion"
+    },
+    {
+      "nr": 8,
+      "slug": "the_little_mermaid",
+      "title": "The little mermaid"
+    },
+    {
+      "nr": 9,
+      "slug": "the_emperors_new_suit",
+      "title": "The emperor's new suit"
+    },
+    {
+      "nr": 10,
+      "slug": "the_goloshes_of_fortune",
+      "title": "The goloshes of fortune"
+    },
+    {
+      "nr": 11,
+      "slug": "the_daisy",
+      "title": "The daisy"
+    },
+    {
+      "nr": 12,
+      "slug": "the_brave_tin_soldier",
+      "title": "The brave tin soldier"
+    },
+    {
+      "nr": 13,
+      "slug": "the_wild_swans",
+      "title": "The wild swans"
+    },
+    {
+      "nr": 14,
+      "slug": "the_elf_of_the_rose",
+      "title": "The elf of the rose"
+    },
+    {
+      "nr": 15,
+      "slug": "the_garden_of_paradise",
+      "title": "The garden of paradise"
+    },
+    {
+      "nr": 16,
+      "slug": "the_flying_trunk",
+      "title": "The flying trunk"
+    },
+    {
+      "nr": 17,
+      "slug": "the_storks",
+      "title": "The storks"
+    },
+    {
+      "nr": 18,
+      "slug": "the_wicked_prince",
+      "title": "The wicked prince"
+    },
+    {
+      "nr": 19,
+      "slug": "ole-luk-oie_the_dream-god",
+      "title": "Ole-Luk-Oie, the Dream-God"
+    },
+    {
+      "nr": 20,
+      "slug": "the_swineherd",
+      "title": "The swineherd"
+    },
+    {
+      "nr": 21,
+      "slug": "the_buckwheat",
+      "title": "The buckwheat"
+    },
+    {
+      "nr": 22,
+      "slug": "the_angel",
+      "title": "The angel"
+    },
+    {
+      "nr": 23,
+      "slug": "the_nightingale",
+      "title": "The Nightingale"
+    },
+    {
+      "nr": 24,
+      "slug": "the_top_and_ball",
+      "title": "The sweathearts (Top and Ball)"
+    },
+    {
+      "nr": 25,
+      "slug": "the_ugly_duckling",
+      "title": "The ugly duckling"
+    },
+    {
+      "nr": 26,
+      "slug": "the_fir_tree",
+      "title": "The fir tree"
+    },
+    {
+      "nr": 27,
+      "slug": "the_snowqueen",
+      "title": "The snow queen"
+    },
+    {
+      "nr": 28,
+      "slug": "the_elderbush",
+      "title": "The elderbush"
+    },
+    {
+      "nr": 29,
+      "slug": "the_elfin_hill",
+      "title": "The elfin hill"
+    },
+    {
+      "nr": 30,
+      "slug": "the_red_shoes",
+      "title": "The red shoes"
+    },
+    {
+      "nr": 31,
+      "slug": "the_jumper",
+      "title": "The jumper"
+    },
+    {
+      "nr": 32,
+      "slug": "the_shepherdess_and_the_sweep",
+      "title": "The shepherdess and the sweep"
+    },
+    {
+      "nr": 33,
+      "slug": "holger_danske",
+      "title": "Holger Danske"
+    },
+    {
+      "nr": 34,
+      "slug": "the_bell",
+      "title": "The bell"
+    },
+    {
+      "nr": 35,
+      "slug": "grandmother",
+      "title": "Grandmother"
+    },
+    {
+      "nr": 36,
+      "slug": "the_darningneedle",
+      "title": "The darning-needle"
+    },
+    {
+      "nr": 37,
+      "slug": "the_little_match_seller",
+      "title": "The little match-seller"
+    },
+    {
+      "nr": 38,
+      "slug": "by_the_almshouse_window",
+      "title": "By the almshouse window"
+    },
+    {
+      "nr": 39,
+      "slug": "a_picture_from_the_ramparts",
+      "title": "A picture from the ramparts"
+    },
+    {
+      "nr": 40,
+      "slug": "the_old_street_lamp",
+      "title": "The old street lamp"
+    },
+    {
+      "nr": 41,
+      "slug": "the_neighbouring_families",
+      "title": "The neighbouring families"
+    },
+    {
+      "nr": 42,
+      "slug": "little_tuk",
+      "title": "Little Tuk"
+    },
+    {
+      "nr": 43,
+      "slug": "the_shadow",
+      "title": "The shadow"
+    },
+    {
+      "nr": 44,
+      "slug": "the_old_house",
+      "title": "The old house"
+    },
+    {
+      "nr": 45,
+      "slug": "the_drop_of_water",
+      "title": "The drop of water"
+    },
+    {
+      "nr": 46,
+      "slug": "the_happy_family",
+      "title": "The happy family"
+    },
+    {
+      "nr": 47,
+      "slug": "the_story_of_a_mother",
+      "title": "The story of a mother"
+    },
+    {
+      "nr": 48,
+      "slug": "the_shirt_collar",
+      "title": "The shirt-collar"
+    },
+    {
+      "nr": 49,
+      "slug": "the_flax",
+      "title": "The flax"
+    },
+    {
+      "nr": 50,
+      "slug": "the_phoenix_bird",
+      "title": "The Phoenix bird"
+    },
+    {
+      "nr": 51,
+      "slug": "there_is_a_difference",
+      "title": "There is a difference"
+    },
+    {
+      "nr": 52,
+      "slug": "the_loviest_rose_in_the_world",
+      "title": "The loveliest rose in the world"
+    },
+    {
+      "nr": 53,
+      "slug": "in_a_thousand_years",
+      "title": "In a thousand years"
+    },
+    {
+      "nr": 54,
+      "slug": "the_swans_nest",
+      "title": "The swan's nest"
+    },
+    {
+      "nr": 55,
+      "slug": "the_old_grave-stone",
+      "title": "The old grave-stone"
+    },
+    {
+      "nr": 56,
+      "slug": "the_story_of_the_year",
+      "title": "The story of the year"
+    },
+    {
+      "nr": 57,
+      "slug": "on_judgement_day",
+      "title": "On judgment day"
+    },
+    {
+      "nr": 58,
+      "slug": "there_is_no_doubt_about_it",
+      "title": "There is no doubt about it"
+    },
+    {
+      "nr": 59,
+      "slug": "a_cheerful_temper",
+      "title": "A cheerful temper"
+    },
+    {
+      "nr": 60,
+      "slug": "heartache",
+      "title": "Heartache"
+    },
+    {
+      "nr": 61,
+      "slug": "everything_in_the_right_place",
+      "title": "Everything in its proper place"
+    },
+    {
+      "nr": 62,
+      "slug": "the_goblin_and_the_huckster",
+      "title": "The goblin and the huckster"
+    },
+    {
+      "nr": 63,
+      "slug": "under_the_willow_tree",
+      "title": "Under the willow tree"
+    },
+    {
+      "nr": 64,
+      "slug": "five_peas_from_a_pod",
+      "title": "Five peas from a pod"
+    },
+    {
+      "nr": 65,
+      "slug": "she_was_good_for_nothing",
+      "title": "She was good for nothing"
+    },
+    {
+      "nr": 66,
+      "slug": "two_maidens",
+      "title": "Two maidens"
+    },
+    {
+      "nr": 67,
+      "slug": "the_last_pearl",
+      "title": "The last pearl"
+    },
+    {
+      "nr": 68,
+      "slug": "at_the_uttermost_parts_of_the_sea",
+      "title": "At the uttermost parts of the sea"
+    },
+    {
+      "nr": 69,
+      "slug": "the_money_box",
+      "title": "The moneybox"
+    },
+    {
+      "nr": 70,
+      "slug": "a_leaf_from_heaven",
+      "title": "A leaf from heaven"
+    },
+    {
+      "nr": 71,
+      "slug": "clumsy_hans",
+      "title": "Clumsy Hans"
+    },
+    {
+      "nr": 72,
+      "slug": "ib_and_little_christina",
+      "title": "Ib and little Christina"
+    },
+    {
+      "nr": 73,
+      "slug": "the_thorny_road_of_honor",
+      "title": "The thorny road of honor"
+    },
+    {
+      "nr": 74,
+      "slug": "the_jewish_girl",
+      "title": "The Jewish girl"
+    },
+    {
+      "nr": 75,
+      "slug": "a_string_of_pearls",
+      "title": "A string of pearls"
+    },
+    {
+      "nr": 76,
+      "slug": "the_bell_deep",
+      "title": "The bell deep"
+    },
+    {
+      "nr": 77,
+      "slug": "the_bottle_neck",
+      "title": "The bottle neck"
+    },
+    {
+      "nr": 78,
+      "slug": "soup_from_a_sausage_skewer",
+      "title": "Soup from a sausage skewer"
+    },
+    {
+      "nr": 79,
+      "slug": "the_old_bachelors_nightcap",
+      "title": "The old bachelor's nightcap"
+    },
+    {
+      "nr": 80,
+      "slug": "something",
+      "title": "\"Something\""
+    },
+    {
+      "nr": 81,
+      "slug": "the_last_dream_of_the_old_oak",
+      "title": "The last dream of the old oak"
+    },
+    {
+      "nr": 82,
+      "slug": "the_abc_book",
+      "title": "The A-B-C book"
+    },
+    {
+      "nr": 83,
+      "slug": "the_marsh_kings_daughter",
+      "title": "The marsh king's daughter"
+    },
+    {
+      "nr": 84,
+      "slug": "the_races",
+      "title": "The races"
+    },
+    {
+      "nr": 85,
+      "slug": "the_stone_of_the_wise_man",
+      "title": "The stone of the wise man"
+    },
+    {
+      "nr": 86,
+      "slug": "the_wind_tells_about_valdemar_daae_and_his_daughters",
+      "title": "The wind tells about Valdemar Daae and his daughters"
+    },
+    {
+      "nr": 87,
+      "slug": "the_girl_who_trod_on_the_loaf",
+      "title": "The girl who trod on the loaf"
+    },
+    {
+      "nr": 88,
+      "slug": "ole_the_tower-keeper",
+      "title": "Ole the tower-keeper"
+    },
+    {
+      "nr": 89,
+      "slug": "anne_lisbeth",
+      "title": "Anne Lisbeth"
+    },
+    {
+      "nr": 90,
+      "slug": "childrens_prattle",
+      "title": "Children's prattle"
+    },
+    {
+      "nr": 91,
+      "slug": "the_child_in_the_grave",
+      "title": "The child in the grave"
+    },
+    {
+      "nr": 92,
+      "slug": "pen_and_inkstand",
+      "title": "Pen and inkstand"
+    },
+    {
+      "nr": 93,
+      "slug": "the_farm-yard_cock_and_the_weather-cock",
+      "title": "The farm-yard cock and the weather-cock"
+    },
+    {
+      "nr": 94,
+      "slug": "beautiful",
+      "title": "\"Beautiful\""
+    },
+    {
+      "nr": 95,
+      "slug": "a_story_from_the_sand_dunes",
+      "title": "A story from the sand dunes"
+    },
+    {
+      "nr": 96,
+      "slug": "two_brothers",
+      "title": "Two brothers"
+    },
+    {
+      "nr": 97,
+      "slug": "moving_day",
+      "title": "Moving day"
+    },
+    {
+      "nr": 98,
+      "slug": "the_butterfly",
+      "title": "The butterfly"
+    },
+    {
+      "nr": 99,
+      "slug": "the_bishop_of_borglum_and_his_men",
+      "title": "The bishop of Börglum and his men"
+    },
+    {
+      "nr": 100,
+      "slug": "twelve_by_the_mail",
+      "title": "Twelve by the mail"
+    },
+    {
+      "nr": 101,
+      "slug": "the_beetle",
+      "title": "The beetle"
+    },
+    {
+      "nr": 102,
+      "slug": "what_the_old_man_does_is_always_right",
+      "title": "What the old man does is always right"
+    },
+    {
+      "nr": 103,
+      "slug": "the_snow_man",
+      "title": "The snowman"
+    },
+    {
+      "nr": 104,
+      "slug": "in_the_duck_yard",
+      "title": "In the duck yard"
+    },
+    {
+      "nr": 105,
+      "slug": "the_new_centurys_goddess",
+      "title": "The new century's Goddess"
+    },
+    {
+      "nr": 106,
+      "slug": "the_ice_maiden",
+      "title": "The ice maiden"
+    },
+    {
+      "nr": 107,
+      "slug": "the_psyche",
+      "title": "The psyche"
+    },
+    {
+      "nr": 108,
+      "slug": "the_snail_and_the_rosebush",
+      "title": "The snail and the rosebush"
+    },
+    {
+      "nr": 109,
+      "slug": "the_old_churchbell",
+      "title": "The old church bell"
+    },
+    {
+      "nr": 110,
+      "slug": "the_silver_shilling",
+      "title": "The silver shilling"
+    },
+    {
+      "nr": 111,
+      "slug": "the_metal_pig",
+      "title": "The metal pig"
+    },
+    {
+      "nr": 112,
+      "slug": "the_bond_of_friendship",
+      "title": "The bond of friendship"
+    },
+    {
+      "nr": 113,
+      "slug": "a_rose_from_homers_grave",
+      "title": "A rose from Homer's grave"
+    },
+    {
+      "nr": 114,
+      "slug": "a_story",
+      "title": "A story"
+    },
+    {
+      "nr": 115,
+      "slug": "the_silent_book",
+      "title": "The silent book"
+    },
+    {
+      "nr": 116,
+      "slug": "the_snowdrop",
+      "title": "The snowdrop"
+    },
+    {
+      "nr": 117,
+      "slug": "the_teapot",
+      "title": "The teapot"
+    },
+    {
+      "nr": 118,
+      "slug": "the_bird_of_folklore",
+      "title": "The bird of folklore"
+    },
+    {
+      "nr": 119,
+      "slug": "the_will-o-the-wisps_are_in_town",
+      "title": "The Will-o'-the-Wisps are in town, says the Moor-woman"
+    },
+    {
+      "nr": 120,
+      "slug": "the_windmill",
+      "title": "The windmill"
+    },
+    {
+      "nr": 121,
+      "slug": "in_the_childrens_room",
+      "title": "In the children's room"
+    },
+    {
+      "nr": 122,
+      "slug": "golden_treasure",
+      "title": "Golden treasure"
+    },
+    {
+      "nr": 123,
+      "slug": "the_storm_shifts_the_signboards",
+      "title": "The storm shifts the signboards"
+    },
+    {
+      "nr": 124,
+      "slug": "kept_secret_but_not_forgotten",
+      "title": "Kept secret but not forgotten"
+    },
+    {
+      "nr": 125,
+      "slug": "the_porters_son",
+      "title": "The porter's son"
+    },
+    {
+      "nr": 126,
+      "slug": "aunty",
+      "title": "Aunty"
+    },
+    {
+      "nr": 127,
+      "slug": "the_toad",
+      "title": "The toad"
+    },
+    {
+      "nr": 128,
+      "slug": "vano_and_glano",
+      "title": "Vänö and Glänö"
+    },
+    {
+      "nr": 129,
+      "slug": "the_little_green_ones",
+      "title": "The little green ones"
+    },
+    {
+      "nr": 130,
+      "slug": "the_goblin_and_the_woman",
+      "title": "The goblin and the woman"
+    },
+    {
+      "nr": 131,
+      "slug": "peiter_peter_and_peer",
+      "title": "Peiter, Peter, and Peer"
+    },
+    {
+      "nr": 132,
+      "slug": "godfathers_picture_book",
+      "title": "Godfather's picture book"
+    },
+    {
+      "nr": 133,
+      "slug": "which_was_the_happiest",
+      "title": "Which was the happiest?"
+    },
+    {
+      "nr": 134,
+      "slug": "the_puppetshow_man",
+      "title": "The puppet-show man"
+    },
+    {
+      "nr": 135,
+      "slug": "the_days_of_the_week",
+      "title": "The days of the week"
+    },
+    {
+      "nr": 136,
+      "slug": "the_dryad",
+      "title": "The dryad"
+    },
+    {
+      "nr": 137,
+      "slug": "the_rags",
+      "title": "The rags"
+    },
+    {
+      "nr": 138,
+      "slug": "the_comet",
+      "title": "The comet"
+    },
+    {
+      "nr": 139,
+      "slug": "sunshine_stories",
+      "title": "Sunshine stories"
+    },
+    {
+      "nr": 140,
+      "slug": "chicken_grethes_family",
+      "title": "Chicken Grethe's family"
+    },
+    {
+      "nr": 141,
+      "slug": "what_happened_to_the_thistle",
+      "title": "What happened to the thistle"
+    },
+    {
+      "nr": 142,
+      "slug": "what_one_can_invent",
+      "title": "What one can invent"
+    },
+    {
+      "nr": 143,
+      "slug": "luck_may_lie_in_a_pin",
+      "title": "Luck may lie in a pin"
+    },
+    {
+      "nr": 144,
+      "slug": "what_the_whole_family_said",
+      "title": "What the whole family said"
+    },
+    {
+      "nr": 145,
+      "slug": "great-grandfather",
+      "title": "Great-Grandfather"
+    },
+    {
+      "nr": 146,
+      "slug": "the_most_incredible_thing",
+      "title": "The most incredible thing"
+    },
+    {
+      "nr": 147,
+      "slug": "the_candles",
+      "title": "The candles"
+    },
+    {
+      "nr": 149,
+      "slug": "dance_dance_doll_of_mine",
+      "title": "\"Dance, dance, doll of mine!\""
+    },
+    {
+      "nr": 150,
+      "slug": "the_great_sea_serpent",
+      "title": "The great sea serpent"
+    },
+    {
+      "nr": 151,
+      "slug": "the_gardener_and_the_noble_family",
+      "title": "The gardener and the noble family"
+    },
+    {
+      "nr": 152,
+      "slug": "what_old_johanne_told",
+      "title": "What old Johanne told"
+    },
+    {
+      "nr": 153,
+      "slug": "the_gate_key",
+      "title": "The gate key"
+    },
+    {
+      "nr": 154,
+      "slug": "the_cripple",
+      "title": "The cripple"
+    },
+    {
+      "nr": 155,
+      "slug": "aunty_toothache",
+      "title": "Aunty Toothache"
+    },
+    {
+      "nr": 156,
+      "slug": "the_flea_and_the_professor",
+      "title": "The flea and the professor"
+    },
+    {
+      "nr": 157,
+      "slug": "the_tallow_candle",
+      "title": "The Tallow Candle"
+    }
+  ]
+}
