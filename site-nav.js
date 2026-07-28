@@ -8,11 +8,16 @@
     'terms.html': { key: 'nav.terms', en: 'Terms', hy: 'Պայմաններ' },
     'hy.html': { key: null, en: 'Features', hy: 'Հնարավորություններ' }
   };
+  var DESKTOP_MQ = '(min-width: 721px)';
 
   function currentFile() {
     var path = (location.pathname || '/').replace(/\/+$/, '');
     var file = path.split('/').pop();
     return file || 'index.html';
+  }
+
+  function isDesktop() {
+    return window.matchMedia && window.matchMedia(DESKTOP_MQ).matches;
   }
 
   function syncToggleLabel() {
@@ -51,14 +56,30 @@
     function closeMenu() {
       menu.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
+      if (!isDesktop()) menu.hidden = true;
+    }
+    function openMenu() {
+      menu.hidden = false;
+      menu.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+    function syncLayout() {
+      if (isDesktop()) {
+        menu.hidden = false;
+        menu.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+      } else if (!menu.classList.contains('is-open')) {
+        menu.hidden = true;
+      }
     }
     function toggleMenu(e) {
       e.stopPropagation();
-      var open = !menu.classList.contains('is-open');
-      menu.classList.toggle('is-open', open);
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (isDesktop()) return;
+      if (menu.classList.contains('is-open')) closeMenu();
+      else openMenu();
     }
 
+    syncLayout();
     btn.addEventListener('click', toggleMenu);
     document.addEventListener('click', function (e) {
       if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
@@ -69,6 +90,9 @@
     menu.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', closeMenu);
     });
+    if (window.matchMedia) {
+      window.matchMedia(DESKTOP_MQ).addEventListener('change', syncLayout);
+    }
   }
 
   if (document.readyState === 'loading') {
