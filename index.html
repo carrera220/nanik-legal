@@ -12,8 +12,26 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260728e">
-
+<link rel="stylesheet" href="style.css?v=20260728az">
+<script>
+(function () {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function toTop() {
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    window.scrollTo(0, 0);
+  }
+  var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  var isReload = (nav && nav.type === 'reload') || (performance.navigation && performance.navigation.type === 1);
+  if (isReload || !location.hash) {
+    toTop();
+    document.addEventListener('DOMContentLoaded', toTop);
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted || isReload) toTop();
+    });
+  }
+})();
+</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nanik">
 <meta property="og:url" content="https://nanik.app/">
@@ -94,8 +112,41 @@
 <main>
   <section class="hero">
     <div>
-      <h1 data-i18n="index.h1">Give Them a New Adventure Every Single Night, in Your Own Voice.</h1>
-      <p class="lead" data-i18n="index.lead">Nanik is a bedtime-story app for parents. Describe a hero, or snap a photo of a beloved toy, and Nanik writes a warm story, illustrates it, and reads it aloud in your true voice, or in the style of a classic children's storyteller.</p>
+      <h1 data-i18n="index.h1" data-i18n-html>Give them a new adventure every single night, in <strong>your own voice</strong></h1>
+      <div class="hero-lead-wrap" id="hero-lead-wrap">
+        <p class="lead lead-glow" id="hero-lead" data-i18n="index.lead">Once upon a time, a magical helper named Nanik turned toy photos into beautiful, illustrated bedtime stories, reading them aloud in your very own voice so little ones could sleep happily ever after.</p>
+        <div class="hero-narration-bar" id="hero-narration-bar" hidden>
+          <button type="button" class="hero-narration-toggle" id="hero-narration-toggle" aria-pressed="false" aria-label="Play">
+            <svg class="hero-narration-icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"/></svg>
+            <svg class="hero-narration-icon icon-pause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h3.5v14H7V5zm6.5 0H17v14h-3.5V5z" fill="currentColor"/></svg>
+          </button>
+          <div class="hero-narration-track" aria-hidden="true">
+            <div class="hero-narration-progress" id="hero-narration-progress"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-magic">
+        <div class="hero-magic-cta-wrap">
+          <button type="button" class="btn btn-magic" id="open-voice-magic" aria-haspopup="dialog" aria-controls="voice-magic-modal">
+            <svg class="btn-magic-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2.5" width="6" height="11" rx="3"/>
+              <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
+              <path d="M12 17v3.5"/>
+              <path d="M8.5 20.5h7"/>
+            </svg>
+            <span data-i18n="index.magic.cta">Hear the magic</span>
+          </button>
+          <span class="magic-wait-sparkle s1" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s2" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s3" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s4" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s5" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s6" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s7" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s8" aria-hidden="true"></span>
+        </div>
+        <p class="hero-magic-sub" data-i18n="index.magic.sub">Tell this story in your own voice.</p>
+      </div>
       <div class="hero-cta">
       <a class="btn" href="https://apps.apple.com/app/id6762894314"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg><span data-i18n="cta.appStore">Download on the App Store</span></a>
       <span class="btn btn-disabled btn-stacked" aria-disabled="true"><span class="btn-label"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg><span data-i18n="cta.play">Download from Play Market</span></span><small data-i18n="cta.playSoon">coming soon</small></span>
@@ -112,41 +163,126 @@
   <section id="features">
     <article class="feature">
       <div class="feature-copy">
-        <h2 data-i18n="index.f1.t">Custom tales in your voice</h2>
+        <h2 data-i18n="index.f1.t" data-i18n-html>Custom tales in <strong>your voice</strong></h2>
         <p data-i18n="index.f1.p">Record about 10 seconds once. Nanik narrates new adventures so your child hears a familiar voice, even when you’re busy or away. Prefer not to record? Choose a storyteller style inspired by classic children's authors like Hans Christian Andersen, the Brothers Grimm, Astrid Lindgren, or Roald Dahl.</p>
       </div>
       <div class="feature-media">
-        <img src="images/feature-voice.jpg" width="473" height="1024" alt="Nanik player: Custom Tales in Your Voice, story playing with Read, skip, and New chapter controls" loading="eager">
+        <img class="feature-mockup" src="images/feature-voice.png" width="440" height="906" alt="Nanik player: Custom Tales in Your Voice, story playing with Read, skip, and New chapter controls" loading="lazy">
       </div>
     </article>
 
     <article class="feature reverse">
       <div class="feature-copy">
-        <h2 data-i18n="index.f2.t">Watch their toys come alive</h2>
+        <h2 data-i18n="index.f2.t" data-i18n-html>Watch their <strong>toys come alive</strong></h2>
         <p data-i18n="index.f2.p">Take a picture of their favorite toy or object. Nanik turns it into a magical illustrated character that stars in the story.</p>
       </div>
-      <div class="feature-media">
-        <img src="images/feature-hero.jpg" width="473" height="1024" alt="Create Hero: photo of a toy becomes an illustrated story character" loading="lazy">
+      <div class="feature-media feature-media--alive">
+        <div class="toy-alive" aria-hidden="false">
+          <img class="toy-alive-source" src="images/feature-hero-source.jpg" width="420" height="747" alt="Photo of a favorite toy cat" loading="lazy">
+          <div class="toy-alive-ai-wrap">
+            <img class="toy-alive-ai" src="images/feature-hero-ai.jpg" width="720" height="508" alt="Toy turned into a magical illustrated story character" loading="lazy">
+            <span class="toy-sparkle s1" aria-hidden="true"></span>
+            <span class="toy-sparkle s2" aria-hidden="true"></span>
+            <span class="toy-sparkle s3" aria-hidden="true"></span>
+            <span class="toy-sparkle s4" aria-hidden="true"></span>
+            <span class="toy-sparkle s5" aria-hidden="true"></span>
+            <span class="toy-sparkle s6" aria-hidden="true"></span>
+            <span class="toy-sparkle s7" aria-hidden="true"></span>
+            <span class="toy-sparkle s8" aria-hidden="true"></span>
+            <span class="toy-sparkle s9" aria-hidden="true"></span>
+            <span class="toy-sparkle s10" aria-hidden="true"></span>
+            <span class="toy-sparkle s11" aria-hidden="true"></span>
+            <span class="toy-sparkle s12" aria-hidden="true"></span>
+          </div>
+        </div>
       </div>
     </article>
 
     <article class="feature">
       <div class="feature-copy">
-        <h2 data-i18n="index.f3.t">Build any world you imagine</h2>
+        <h2 data-i18n="index.f3.t" data-i18n-html>Build <strong>any world</strong> you imagine</h2>
         <p data-i18n="index.f3.p">Pick Forest, Cave, Village, city, Mars, underwater, or type your own place. Set the perfect scene for their adventure.</p>
       </div>
-      <div class="feature-media">
-        <img src="images/feature-world.jpg" width="473" height="1024" alt="Describe World screen with illustrated world tiles and custom place text" loading="lazy">
+      <div class="feature-media feature-media--world">
+        <div class="world-slider" data-world-slider aria-roledescription="carousel" aria-label="Story worlds">
+          <div class="world-slider-viewport">
+            <img class="world-slider-slide is-active" src="images/feature-world-1.jpg" width="480" height="853" alt="Imagined story world with floating islands and a glowing path" loading="lazy">
+            <img class="world-slider-slide" src="images/feature-world-2.jpg" width="480" height="853" alt="Imagined story world with mushrooms and a winding path" loading="lazy">
+            <img class="world-slider-slide" src="images/feature-world-3.jpg" width="480" height="853" alt="Imagined story world framed by bookshelves and a magical forest path" loading="lazy">
+          </div>
+          <div class="world-slider-dots" role="tablist" aria-label="World slides">
+            <button type="button" class="world-slider-dot is-active" role="tab" aria-selected="true" aria-label="World 1"></button>
+            <button type="button" class="world-slider-dot" role="tab" aria-selected="false" aria-label="World 2"></button>
+            <button type="button" class="world-slider-dot" role="tab" aria-selected="false" aria-label="World 3"></button>
+          </div>
+        </div>
       </div>
     </article>
 
     <article class="feature reverse">
       <div class="feature-copy">
-        <h2 data-i18n="index.f4.t">Gently support their day</h2>
+        <h2 data-i18n="index.f4.t" data-i18n-html>Gently support <strong>their day</strong></h2>
         <p data-i18n="index.f4.p">Weave today’s feelings into the story: calm, courage, healthy habits, or whatever your child needs tonight.</p>
       </div>
-      <div class="feature-media">
-        <img src="images/feature-supports.jpg" width="473" height="1024" alt="Story creation with world choices and optional emotional support for the tale" loading="lazy">
+      <div class="feature-media feature-media--support">
+        <div class="support-collage" aria-label="Story support topics from the app">
+          <div class="support-marquee support-marquee--left" aria-hidden="true">
+            <div class="support-marquee-track">
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span data-i18n="index.support.teachAI">Teach AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">📚</span><span data-i18n="index.support.todayLesson">Help with today's lesson</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span data-i18n="index.support.piano">Dreaming about piano</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💬</span><span data-i18n="index.support.conflict">Conflict with…</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">⭐</span><span data-i18n="index.support.confidence">Confidence</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span data-i18n="index.support.teachAI">Teach AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">📚</span><span data-i18n="index.support.todayLesson">Help with today's lesson</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span data-i18n="index.support.piano">Dreaming about piano</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💬</span><span data-i18n="index.support.conflict">Conflict with…</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">⭐</span><span data-i18n="index.support.confidence">Confidence</span></span>
+            </div>
+          </div>
+          <div class="support-marquee support-marquee--right" aria-hidden="true">
+            <div class="support-marquee-track">
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span data-i18n="index.support.fearDark">Fear of dark</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span data-i18n="index.support.friends">Friends</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span data-i18n="index.support.kindness">Kindness</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🕰️</span><span data-i18n="index.support.patience">Patience</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span data-i18n="index.support.healthyFood">Healthy food</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span data-i18n="index.support.fearDark">Fear of dark</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span data-i18n="index.support.friends">Friends</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span data-i18n="index.support.kindness">Kindness</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🕰️</span><span data-i18n="index.support.patience">Patience</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span data-i18n="index.support.healthyFood">Healthy food</span></span>
+            </div>
+          </div>
+          <div class="support-marquee support-marquee--left support-marquee--slow" aria-hidden="true">
+            <div class="support-marquee-track">
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span data-i18n="index.support.kindness">Kindness</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span data-i18n="index.support.teachAI">Teach AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span data-i18n="index.support.healthyFood">Healthy food</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span data-i18n="index.support.fearDark">Fear of dark</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span data-i18n="index.support.piano">Dreaming about piano</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span data-i18n="index.support.friends">Friends</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span data-i18n="index.support.kindness">Kindness</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span data-i18n="index.support.teachAI">Teach AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span data-i18n="index.support.healthyFood">Healthy food</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span data-i18n="index.support.fearDark">Fear of dark</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span data-i18n="index.support.piano">Dreaming about piano</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span data-i18n="index.support.friends">Friends</span></span>
+            </div>
+          </div>
+          <ul class="support-collage-sr">
+            <li><span aria-hidden="true">🤖</span> <span data-i18n="index.support.teachAI">Teach AI</span></li>
+            <li><span aria-hidden="true">📚</span> <span data-i18n="index.support.todayLesson">Help with today's lesson</span></li>
+            <li><span aria-hidden="true">🎹</span> <span data-i18n="index.support.piano">Dreaming about piano</span></li>
+            <li><span aria-hidden="true">💬</span> <span data-i18n="index.support.conflict">Conflict with…</span></li>
+            <li><span aria-hidden="true">⭐</span> <span data-i18n="index.support.confidence">Confidence</span></li>
+            <li><span aria-hidden="true">🌙</span> <span data-i18n="index.support.fearDark">Fear of dark</span></li>
+            <li><span aria-hidden="true">🤝</span> <span data-i18n="index.support.friends">Friends</span></li>
+            <li><span aria-hidden="true">💛</span> <span data-i18n="index.support.kindness">Kindness</span></li>
+            <li><span aria-hidden="true">🕰️</span> <span data-i18n="index.support.patience">Patience</span></li>
+            <li><span aria-hidden="true">🥗</span> <span data-i18n="index.support.healthyFood">Healthy food</span></li>
+          </ul>
+        </div>
       </div>
     </article>
 
@@ -178,10 +314,67 @@
     <p style="margin-top:18px"><a href="languages.html">Languages</a></p>
   </div>
 </main>
+<dialog id="voice-magic-modal" class="voice-magic-modal" aria-labelledby="voice-magic-title">
+  <div class="voice-magic-backdrop" data-voice-magic-close></div>
+  <div class="voice-magic-sheet" role="document">
+    <button type="button" class="voice-magic-close" data-voice-magic-close aria-label="Close">&times;</button>
+    <div class="voice-magic-scroll">
+      <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
+      <div class="voice-magic-body">
+        <div class="voice-magic-flow" id="voice-magic-flow">
+          <h2 id="voice-magic-title" data-i18n="index.magic.modalTitle">Tell stories in your voice</h2>
+          <p class="voice-magic-hint" data-i18n="index.magic.modalHint">Tap Start recording and read the sample text naturally in a quiet place</p>
+          <p class="voice-magic-sample" data-i18n="index.magic.sample">Once upon a time, or maybe not, there was a little Nanik who loved baking cakes. The cakes were very delicious. Everyone was waiting for the tasty cakes.</p>
+          <div class="voice-magic-orb" id="voice-magic-orb" aria-hidden="true">
+            <span class="voice-magic-orb-ring ring-outer"></span>
+            <span class="voice-magic-orb-ring ring-mid"></span>
+            <span class="voice-magic-orb-ring ring-inner"></span>
+            <svg class="voice-magic-progress" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="voice-magic-progress-track" cx="60" cy="60" r="54" fill="none" />
+              <circle class="voice-magic-progress-fill" cx="60" cy="60" r="54" fill="none" />
+            </svg>
+            <span class="voice-magic-orb-core">
+              <span class="voice-magic-countdown" id="voice-magic-countdown" hidden>10</span>
+              <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="2.5" width="6" height="11" rx="3"/>
+                <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
+                <path d="M12 17v3.5"/>
+                <path d="M8.5 20.5h7"/>
+              </svg>
+            </span>
+          </div>
+          <label class="voice-magic-consent" id="voice-magic-consent">
+            <input type="checkbox" id="voice-magic-consent-check" class="voice-magic-consent-input">
+            <span class="voice-magic-consent-box" aria-hidden="true"></span>
+            <span class="voice-magic-consent-text" data-i18n="index.magic.consent">I confirm that I recorded this voice, I have the right or permission to use it, and I allow Nanik to send this recording to third-party voice cloning services to create a voice clone for story narration.</span>
+          </label>
+        </div>
+        <div class="voice-magic-locked" id="voice-magic-locked" hidden>
+          <h2 id="voice-magic-locked-title" data-i18n="index.magic.lockedTitle">Try your voice in the app</h2>
+          <p class="voice-magic-locked-body" data-i18n="index.magic.lockedBody">You’ve already tried the website demo. Download Nanik to clone your voice, create stories, and hear every tale in your true voice.</p>
+          <a class="btn voice-magic-app-btn" href="https://apps.apple.com/app/id6762894314">
+            <svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            <span data-i18n="cta.appStore">Download on the App Store</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="voice-magic-footer" id="voice-magic-footer">
+      <button type="button" class="voice-magic-record" id="voice-magic-record" disabled>
+        <span class="voice-magic-record-dot" aria-hidden="true"></span>
+        <span data-i18n="index.magic.start">Start recording</span>
+      </button>
+      <p class="voice-magic-status" id="voice-magic-status" hidden></p>
+    </div>
+  </div>
+</dialog>
 <footer>
 <a class="ph-badge-nav" href="https://www.producthunt.com/products/nanik-bedtime-stories-for-kids?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-nanik-bedtime-stories-for-kids" target="_blank" rel="noopener noreferrer"><img alt="Nanik on Product Hunt" width="148" height="32" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1197393&amp;theme=light&amp;t=1784128424442"></a>
 &copy; 2026 Nanik · <a href="support.html" data-i18n="nav.support">Support</a> · <a href="privacy.html" data-i18n="nav.privacy">Privacy</a> · <a href="terms.html" data-i18n="nav.terms">Terms</a> · <a href="mailto:info@nanik.app">info@nanik.app</a></footer>
-<script src="site-nav.js?v=20260728e" defer></script>
-<script src="i18n.js?v=20260728e" defer></script>
+<script src="nanik-api-config.js?v=20260728az"></script>
+<script src="site-nav.js?v=20260728az" defer></script>
+<script src="i18n.js?v=20260728az" defer></script>
+<script src="voice-magic.js?v=20260728az" defer></script>
+<script src="world-slider.js?v=20260728az" defer></script>
 </body>
 </html>

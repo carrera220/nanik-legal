@@ -90,9 +90,54 @@
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNavToggle);
-  } else {
+  /** Same-page #features taps shouldn't jump scroll if you're already in/past Features. */
+  function initFeaturesStayPut() {
+    var features = document.getElementById('features');
+    if (!features) return;
+
+    function normalizePath(path) {
+      return String(path || '/')
+        .replace(/\/index\.html$/i, '/')
+        .replace(/\/+$/, '') || '/';
+    }
+
+    function isSamePageFeaturesLink(link) {
+      var href = link.getAttribute('href') || '';
+      if (href.indexOf('#features') === -1) return false;
+      try {
+        var url = new URL(href, location.href);
+        return url.origin === location.origin
+          && normalizePath(url.pathname) === normalizePath(location.pathname)
+          && url.hash === '#features';
+      } catch (err) {
+        return href === '#features' || /#features$/.test(href);
+      }
+    }
+
+    document.querySelectorAll('a[href*="#features"]').forEach(function (link) {
+      if (!isSamePageFeaturesLink(link)) return;
+      link.addEventListener('click', function (e) {
+        var rect = features.getBoundingClientRect();
+        var alreadyThere = rect.top < (window.innerHeight || 0) * 0.55;
+        if (!alreadyThere) return;
+        e.preventDefault();
+        try {
+          if (history.replaceState) {
+            history.replaceState(null, '', location.pathname + location.search + '#features');
+          }
+        } catch (err) {}
+      });
+    });
+  }
+
+  function init() {
     initNavToggle();
+    initFeaturesStayPut();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();

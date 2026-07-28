@@ -12,8 +12,26 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260728e">
-
+<link rel="stylesheet" href="style.css?v=20260728az">
+<script>
+(function () {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function toTop() {
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    window.scrollTo(0, 0);
+  }
+  var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  var isReload = (nav && nav.type === 'reload') || (performance.navigation && performance.navigation.type === 1);
+  if (isReload || !location.hash) {
+    toTop();
+    document.addEventListener('DOMContentLoaded', toTop);
+    window.addEventListener('load', toTop);
+    window.addEventListener('pageshow', function (e) {
+      if (e.persisted || isReload) toTop();
+    });
+  }
+})();
+</script>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nanik">
 <meta property="og:url" content="https://nanik.app/hy.html">
@@ -101,8 +119,41 @@
 <main>
   <section class="hero">
     <div>
-      <h1>Պարգևեք նրանց նոր արկած ամեն գիշեր՝ ձեր սեփական ձայնով։</h1>
-      <p class="lead">Nanik-ը հեքիաթների հավելված է ծնողների համար, որը ստեղծում է անհատական հեքիաթներ երեխաների համար՝ ձեր նկարագրած հերոսով կամ խաղալիքի լուսանկարով, պատկերազարդում է դրանք, և կարդում ձեր իսկական ձայնով կամ դասական մանկական պատմողի ոճով՝ ավելի քան 100 լեզվով։</p>
+      <h1>Պարգևեք նրանց նոր արկած ամեն գիշեր՝ <strong>ձեր սեփական ձայնով</strong></h1>
+      <div class="hero-lead-wrap" id="hero-lead-wrap">
+        <p class="lead lead-glow" id="hero-lead">Nanik-ը հեքիաթների հավելված է ծնողների համար, որը ստեղծում է անհատական հեքիաթներ երեխաների համար՝ ձեր նկարագրած հերոսով կամ խաղալիքի լուսանկարով, պատկերազարդում է դրանք, և կարդում ձեր իսկական ձայնով կամ դասական մանկական պատմողի ոճով՝ ավելի քան 100 լեզվով։</p>
+        <div class="hero-narration-bar" id="hero-narration-bar" hidden>
+          <button type="button" class="hero-narration-toggle" id="hero-narration-toggle" aria-pressed="false" aria-label="Նվագարկել">
+            <svg class="hero-narration-icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"/></svg>
+            <svg class="hero-narration-icon icon-pause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h3.5v14H7V5zm6.5 0H17v14h-3.5V5z" fill="currentColor"/></svg>
+          </button>
+          <div class="hero-narration-track" aria-hidden="true">
+            <div class="hero-narration-progress" id="hero-narration-progress"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-magic">
+        <div class="hero-magic-cta-wrap">
+          <button type="button" class="btn btn-magic" id="open-voice-magic" aria-haspopup="dialog" aria-controls="voice-magic-modal">
+            <svg class="btn-magic-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2.5" width="6" height="11" rx="3"/>
+              <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
+              <path d="M12 17v3.5"/>
+              <path d="M8.5 20.5h7"/>
+            </svg>
+            <span>Լսիր կախարդանքը</span>
+          </button>
+          <span class="magic-wait-sparkle s1" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s2" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s3" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s4" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s5" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s6" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s7" aria-hidden="true"></span>
+          <span class="magic-wait-sparkle s8" aria-hidden="true"></span>
+        </div>
+        <p class="hero-magic-sub">Պատմիր այս հեքիաթը քո սեփական ձայնով։</p>
+      </div>
       <div class="hero-cta">
         <a class="btn" href="https://apps.apple.com/app/id6762894314"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>Ներբեռնել App Store-ից</a>
         <span class="btn btn-disabled btn-stacked" aria-disabled="true"><span class="btn-label"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>Ներբեռնել Play Market-ից</span><small>շուտով</small></span>
@@ -119,41 +170,126 @@
   <section id="features">
     <article class="feature">
       <div class="feature-copy">
-        <h2>Անհատական հեքիաթներ ձեր ձայնով</h2>
+        <h2>Անհատական հեքիաթներ <strong>ձեր ձայնով</strong></h2>
         <p>Մեկ անգամ ձայնագրեք մոտ 10 վայրկյան։ Nanik-ը կպատմի նոր արկածներ, որ երեխան լսի ծանոթ ձայն, նույնիսկ երբ զբաղված եք։ Չե՞ք ուզում ձայնագրել — ընտրեք դասական մանկական հեղինակների ոճ։</p>
       </div>
       <div class="feature-media">
-        <img src="images/feature-voice.jpg" width="473" height="1024" alt="Nanik-ի հեռարձակիչ՝ հեքիաթը նվագարկվում է ձեր ձայնով" loading="eager">
+        <img class="feature-mockup" src="images/feature-voice.png" width="440" height="906" alt="Nanik-ի հեռարձակիչ՝ հեքիաթը նվագարկվում է ձեր ձայնով" loading="lazy">
       </div>
     </article>
 
     <article class="feature reverse">
       <div class="feature-copy">
-        <h2>Խաղալիքները կենդանանում են</h2>
+        <h2><strong>Խաղալիքները կենդանանում են</strong></h2>
         <p>Լուսանկարեք սիրելի խաղալիքը։ Nanik-ը այն կդարձնի պատկերազարդ կերպար, որն աստղն է դառնում հեքիաթում։</p>
       </div>
-      <div class="feature-media">
-        <img src="images/feature-hero.jpg" width="473" height="1024" alt="Խաղալիքի լուսանկարը դառնում է հեքիաթի պատկերազարդ հերոս" loading="lazy">
+      <div class="feature-media feature-media--alive">
+        <div class="toy-alive">
+          <img class="toy-alive-source" src="images/feature-hero-source.jpg" width="420" height="747" alt="Սիրելի խաղալիքի լուսանկար" loading="lazy">
+          <div class="toy-alive-ai-wrap">
+            <img class="toy-alive-ai" src="images/feature-hero-ai.jpg" width="720" height="508" alt="Խաղալիքը դառնում է պատկերազարդ հեքիաթի հերոս" loading="lazy">
+            <span class="toy-sparkle s1" aria-hidden="true"></span>
+            <span class="toy-sparkle s2" aria-hidden="true"></span>
+            <span class="toy-sparkle s3" aria-hidden="true"></span>
+            <span class="toy-sparkle s4" aria-hidden="true"></span>
+            <span class="toy-sparkle s5" aria-hidden="true"></span>
+            <span class="toy-sparkle s6" aria-hidden="true"></span>
+            <span class="toy-sparkle s7" aria-hidden="true"></span>
+            <span class="toy-sparkle s8" aria-hidden="true"></span>
+            <span class="toy-sparkle s9" aria-hidden="true"></span>
+            <span class="toy-sparkle s10" aria-hidden="true"></span>
+            <span class="toy-sparkle s11" aria-hidden="true"></span>
+            <span class="toy-sparkle s12" aria-hidden="true"></span>
+          </div>
+        </div>
       </div>
     </article>
 
     <article class="feature">
       <div class="feature-copy">
-        <h2>Կառուցեք ցանկացած աշխարհ</h2>
+        <h2>Կառուցեք <strong>ցանկացած աշխարհ</strong></h2>
         <p>Ընտրեք Անտառ, Քարանձավ, Գյուղ, քաղաք, Մարս, ջրի տակ, կամ գրեք ձեր տեղը։</p>
       </div>
-      <div class="feature-media">
-        <img src="images/feature-world.jpg" width="473" height="1024" alt="Աշխարհի ընտրության էկրան՝ պատկերազարդ աշխարհներով" loading="lazy">
+      <div class="feature-media feature-media--world">
+        <div class="world-slider" data-world-slider aria-roledescription="carousel" aria-label="Հեքիաթի աշխարհներ">
+          <div class="world-slider-viewport">
+            <img class="world-slider-slide is-active" src="images/feature-world-1.jpg" width="480" height="853" alt="Երևակայական աշխարհ՝ լողացող կղզիներով" loading="lazy">
+            <img class="world-slider-slide" src="images/feature-world-2.jpg" width="480" height="853" alt="Երևակայական աշխարհ՝ սնկերով և արահետով" loading="lazy">
+            <img class="world-slider-slide" src="images/feature-world-3.jpg" width="480" height="853" alt="Երևակայական աշխարհ՝ գրապահարաններով և կախարդական անտառով" loading="lazy">
+          </div>
+          <div class="world-slider-dots" role="tablist" aria-label="Աշխարհների սլայդեր">
+            <button type="button" class="world-slider-dot is-active" role="tab" aria-selected="true" aria-label="Աշխարհ 1"></button>
+            <button type="button" class="world-slider-dot" role="tab" aria-selected="false" aria-label="Աշխարհ 2"></button>
+            <button type="button" class="world-slider-dot" role="tab" aria-selected="false" aria-label="Աշխարհ 3"></button>
+          </div>
+        </div>
       </div>
     </article>
 
     <article class="feature reverse">
       <div class="feature-copy">
-        <h2>Նրբորեն աջակցեք օրվան</h2>
+        <h2>Նրբորեն աջակցեք <strong>օրվան</strong></h2>
         <p>Հյուսեք այսօրվա զգացումները հեքիաթի մեջ՝ հանգստություն, խիզախություն, առողջ սովորություններ։</p>
       </div>
-      <div class="feature-media">
-        <img src="images/feature-supports.jpg" width="473" height="1024" alt="Հեքիաթի ստեղծում՝ աշխարհի և հուզական աջակցության ընտրությամբ" loading="lazy">
+      <div class="feature-media feature-media--support">
+        <div class="support-collage" aria-label="Աջակցության թեմաներ հավելվածից">
+          <div class="support-marquee support-marquee--left" aria-hidden="true">
+            <div class="support-marquee-track">
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span>Սովորեցնել AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">📚</span><span>Օգնություն այսօրվա դասին</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span>Երազում է դաշնամուրի մասին</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💬</span><span>Կոնֆլիկտ…</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">⭐</span><span>Ինքնավստահություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span>Սովորեցնել AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">📚</span><span>Օգնություն այսօրվա դասին</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span>Երազում է դաշնամուրի մասին</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💬</span><span>Կոնֆլիկտ…</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">⭐</span><span>Ինքնավստահություն</span></span>
+            </div>
+          </div>
+          <div class="support-marquee support-marquee--right" aria-hidden="true">
+            <div class="support-marquee-track">
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span>Մթության վախ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span>Ընկերներ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span>Բարություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🕰️</span><span>Համբերություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span>Առողջ սնունդ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span>Մթության վախ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span>Ընկերներ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span>Բարություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🕰️</span><span>Համբերություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span>Առողջ սնունդ</span></span>
+            </div>
+          </div>
+          <div class="support-marquee support-marquee--left support-marquee--slow" aria-hidden="true">
+            <div class="support-marquee-track">
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span>Բարություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span>Սովորեցնել AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span>Առողջ սնունդ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span>Մթության վախ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span>Երազում է դաշնամուրի մասին</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span>Ընկերներ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">💛</span><span>Բարություն</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤖</span><span>Սովորեցնել AI</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🥗</span><span>Առողջ սնունդ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🌙</span><span>Մթության վախ</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🎹</span><span>Երազում է դաշնամուրի մասին</span></span>
+              <span class="support-chip"><span class="support-chip-emoji">🤝</span><span>Ընկերներ</span></span>
+            </div>
+          </div>
+          <ul class="support-collage-sr">
+            <li>🤖 Սովորեցնել AI</li>
+            <li>📚 Օգնություն այսօրվա դասին</li>
+            <li>🎹 Երազում է դաշնամուրի մասին</li>
+            <li>💬 Կոնֆլիկտ…</li>
+            <li>⭐ Ինքնավստահություն</li>
+            <li>🌙 Մթության վախ</li>
+            <li>🤝 Ընկերներ</li>
+            <li>💛 Բարություն</li>
+            <li>🕰️ Համբերություն</li>
+            <li>🥗 Առողջ սնունդ</li>
+          </ul>
+        </div>
       </div>
     </article>
 
@@ -192,9 +328,66 @@
     <p style="margin-top:18px"><a href="languages.html">Լեզուներ</a> · <a href="/" hreflang="en">English</a></p>
   </div>
 </main>
+<dialog id="voice-magic-modal" class="voice-magic-modal" aria-labelledby="voice-magic-title">
+  <div class="voice-magic-backdrop" data-voice-magic-close></div>
+  <div class="voice-magic-sheet" role="document">
+    <button type="button" class="voice-magic-close" data-voice-magic-close aria-label="Close">&times;</button>
+    <div class="voice-magic-scroll">
+      <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
+      <div class="voice-magic-body">
+        <div class="voice-magic-flow" id="voice-magic-flow">
+          <h2 id="voice-magic-title">Պատմիր հեքիաթներ քո ձայնով</h2>
+          <p class="voice-magic-hint">Սեղմիր «Սկսել ձայնագրումը» և բնական կարդա նմուշային տեքստը հանգիստ վայրում</p>
+          <p class="voice-magic-sample">Մի անգամ, կամ գուցե ոչ, կար մի փոքրիկ Նանիկ, որ սիրում էր տորթեր թխել։ Տորթերը շատ համեղ էին։ Բոլորը սպասում էին համեղ տորթերին։</p>
+          <div class="voice-magic-orb" id="voice-magic-orb" aria-hidden="true">
+            <span class="voice-magic-orb-ring ring-outer"></span>
+            <span class="voice-magic-orb-ring ring-mid"></span>
+            <span class="voice-magic-orb-ring ring-inner"></span>
+            <svg class="voice-magic-progress" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="voice-magic-progress-track" cx="60" cy="60" r="54" fill="none" />
+              <circle class="voice-magic-progress-fill" cx="60" cy="60" r="54" fill="none" />
+            </svg>
+            <span class="voice-magic-orb-core">
+              <span class="voice-magic-countdown" id="voice-magic-countdown" hidden>10</span>
+              <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="2.5" width="6" height="11" rx="3"/>
+                <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
+                <path d="M12 17v3.5"/>
+                <path d="M8.5 20.5h7"/>
+              </svg>
+            </span>
+          </div>
+          <label class="voice-magic-consent" id="voice-magic-consent">
+            <input type="checkbox" id="voice-magic-consent-check" class="voice-magic-consent-input">
+            <span class="voice-magic-consent-box" aria-hidden="true"></span>
+            <span class="voice-magic-consent-text">Հաստատում եմ, որ ես եմ ձայնագրել այս ձայնը, ունեմ իրավունք կամ թույլտվություն օգտագործելու այն, և թույլատրում եմ ուղարկել իմ ձայնագրությունը երրորդ կողմի ձայնի կլոնավորման ծառայություններին՝ պատմողի ձայնի կլոն ստեղծելու համար։</span>
+          </label>
+        </div>
+        <div class="voice-magic-locked" id="voice-magic-locked" hidden>
+          <h2 id="voice-magic-locked-title">Փորձիր քո ձայնը հավելվածում</h2>
+          <p class="voice-magic-locked-body">Դու արդեն փորձել ես կայքի դեմոն։ Ներբեռնիր Nanik-ը՝ ձայնդ կլոնավորելու, հեքիաթներ ստեղծելու և ամեն պատմություն լսելու քո իսկական ձայնով։</p>
+          <a class="btn voice-magic-app-btn" href="https://apps.apple.com/app/id6762894314">
+            <svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            <span>Ներբեռնել App Store-ից</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="voice-magic-footer" id="voice-magic-footer">
+      <button type="button" class="voice-magic-record" id="voice-magic-record" disabled>
+        <span class="voice-magic-record-dot" aria-hidden="true"></span>
+        <span>Սկսել ձայնագրումը</span>
+      </button>
+      <p class="voice-magic-status" id="voice-magic-status" hidden></p>
+    </div>
+  </div>
+</dialog>
 <footer>
 <a class="ph-badge-nav" href="https://www.producthunt.com/products/nanik-bedtime-stories-for-kids?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-nanik-bedtime-stories-for-kids" target="_blank" rel="noopener noreferrer"><img alt="Nanik on Product Hunt" width="148" height="32" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1197393&amp;theme=light&amp;t=1784128424442"></a>
 &copy; 2026 Nanik · <a href="support.html">Աջակցություն</a> · <a href="privacy.html">Գաղտնիություն</a> · <a href="terms.html">Պայմաններ</a> · <a href="mailto:info@nanik.app">info@nanik.app</a></footer>
-<script src="site-nav.js?v=20260728e" defer></script>
+<script src="nanik-api-config.js?v=20260728az"></script>
+<script src="site-nav.js?v=20260728az" defer></script>
+<script src="voice-magic.js?v=20260728az" defer></script>
+<script src="world-slider.js?v=20260728az" defer></script>
 </body>
 </html>
