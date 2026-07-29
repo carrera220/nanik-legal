@@ -1695,6 +1695,36 @@ details ul { margin-bottom: 8px; }
   gap: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+.story-list-item--cover .story-list-link {
+  align-items: center;
+}
+.story-cover-thumb {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.story-cover-thumb--empty {
+  display: inline-block;
+  background:
+    linear-gradient(145deg, rgba(243, 166, 157, 0.35), rgba(122, 92, 255, 0.28));
+}
+.story-reader-cover {
+  display: block;
+  width: min(100%, 420px);
+  max-height: 420px;
+  margin: 10px auto 18px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+.story-reader-cover[hidden] {
+  display: none !important;
+}
 .story-list a,
 .story-list-link {
   display: flex;

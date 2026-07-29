@@ -7,6 +7,30 @@
   var metaEl = document.getElementById('story-reader-meta');
 
   var COLLECTIONS = {
+    'nanik-hy': {
+      listId: 'nanik-hy-story-list',
+      dropdownId: 'nanik-hy-dropdown',
+      filterId: 'nanik-hy-story-filter',
+      sectionId: 'nanik-hy-section',
+      dataPath: 'data/nanik-hy/stories/',
+      indexPath: 'data/nanik-hy/index.json',
+      author: 'Made with Nanik',
+      hash: 'nanik-hy',
+      langOnly: 'hy',
+      dynamic: true
+    },
+    'nanik-en': {
+      listId: 'nanik-en-story-list',
+      dropdownId: 'nanik-en-dropdown',
+      filterId: 'nanik-en-story-filter',
+      sectionId: 'nanik-en-section',
+      dataPath: 'data/nanik-en/stories/',
+      indexPath: 'data/nanik-en/index.json',
+      author: 'Made with Nanik',
+      hash: 'nanik-en',
+      hideWhenLang: 'hy',
+      dynamic: true
+    },
     tumanyan: {
       listId: 'tumanyan-story-list',
       dropdownId: 'tumanyan-dropdown',
@@ -69,9 +93,86 @@
     if (col.dataPath && col.dataPath.indexOf('://') === -1 && col.dataPath.charAt(0) !== '/') {
       col.dataPath = STORIES_BASE + col.dataPath;
     }
+    if (col.indexPath && col.indexPath.indexOf('://') === -1 && col.indexPath.charAt(0) !== '/') {
+      col.indexPath = STORIES_BASE + col.indexPath;
+    }
   });
 
   var activeCollection = null;
+  var coverEl = document.getElementById('story-reader-cover');
+
+  function assetUrl(path) {
+    if (!path) return '';
+    if (path.indexOf('://') !== -1 || path.charAt(0) === '/') return path;
+    return STORIES_BASE + path;
+  }
+
+  function tellCtaLabel() {
+    var sample = document.querySelector('[data-i18n="stories.tellCta"]');
+    return (sample && sample.textContent) || 'Tell with my voice';
+  }
+
+  function padNr(n) {
+    var s = String(n || 0);
+    return s.length >= 2 ? s : ('0' + s).slice(-2);
+  }
+
+  function renderDynamicList(col, stories, key) {
+    var listEl = document.getElementById(col.listId);
+    if (!listEl || !stories || !stories.length) return;
+    var collection = key || collectionKey(col);
+    var cta = tellCtaLabel();
+    listEl.innerHTML = stories
+      .map(function (s) {
+        var cover = s.coverImage
+          ? '<img class="story-cover-thumb" src="' +
+            escapeHtml(assetUrl(s.coverImage)) +
+            '" alt="" loading="lazy" width="56" height="56">'
+          : '<span class="story-cover-thumb story-cover-thumb--empty" aria-hidden="true"></span>';
+        return (
+          '<li class="story-list-item story-list-item--cover">' +
+          '<a class="story-list-link" href="#' +
+          encodeURIComponent(s.slug) +
+          '" data-story-collection="' +
+          escapeHtml(collection) +
+          '" data-story-slug="' +
+          escapeHtml(s.slug) +
+          '">' +
+          cover +
+          '<span class="story-nr">' +
+          escapeHtml(padNr(s.nr)) +
+          '</span> <span class="story-title">' +
+          escapeHtml(s.title) +
+          '</span></a>' +
+          '<button type="button" class="story-list-tell" data-open-download-app data-i18n="stories.tellCta" aria-haspopup="dialog" aria-controls="download-app-modal">' +
+          escapeHtml(cta) +
+          '</button></li>'
+        );
+      })
+      .join('');
+  }
+
+  function loadDynamicCollections() {
+    Object.keys(COLLECTIONS).forEach(function (key) {
+      var col = COLLECTIONS[key];
+      if (!col.dynamic || !col.indexPath) return;
+      fetch(col.indexPath)
+        .then(function (r) {
+          if (!r.ok) throw new Error('index missing');
+          return r.json();
+        })
+        .then(function (index) {
+          renderDynamicList(col, index.stories || [], key);
+        })
+        .catch(function () {
+          var listEl = document.getElementById(col.listId);
+          if (listEl) {
+            listEl.innerHTML =
+              '<li class="story-list-item"><span class="story-title effective">No stories yet.</span></li>';
+          }
+        });
+    });
+  }
 
   function currentLang() {
     var forced = document.body && document.body.getAttribute('data-stories-locale');
@@ -85,6 +186,9 @@
 
   function collectionBySlug(slug) {
     if (!slug) return null;
+    if (slug.indexOf('nanik-hy-') === 0) return COLLECTIONS['nanik-hy'];
+    if (slug.indexOf('nanik-en-') === 0) return COLLECTIONS['nanik-en'];
+    if (slug.indexOf('nanik-ru-') === 0) return COLLECTIONS['nanik-ru'] || null;
     if (slug.indexOf('tumanyan-') === 0) return COLLECTIONS.tumanyan;
     if (slug.indexOf('andersen-hy-') === 0) return COLLECTIONS['andersen-hy'];
     if (slug.indexOf('aghayan-') === 0) return COLLECTIONS.aghayan;
@@ -176,6 +280,18 @@
   function renderStory(story, col) {
     titleEl.textContent = story.title;
     metaEl.textContent = col.author;
+    if (coverEl) {
+      var cover = story.coverImage ? assetUrl(story.coverImage) : '';
+      if (cover) {
+        coverEl.hidden = false;
+        coverEl.src = cover;
+        coverEl.alt = story.title || '';
+      } else {
+        coverEl.hidden = true;
+        coverEl.removeAttribute('src');
+        coverEl.alt = '';
+      }
+    }
     bodyEl.innerHTML = (story.paragraphs || [])
       .map(function (p) {
         return '<p>' + escapeHtml(p) + '</p>';
@@ -277,6 +393,16 @@
       showList(COLLECTIONS.tumanyan);
       return;
     }
+    if (hash === 'nanik-hy') {
+      showAuthors();
+      showList(COLLECTIONS['nanik-hy']);
+      return;
+    }
+    if (hash === 'nanik-en') {
+      showAuthors();
+      showList(COLLECTIONS['nanik-en']);
+      return;
+    }
     var slug = slugFromHash();
     if (slug) {
       var col = collectionBySlug(slug);
@@ -290,7 +416,17 @@
 
   function slugFromHash() {
     var h = (location.hash || '').replace(/^#/, '');
-    if (!h || h === 'andersen' || h === 'andersen-hy' || h === 'aghayan' || h === 'grimm' || h === 'tumanyan') return '';
+    if (
+      !h ||
+      h === 'andersen' ||
+      h === 'andersen-hy' ||
+      h === 'aghayan' ||
+      h === 'grimm' ||
+      h === 'tumanyan' ||
+      h === 'nanik-hy' ||
+      h === 'nanik-en'
+    )
+      return '';
     return decodeURIComponent(h);
   }
 
@@ -337,5 +473,6 @@
     });
   }
 
+  loadDynamicCollections();
   onHash();
 })();

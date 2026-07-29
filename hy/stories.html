@@ -12,7 +12,7 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/stories.html">
 <link rel="icon" type="image/png" sizes="64x64" href="../images/favicon-64.png">
 <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
-<link rel="stylesheet" href="../style.css?v=20260730a">
+<link rel="stylesheet" href="../style.css?v=20260730d">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nanik">
@@ -111,6 +111,19 @@
 <main class="legal-main stories-page">
   <h1>Հեքիաթներ սիրելի հեղինակներից</h1>
   <p class="effective">Դասական մանկական հեքիաթներ՝ ընտրիր պատմություն և պատմիր այն քո ձայնով։</p>
+
+<section id="nanik-hy-section" class="author-section">
+    <details id="nanik-hy-dropdown" class="author-dropdown" open>
+      <summary><span data-i18n="stories.nanik.h2">Ստեղծված Nanik-ով</span></summary>
+      <div class="author-dropdown-body">
+        <div class="story-filter-wrap">
+          <label class="visually-hidden" for="nanik-hy-story-filter">Որոնել հեքիաթներ</label>
+          <input id="nanik-hy-story-filter" class="story-filter" type="search" placeholder="Որոնել հեքիաթներ…" autocomplete="off">
+        </div>
+        <ol id="nanik-hy-story-list" class="story-list"></ol>
+      </div>
+    </details>
+  </section>
 
 <section id="tumanyan-section" class="author-section">
     <details id="tumanyan-dropdown" class="author-dropdown">
@@ -233,6 +246,7 @@
 
     <article id="story-reader" class="story-reader" hidden>
       <button type="button" id="story-reader-back" class="story-back">&larr; <span>Վերադառնալ հեքիաթներին</span></button>
+      <img id="story-reader-cover" class="story-reader-cover" alt="" hidden width="720" height="720">
       <h3 id="story-reader-title"></h3>
       <p id="story-reader-meta" class="story-meta"></p>
       <p class="story-tell-cta-wrap">
@@ -259,6 +273,6 @@
 
 <footer>&copy; 2026 Nanik · <a href="../support.html">Աջակցություն</a> · <a href="../privacy.html">Գաղտնիություն</a> · <a href="../terms.html">Պայմաններ</a> · <a href="../stories.html" hreflang="en" lang="en">English</a> · <a href="mailto:info@nanik.app">info@nanik.app</a></footer>
 <script src="../site-nav.js?v=20260729w" defer></script>
-<script src="../stories.js?v=20260730c" defer></script>
+<script src="../stories.js?v=20260730d" defer></script>
 </body>
 </html>

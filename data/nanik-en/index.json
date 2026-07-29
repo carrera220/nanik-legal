@@ -1,0 +1,25 @@
+{
+  "author": "Made with Nanik",
+  "source": "Nanik app library (synced user stories)",
+  "language": "en",
+  "stories": [
+    {
+      "nr": 1,
+      "slug": "nanik-en-deer_and_the_citys_song-4408651203",
+      "title": "Deer and the City's Song",
+      "coverImage": "images/stories/nanik-en/nanik-en-deer_and_the_citys_song-4408651203.jpg"
+    },
+    {
+      "nr": 2,
+      "slug": "nanik-en-the_melodic_dunes_of_mars-4310046257",
+      "title": "The Melodic Dunes of Mars",
+      "coverImage": "images/stories/nanik-en/nanik-en-the_melodic_dunes_of_mars-4310046257.jpg"
+    },
+    {
+      "nr": 3,
+      "slug": "nanik-en-the_sands_of_time-3523160298",
+      "title": "The Sands of Time",
+      "coverImage": null
+    }
+  ]
+}
