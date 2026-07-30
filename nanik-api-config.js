@@ -6,7 +6,7 @@ window.NANIK_API = {
   maxRecordMs: 10000,
   minRecordMs: 5000,
   // Must match app: src/constants/higgsNarration.ts + supabase/functions/_shared/higgs.ts
-  // temperature 0.63 · topK 80 · topP 0.95 · maxNewTokens 2047 · model higgs-tts-3
+  // temperature 0.7 · topK 200 · topP 0.85 · maxNewTokens 2047 · model higgs-tts-3
   higgs: {
     sampleRate: 24000,
     cloneTargetSec: 9,
@@ -14,10 +14,10 @@ window.NANIK_API = {
     modelId: 'higgs-tts-3',
     // Browser playback uses mp3; app narration uses pcm (same sampling params either way).
     responseFormat: 'mp3',
-    temperature: 0.63,
+    temperature: 0.7,
     maxNewTokens: 2047,
-    topK: 80,
-    topP: 0.95,
+    topK: 200,
+    topP: 0.85,
     speakingRate: 1.0
   }
 };

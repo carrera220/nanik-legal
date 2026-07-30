@@ -748,6 +748,23 @@
     setNarrationPlayingUi(false);
   }
 
+  function isAutoplayBlocked(err) {
+    if (!err) return false;
+    var name = String(err.name || '');
+    var msg = String(err.message || '').toLowerCase();
+    // Safari often blocks play() after async clone/TTS — audio is ready; user taps Play.
+    return name === 'NotAllowedError'
+      || /notallowederror|user.?gesture|user.?didn't.?interact|not.?allowed/.test(msg);
+  }
+
+  function armHeroPlaybackUi() {
+    phase = 'hero';
+    document.body.classList.add('hero-narrating');
+    if (narrationBar) narrationBar.hidden = false;
+    setNarrationPlayingUi(false);
+    setMagicCta('default');
+  }
+
   function playHeroPlayback() {
     if (!previewAudio) return;
     phase = 'hero';
@@ -757,8 +774,13 @@
     previewAudio.play().then(function () {
       stopSyncLoop();
       syncRaf = requestAnimationFrame(syncKaraoke);
-    }).catch(function () {
+    }).catch(function (err) {
       setNarrationPlayingUi(false);
+      if (isAutoplayBlocked(err)) {
+        // TTS succeeded — show the Play control instead of a false "failed" alert.
+        armHeroPlaybackUi();
+        return;
+      }
       alert('Could not play audio. Please try again.');
     });
   }
@@ -1054,10 +1076,12 @@
       function runTtsWithVoice(accessToken, clonedVoiceId) {
         var payload = ttsBasePayload();
         payload.voiceId = clonedVoiceId;
+        // Same sampling as app narration; also send clone transcript for Boson.
+        payload.refText = transcript;
         return postHiggs('/tts', payload, accessToken, 150000);
       }
 
-      // Instant-clone path: same recording as ref_audio if the new voiceId is not ready yet.
+      // Preferred onboarding/demo path: ref_audio + ref_text + temp/top_k/top_p (lab-style).
       function runTtsWithRef(accessToken) {
         var payload = ttsBasePayload();
         payload.refAudio = refAudioDataUri;
@@ -1069,16 +1093,16 @@
         var attempts = 0;
         function attempt(useRef) {
           attempts += 1;
+          // Prefer inline ref (params + ref_text) for the marketing/onboarding test;
+          // fall back to persisted voiceId if needed.
           var req = useRef ? runTtsWithRef(accessToken) : runTtsWithVoice(accessToken, clonedVoiceId);
           return req.catch(function (err) {
-            // After voice clone, Boson sometimes rejects immediate voiceId TTS —
-            // fall back to inline ref once, then retry voiceId once more.
-            if (!useRef && attempts === 1) {
-              return sleep(600).then(function () { return attempt(true); });
+            if (useRef && attempts === 1 && clonedVoiceId) {
+              return sleep(600).then(function () { return attempt(false); });
             }
             if (isTransientTtsError(err) && attempts < 3) {
               return sleep(1200 * attempts).then(function () {
-                return attempt(attempts >= 2);
+                return attempt(true);
               });
             }
             var friendly = new Error('Could not generate the tale in your voice. Please try again.');
@@ -1088,7 +1112,7 @@
             throw friendly;
           });
         }
-        return attempt(false);
+        return attempt(true);
       }
 
       // Fresh guest each demo run — same anonymous signup as the app, avoids freemium voice-slot lock.
