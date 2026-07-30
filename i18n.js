@@ -1566,6 +1566,14 @@
         item.setAttribute('data-code', loc.code);
         item.textContent = loc.flag + ' ' + loc.native;
         item.addEventListener('click', function () {
+          // Dedicated Armenian homepage — switch there instead of translating the EN page.
+          var file = (location.pathname || '/').replace(/\/+$/, '').split('/').pop() || 'index.html';
+          var onEnHome = file === 'index.html' || file === '';
+          if (loc.code === 'hy' && onEnHome) {
+            try { localStorage.setItem(STORAGE_KEY, 'hy'); } catch (e) {}
+            location.href = '/hy.html';
+            return;
+          }
           apply(loc.code);
           button.textContent = labelFor(loc.code);
           closeList();
