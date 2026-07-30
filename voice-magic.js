@@ -572,7 +572,7 @@
 
   function postHiggs(path, body, accessToken, timeoutMs) {
     var cfg = api();
-    var ms = timeoutMs || (path.indexOf('/tts') >= 0 ? 90000 : 55000);
+    var ms = timeoutMs || (path.indexOf('/tts') >= 0 ? 150000 : 55000);
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var timer = setTimeout(function () {
       if (controller) controller.abort();
@@ -962,7 +962,7 @@
   }
 
   function finishWithAudio(ttsRes, taleText) {
-    if (!ttsRes || !ttsRes.audioBase64) throw new Error('Preview failed.');
+    if (!ttsRes || !ttsRes.audioBase64) throw new Error('Could not generate the tale in your voice. Please try again.');
     var bytes = atob(ttsRes.audioBase64);
     var arr = new Uint8Array(bytes.length);
     for (var i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
@@ -981,21 +981,114 @@
     launchHeroNarration();
   }
 
+  function sleep(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, ms); });
+  }
+
+  function isTransientTtsError(err) {
+    if (!err) return false;
+    if (err.name === 'AbortError') return true;
+    var status = Number(err.status) || 0;
+    if (status === 502 || status === 503 || status === 504 || status === 429) return true;
+    var code = String(err.code || '');
+    if (
+      code === 'GATEWAY_TIMEOUT' ||
+      code === 'IDLE_TIMEOUT' ||
+      code === 'RATE_LIMITED' ||
+      code === 'TTS_FAILED' ||
+      code === 'BOSON_DNS_UNAVAILABLE'
+    ) {
+      return true;
+    }
+    var msg = String(err.message || '').toLowerCase();
+    return /timed out|timeout|failed to generate|rate.?limit|bad gateway|temporarily unavailable/i.test(msg);
+  }
+
   function runHiggsPipeline(blob, durationMs, transcript, taleText) {
     // Match app cloneVoice → prepareHiggsCloneReferenceWav → POST higgs-proxy/clone → /tts
     return prepareHiggsCloneWav(blob).then(function (prepared) {
+      var cloneSession = null;
+      var audioBase64 = uint8ToBase64(prepared.wavBytes);
+      var refAudioDataUri = 'data:audio/wav;base64,' + audioBase64;
+
       function runClone(session) {
+        cloneSession = session;
         return postHiggs('/clone', {
           voiceName: 'Marketing demo',
           description: 'Parent voice for Nanik app',
           mimeType: prepared.mimeType,
           filename: prepared.filename,
-          audioBase64: uint8ToBase64(prepared.wavBytes),
+          audioBase64: audioBase64,
           transcription: transcript,
           durationMs: Math.max(durationMs, prepared.durationMs),
           languageCode: pageLanguageCode(),
           removeBackgroundNoise: false
         }, session.accessToken, 45000);
+      }
+
+      function ttsBasePayload() {
+        var h = higgsCfg();
+        var temperature = Number(h.temperature);
+        var topK = Number(h.topK);
+        var topP = Number(h.topP);
+        var maxNewTokens = Number(h.maxNewTokens);
+        if (!Number.isFinite(temperature)) temperature = 0.63;
+        if (!Number.isFinite(topK)) topK = 80;
+        if (!Number.isFinite(topP)) topP = 0.95;
+        if (!Number.isFinite(maxNewTokens)) maxNewTokens = 2047;
+        return {
+          text: taleText,
+          modelId: h.modelId || 'higgs-tts-3',
+          responseFormat: h.responseFormat || 'mp3',
+          temperature: temperature,
+          maxNewTokens: maxNewTokens,
+          topK: topK,
+          topP: topP,
+          languageCode: pageLanguageCode(),
+          speakingRate: Number.isFinite(Number(h.speakingRate)) ? Number(h.speakingRate) : 1.0
+        };
+      }
+
+      // Reuse the clone session token — do not re-auth mid-pipeline (sessionStorage
+      // can fail / rate-limit a second anonymous signup after a successful clone).
+      function runTtsWithVoice(accessToken, clonedVoiceId) {
+        var payload = ttsBasePayload();
+        payload.voiceId = clonedVoiceId;
+        return postHiggs('/tts', payload, accessToken, 150000);
+      }
+
+      // Instant-clone path: same recording as ref_audio if the new voiceId is not ready yet.
+      function runTtsWithRef(accessToken) {
+        var payload = ttsBasePayload();
+        payload.refAudio = refAudioDataUri;
+        payload.refText = transcript;
+        return postHiggs('/tts', payload, accessToken, 150000);
+      }
+
+      function runTtsReliable(accessToken, clonedVoiceId) {
+        var attempts = 0;
+        function attempt(useRef) {
+          attempts += 1;
+          var req = useRef ? runTtsWithRef(accessToken) : runTtsWithVoice(accessToken, clonedVoiceId);
+          return req.catch(function (err) {
+            // After voice clone, Boson sometimes rejects immediate voiceId TTS —
+            // fall back to inline ref once, then retry voiceId once more.
+            if (!useRef && attempts === 1) {
+              return sleep(600).then(function () { return attempt(true); });
+            }
+            if (isTransientTtsError(err) && attempts < 3) {
+              return sleep(1200 * attempts).then(function () {
+                return attempt(attempts >= 2);
+              });
+            }
+            var friendly = new Error('Could not generate the tale in your voice. Please try again.');
+            friendly.cause = err;
+            friendly.code = err && err.code;
+            friendly.status = err && err.status;
+            throw friendly;
+          });
+        }
+        return attempt(false);
       }
 
       // Fresh guest each demo run — same anonymous signup as the app, avoids freemium voice-slot lock.
@@ -1009,33 +1102,17 @@
       }).then(function (cloneRes) {
         if (!cloneRes || !cloneRes.voiceId) throw new Error('Clone failed.');
         voiceId = cloneRes.voiceId;
-        markCloneDemoUsed();
-        var h = higgsCfg();
-        // Same Boson sampling as the app (HIGGS_TTS_TEMPERATURE / TOP_K / TOP_P).
-        var temperature = Number(h.temperature);
-        var topK = Number(h.topK);
-        var topP = Number(h.topP);
-        var maxNewTokens = Number(h.maxNewTokens);
-        if (!Number.isFinite(temperature)) temperature = 0.63;
-        if (!Number.isFinite(topK)) topK = 80;
-        if (!Number.isFinite(topP)) topP = 0.95;
-        if (!Number.isFinite(maxNewTokens)) maxNewTokens = 2047;
-        return ensureAuth().then(function (session) {
-          return postHiggs('/tts', {
-            voiceId: voiceId,
-            text: taleText,
-            modelId: h.modelId || 'higgs-tts-3',
-            responseFormat: h.responseFormat || 'mp3',
-            temperature: temperature,
-            maxNewTokens: maxNewTokens,
-            topK: topK,
-            topP: topP,
-            languageCode: pageLanguageCode(),
-            speakingRate: Number.isFinite(Number(h.speakingRate)) ? Number(h.speakingRate) : 1.0
-          }, session.accessToken, 90000);
-        });
+        var accessToken = (cloneSession && cloneSession.accessToken) || (loadSession() || {}).accessToken;
+        if (!accessToken) {
+          return ensureAuth().then(function (session) {
+            return runTtsReliable(session.accessToken, voiceId);
+          });
+        }
+        return runTtsReliable(accessToken, voiceId);
       }).then(function (ttsRes) {
         finishWithAudio(ttsRes, taleText);
+        // Only lock the demo after the tale actually plays — a TTS failure must allow retry.
+        markCloneDemoUsed();
       });
     });
   }
