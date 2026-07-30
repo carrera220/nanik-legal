@@ -748,15 +748,6 @@
     setNarrationPlayingUi(false);
   }
 
-  function isAutoplayBlocked(err) {
-    if (!err) return false;
-    var name = String(err.name || '');
-    var msg = String(err.message || '').toLowerCase();
-    // Safari often blocks play() after async clone/TTS — audio is ready; user taps Play.
-    return name === 'NotAllowedError'
-      || /notallowederror|user.?gesture|user.?didn't.?interact|not.?allowed/.test(msg);
-  }
-
   function armHeroPlaybackUi() {
     phase = 'hero';
     document.body.classList.add('hero-narrating');
@@ -765,8 +756,10 @@
     setMagicCta('default');
   }
 
-  function playHeroPlayback() {
+  /** @param {{ fromUserGesture?: boolean }} [opts] */
+  function playHeroPlayback(opts) {
     if (!previewAudio) return;
+    var fromUserGesture = !!(opts && opts.fromUserGesture);
     phase = 'hero';
     document.body.classList.add('hero-narrating');
     if (narrationBar) narrationBar.hidden = false;
@@ -775,19 +768,21 @@
       stopSyncLoop();
       syncRaf = requestAnimationFrame(syncKaraoke);
     }).catch(function (err) {
+      // After async TTS, Safari almost always rejects autoplay (stale gesture).
+      // Audio is ready — arm Play and never show a false "could not play" alert.
       setNarrationPlayingUi(false);
-      if (isAutoplayBlocked(err)) {
-        // TTS succeeded — show the Play control instead of a false "failed" alert.
-        armHeroPlaybackUi();
-        return;
+      armHeroPlaybackUi();
+      if (fromUserGesture) {
+        console.warn('[voice-magic] play() failed after user tap', err && err.name, err && err.message);
+      } else {
+        console.warn('[voice-magic] autoplay deferred — tap Play', err && err.name, err && err.message);
       }
-      alert('Could not play audio. Please try again.');
     });
   }
 
   function toggleHeroPlayback() {
     if (!previewAudio) return;
-    if (previewAudio.paused) playHeroPlayback();
+    if (previewAudio.paused) playHeroPlayback({ fromUserGesture: true });
     else pauseHeroPlayback();
   }
 
