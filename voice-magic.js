@@ -1,8 +1,6 @@
 (function () {
-  var MAX_MS = (window.NANIK_API && window.NANIK_API.maxRecordMs) || 10000;
-  var MIN_MS = (window.NANIK_API && window.NANIK_API.minRecordMs) || 5000;
-  var RING_R = 54;
-  var RING_C = 2 * Math.PI * RING_R;
+  // No countdown / auto-stop — user taps Stop (same as the Nanik app).
+  var MIN_MS = 5000;
   var SESSION_KEY = 'nanik-marketing-supabase-session';
   var CLONE_USED_KEY = 'nanik-marketing-voice-cloned';
 
@@ -33,11 +31,8 @@
   var recordBtn = document.getElementById('voice-magic-record');
   var consentLabel = document.getElementById('voice-magic-consent');
   var consentCheck = document.getElementById('voice-magic-consent-check');
-  var orb = document.getElementById('voice-magic-orb');
-  var countdownEl = document.getElementById('voice-magic-countdown');
   var statusEl = document.getElementById('voice-magic-status');
   var sampleEl = modal ? modal.querySelector('.voice-magic-sample') : null;
-  var progressFill = modal ? modal.querySelector('.voice-magic-progress-fill') : null;
   var leadEl = document.getElementById('hero-lead');
   var leadWrap = document.getElementById('hero-lead-wrap');
   var narrationBar = document.getElementById('hero-narration-bar');
@@ -50,7 +45,10 @@
 
   var phase = 'idle'; // idle | recording | processing | ready | hero
   var startedAt = 0;
-  var labelEl = recordBtn.querySelector('span:last-child');
+  var stopRequested = false;
+  var labelEl = document.getElementById('voice-magic-record-label')
+    || recordBtn.querySelector('[data-i18n="index.magic.start"]')
+    || recordBtn.querySelector('span:last-child');
   var startText = labelEl ? labelEl.textContent : 'Start recording';
   var stopText = startText.indexOf('Սկսել') !== -1 ? 'Կանգնեցնել' : 'Stop recording';
   var hearText = startText.indexOf('Սկսել') !== -1 ? 'Լսիր հեքիաթը իմ ձայնով' : 'Hear the tale in my voice';
@@ -78,11 +76,6 @@
   var syncRaf = 0;
   var activeWordIndex = -1;
 
-  if (progressFill) {
-    progressFill.style.strokeDasharray = String(RING_C);
-    progressFill.style.strokeDashoffset = String(RING_C);
-  }
-
   function api() {
     return window.NANIK_API || null;
   }
@@ -104,14 +97,12 @@
     labelEl.textContent = text;
   }
 
-  function setOrbLevel(level) {
-    if (!orb) return;
-    var t = Math.max(0, Math.min(1, level));
-    orb.style.setProperty('--voice-level', t.toFixed(3));
-    orb.style.setProperty('--voice-scale-outer', (1 + t * 0.55).toFixed(3));
-    orb.style.setProperty('--voice-scale-mid', (1 + t * 0.38).toFixed(3));
-    orb.style.setProperty('--voice-scale-inner', (1 + t * 0.22).toFixed(3));
-    orb.style.setProperty('--voice-glow', (0.25 + t * 0.75).toFixed(3));
+  function setSampleLevel(level) {
+    if (!modal) return;
+    var t = Math.max(0, Math.min(1, level * 1.35));
+    modal.style.setProperty('--voice-level', t.toFixed(3));
+    var glow = modal.querySelector('.voice-magic-sample-glow');
+    if (glow) glow.style.setProperty('--voice-level', t.toFixed(3));
   }
 
   function pickRecorderMime() {
@@ -520,29 +511,21 @@
     });
   }
 
-  function updateCountdown() {
-    if (phase !== 'recording') return;
-    var elapsed = Date.now() - startedAt;
-    var remaining = Math.max(0, Math.ceil((MAX_MS - elapsed) / 1000));
-    var progress = Math.min(1, Math.max(0, elapsed / MAX_MS));
-    if (countdownEl) countdownEl.textContent = String(remaining);
-    if (progressFill) progressFill.style.strokeDashoffset = String(RING_C * (1 - progress));
-    if (elapsed >= MAX_MS) stopRecordingAndClone();
-  }
-
   function tick() {
-    if (!analyser || !dataArray) return;
-    analyser.getByteTimeDomainData(dataArray);
-    var sum = 0;
-    for (var i = 0; i < dataArray.length; i++) {
-      var v = (dataArray[i] - 128) / 128;
-      sum += v * v;
-    }
-    var rms = Math.sqrt(sum / dataArray.length);
-    var level = Math.min(1, Math.pow(rms * 3.2, 0.75));
-    smoothLevel += (level - smoothLevel) * 0.28;
-    setOrbLevel(smoothLevel);
-    updateCountdown();
+    if (phase !== 'recording' || !analyser || !dataArray) return;
+    try {
+      analyser.getByteTimeDomainData(dataArray);
+      var sum = 0;
+      for (var i = 0; i < dataArray.length; i++) {
+        var v = (dataArray[i] - 128) / 128;
+        sum += v * v;
+      }
+      var rms = Math.sqrt(sum / dataArray.length);
+      var level = Math.min(1, Math.pow(rms * 3.2, 0.75));
+      smoothLevel += (level - smoothLevel) * 0.28;
+      setSampleLevel(smoothLevel);
+    } catch (e) {}
+    // Metering only — never auto-stop.
     rafId = requestAnimationFrame(tick);
   }
 
@@ -560,7 +543,7 @@
     analyser = null;
     dataArray = null;
     smoothLevel = 0;
-    setOrbLevel(0);
+    setSampleLevel(0);
     mediaRecorder = null;
     chunks = [];
   }
@@ -601,7 +584,8 @@
       mediaRecorder.ondataavailable = function (e) {
         if (e.data && e.data.size) chunks.push(e.data);
       };
-      mediaRecorder.start(200);
+      // No timeslice / duration cap — recording ends when the user taps Stop.
+      mediaRecorder.start();
       tick();
     });
   }
@@ -1094,13 +1078,9 @@
   function resetUi(clearPreview) {
     phase = 'idle';
     startedAt = 0;
+    stopRequested = false;
     modal.classList.remove('is-recording', 'is-processing', 'is-ready', 'is-playing');
     stopMicTracks();
-    if (countdownEl) {
-      countdownEl.hidden = true;
-      countdownEl.textContent = '10';
-    }
-    if (progressFill) progressFill.style.strokeDashoffset = String(RING_C);
     setStatus('', false);
     setLabel(startText, 'index.magic.start');
     recordBtn.classList.remove('is-hear');
@@ -1140,6 +1120,7 @@
     }
     stopSyncLoop();
     setNarrationPlayingUi(false);
+    stopRequested = false;
     recordBtn.disabled = true;
     setStatus('', false);
     startMicAndRecorder().then(function () {
@@ -1150,14 +1131,10 @@
       modal.classList.add('is-recording');
       modal.classList.remove('is-ready', 'is-processing', 'is-playing');
       recordBtn.classList.remove('is-hear');
-      if (countdownEl) {
-        countdownEl.hidden = false;
-        countdownEl.textContent = '10';
-      }
       setLabel(stopText, 'index.magic.stop');
-      updateCountdown();
     }).catch(function (err) {
       phase = 'idle';
+      stopRequested = false;
       syncConsentUi();
       alert(err && err.message ? err.message : 'Microphone access is needed. Please allow the mic and try again.');
     });
@@ -1423,14 +1400,14 @@
       showLockedModal();
       return;
     }
-    if (phase !== 'recording') return;
+    if (phase !== 'recording' || stopRequested) return;
+    stopRequested = true;
     var durationMs = Date.now() - startedAt;
     phase = 'processing';
     modal.classList.remove('is-recording');
     modal.classList.add('is-processing');
     recordBtn.disabled = true;
     syncConsentUi();
-    if (countdownEl) countdownEl.hidden = true;
 
     stopRecorder().then(function (blob) {
       if (rafId) cancelAnimationFrame(rafId);
@@ -1445,7 +1422,7 @@
       }
       analyser = null;
       dataArray = null;
-      setOrbLevel(0);
+      setSampleLevel(0);
 
       // Close popup immediately; show waiting state on hero CTA (app-like background clone).
       dismissModalOnly();

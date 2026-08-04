@@ -12,7 +12,7 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260730d">
+<link rel="stylesheet" href="style.css?v=20260805magic1">
 <script>
 (function () {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -511,29 +511,22 @@
   <div class="voice-magic-sheet" role="document">
     <button type="button" class="voice-magic-close" data-voice-magic-close aria-label="Close">&times;</button>
     <div class="voice-magic-scroll">
-      <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
       <div class="voice-magic-body">
         <div class="voice-magic-flow" id="voice-magic-flow">
           <h2 id="voice-magic-title">Պատմիր հեքիաթներ քո ձայնով</h2>
-          <p class="voice-magic-hint">Սեղմիր «Սկսել ձայնագրումը» և բնական կարդա նմուշային տեքստը հանգիստ վայրում։ Երբ ամբողջ տեքստը կարդաս, սեղմիր «Կանգնեցնել»</p>
-          <p class="voice-magic-sample">Այնքան լավ եղանակ է այսօր՝ արևոտ ու ջինջ...Չգիտեմ նույնիսկ՝ տանը մնամ, թե՞ դուրս գամ մի քիչ քայլելու։ Դու ի՞նչ կասես։<br>- Իհարկե կմիանամ, - ասաց փոքրիկը։<br>- Դե, գնացինք։</p>
-          <div class="voice-magic-orb" id="voice-magic-orb" aria-hidden="true">
-            <span class="voice-magic-orb-ring ring-outer"></span>
-            <span class="voice-magic-orb-ring ring-mid"></span>
-            <span class="voice-magic-orb-ring ring-inner"></span>
-            <svg class="voice-magic-progress" viewBox="0 0 120 120" aria-hidden="true">
-              <circle class="voice-magic-progress-track" cx="60" cy="60" r="54" fill="none" />
-              <circle class="voice-magic-progress-fill" cx="60" cy="60" r="54" fill="none" />
+          <div class="voice-magic-tip">
+            <svg class="voice-magic-tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
             </svg>
-            <span class="voice-magic-orb-core">
-              <span class="voice-magic-countdown" id="voice-magic-countdown" hidden>10</span>
-              <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="2.5" width="6" height="11" rx="3"/>
-                <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
-                <path d="M12 17v3.5"/>
-                <path d="M8.5 20.5h7"/>
-              </svg>
-            </span>
+            <p class="voice-magic-tip-text">Սեղմիր «Սկսել ձայնագրումը» և բնական կարդա նմուշային տեքստը հանգիստ վայրում։ Երբ ամբողջ տեքստը կարդաս, սեղմիր «Կանգնեցնել»</p>
+          </div>
+          <div class="voice-magic-sample-glow">
+            <div class="voice-magic-sample-outline" aria-hidden="true"></div>
+            <div class="voice-magic-sample-panel">
+              <p class="voice-magic-sample">Այնքան լավ եղանակ է այսօր՝ արևոտ ու ջինջ...Չգիտեմ նույնիսկ՝ տանը մնամ, թե՞ դուրս գամ մի քիչ քայլելու։ Դու ի՞նչ կասես։<br>- Իհարկե կմիանամ, - ասաց փոքրիկը։<br>- Դե, գնացինք։</p>
+            </div>
           </div>
           <label class="voice-magic-consent" id="voice-magic-consent">
             <input type="checkbox" id="voice-magic-consent-check" class="voice-magic-consent-input">
@@ -554,7 +547,8 @@
     <div class="voice-magic-footer" id="voice-magic-footer">
       <button type="button" class="voice-magic-record" id="voice-magic-record" disabled>
         <span class="voice-magic-record-dot" aria-hidden="true"></span>
-        <span>Սկսել ձայնագրումը</span>
+        <span class="voice-magic-record-stop" aria-hidden="true"></span>
+        <span id="voice-magic-record-label">Սկսել ձայնագրումը</span>
       </button>
       <p class="voice-magic-status" id="voice-magic-status" hidden></p>
     </div>
@@ -565,7 +559,7 @@
 &copy; 2026 Nanik · <a href="support.html">Աջակցություն</a> · <a href="privacy.html">Գաղտնիություն</a> · <a href="terms.html">Պայմաններ</a> · <a href="/?lang=en" hreflang="en" lang="en">English</a> · <a href="mailto:info@nanik.app">info@nanik.app</a></footer>
 <script src="nanik-api-config.js?v=20260805samp"></script>
 <script src="site-nav.js?v=20260729u" defer></script>
-<script src="voice-magic.js?v=20260805samp" defer></script>
+<script src="voice-magic.js?v=20260805magic1" defer></script>
 <script src="world-slider.js?v=20260728bw" defer></script>
 </body>
 </html>
