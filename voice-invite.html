@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-itunes-app" content="app-id=6762894314">
+<title>Record your voice — Nanik</title>
+<meta name="description" content="Someone invited you to record your voice for Nanik bedtime stories.">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css?v=20260805invite">
+<style>
+  /* Full-page invite: same sheet as the Hear-the-magic modal, always open. */
+  body.voice-invite-page {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  body.voice-invite-page main.voice-invite-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px 40px;
+  }
+  .voice-invite-shell {
+    width: min(420px, 100%);
+  }
+  .voice-invite-shell .voice-magic-sheet {
+    max-height: none;
+  }
+  .voice-invite-shell .voice-magic-scroll {
+    padding-bottom: 108px;
+  }
+  .voice-invite-loading,
+  .voice-invite-error {
+    width: min(420px, 100%);
+    text-align: center;
+    color: #fff;
+    padding: 32px 20px;
+  }
+  .voice-invite-error h1 {
+    font-size: 1.35rem;
+    margin: 0 0 12px;
+  }
+  .voice-invite-error p {
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.5;
+    margin: 0 0 20px;
+  }
+  .voice-invite-requester {
+    margin: 0 0 10px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .voice-invite-footer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .voice-invite-footer-actions .voice-magic-record {
+    text-decoration: none;
+  }
+  .voice-invite-secondary {
+    display: block;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 8px;
+  }
+</style>
+</head>
+<body class="voice-invite-page" data-i18n-page-title="invite.title">
+<header class="site">
+  <div class="nav-shell">
+    <a class="brand" href="/"><img src="images/favicon-64.png" width="28" height="28" alt="Nanik" style="border-radius:7px;display:block"></a>
+    <div id="site-nav-links" class="site-nav-links">
+      <a href="/" data-i18n="nav.home">Home</a>
+      <a href="languages.html" data-i18n="nav.languages">Languages</a>
+      <a href="stories.html" data-i18n="nav.stories">Stories</a>
+      <a href="pricing.html" data-i18n="nav.pricing">Pricing</a>
+    </div>
+    <div id="site-lang-slot" class="site-lang-slot"></div>
+  </div>
+</header>
+
+<main class="voice-invite-main">
+  <div class="voice-invite-loading" id="invite-loading">
+    <p>Loading invite…</p>
+  </div>
+
+  <div class="voice-invite-error" id="invite-error" hidden>
+    <h1>Invite unavailable</h1>
+    <p id="invite-error-body">This invite is no longer available. Ask them to send a new link.</p>
+    <a class="btn" href="https://apps.apple.com/app/id6762894314">Get Nanik on the App Store</a>
+  </div>
+
+  <div class="voice-invite-shell" id="invite-shell" hidden>
+    <div class="voice-magic-sheet" role="document">
+      <div class="voice-magic-scroll">
+        <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
+        <div class="voice-magic-body">
+          <div class="voice-magic-flow">
+            <p class="voice-invite-requester" id="invite-requester-line"></p>
+            <h2 id="voice-invite-title">Record your voice</h2>
+            <p class="voice-magic-hint">Open Nanik, read the sample text naturally in a quiet place, then allow them to use your voice for bedtime stories.</p>
+            <p class="voice-magic-sample">Everyone thought the little dragon was fast asleep in his bed... but look up there! He's flying right over the moon! Can you see him waving?</p>
+            <div class="voice-magic-orb" aria-hidden="true">
+              <span class="voice-magic-orb-ring ring-outer"></span>
+              <span class="voice-magic-orb-ring ring-mid"></span>
+              <span class="voice-magic-orb-ring ring-inner"></span>
+              <span class="voice-magic-orb-core">
+                <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2.5" width="6" height="11" rx="3"/>
+                  <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
+                  <path d="M12 17v3.5"/>
+                  <path d="M8.5 20.5h7"/>
+                </svg>
+              </span>
+            </div>
+            <label class="voice-magic-consent is-checked" id="voice-invite-consent">
+              <input type="checkbox" id="voice-invite-consent-check" class="voice-magic-consent-input" checked>
+              <span class="voice-magic-consent-box" aria-hidden="true"></span>
+              <span class="voice-magic-consent-text" id="voice-invite-consent-text">I confirm this is my voice, and I allow them to use this voice clone in Nanik to narrate bedtime stories. I also allow Nanik to send this recording to third-party voice cloning services.</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="voice-magic-footer">
+        <div class="voice-invite-footer-actions">
+          <a class="voice-magic-record" id="invite-open-app" href="#">
+            <span class="voice-magic-record-dot" aria-hidden="true"></span>
+            <span>Continue in Nanik</span>
+          </a>
+          <a class="voice-invite-secondary" id="invite-app-store" href="https://apps.apple.com/app/id6762894314">Get Nanik on the App Store</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+&copy; 2026 Nanik · <a href="support.html">Support</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
+</footer>
+
+<script src="nanik-api-config.js?v=20260805samp"></script>
+<script src="site-nav.js?v=20260729u" defer></script>
+<script>
+(function () {
+  var APP_STORE = 'https://apps.apple.com/app/id6762894314';
+  var params = new URLSearchParams(window.location.search);
+  var token = (params.get('t') || '').trim();
+  var loading = document.getElementById('invite-loading');
+  var errorEl = document.getElementById('invite-error');
+  var errorBody = document.getElementById('invite-error-body');
+  var shell = document.getElementById('invite-shell');
+  var requesterLine = document.getElementById('invite-requester-line');
+  var consentText = document.getElementById('voice-invite-consent-text');
+  var consentLabel = document.getElementById('voice-invite-consent');
+  var consentCheck = document.getElementById('voice-invite-consent-check');
+  var openApp = document.getElementById('invite-open-app');
+  var appStore = document.getElementById('invite-app-store');
+
+  function deepLink(t) {
+    return 'teler://voice-invite/' + encodeURIComponent(t);
+  }
+
+  function showError(message) {
+    loading.hidden = true;
+    shell.hidden = true;
+    errorEl.hidden = false;
+    if (message) errorBody.textContent = message;
+  }
+
+  function syncConsent() {
+    var checked = Boolean(consentCheck && consentCheck.checked);
+    consentLabel.classList.toggle('is-checked', checked);
+    openApp.style.opacity = checked ? '1' : '0.45';
+    openApp.style.pointerEvents = checked ? 'auto' : 'none';
+  }
+
+  if (consentCheck) {
+    consentCheck.addEventListener('change', syncConsent);
+  }
+
+  if (!token) {
+    showError('This invite link is missing a token. Ask them to send a new link.');
+    return;
+  }
+
+  var api = (window.NANIK_API && window.NANIK_API.supabaseUrl)
+    ? window.NANIK_API.supabaseUrl.replace(/\/+$/, '') + '/functions/v1/voice-clone-invite'
+    : 'https://zljowsxavbpqfdskekwd.supabase.co/functions/v1/voice-clone-invite';
+  var anon = (window.NANIK_API && window.NANIK_API.supabaseAnonKey) || '';
+
+  fetch(api + '?t=' + encodeURIComponent(token) + '&format=json', {
+    headers: {
+      Accept: 'application/json',
+      apikey: anon,
+      Authorization: 'Bearer ' + anon
+    }
+  })
+    .then(function (res) { return res.json().then(function (body) { return { ok: res.ok, body: body }; }); })
+    .then(function (result) {
+      if (!result.ok || !result.body || !result.body.open) {
+        showError((result.body && result.body.error) || 'This invite is no longer available. Ask them to send a new link.');
+        return;
+      }
+      var name = (result.body.requesterDisplayName || 'Someone').trim() || 'Someone';
+      requesterLine.textContent = name + ' invited you to record your voice';
+      consentText.textContent =
+        'I confirm this is my voice, and I allow ' + name +
+        ' to use this voice clone in Nanik to narrate bedtime stories. I also allow Nanik to send this recording to third-party voice cloning services.';
+      var link = deepLink(token);
+      openApp.href = link;
+      appStore.href = APP_STORE;
+      document.querySelector('meta[name="apple-itunes-app"]').setAttribute(
+        'content',
+        'app-id=6762894314, app-argument=' + link
+      );
+      document.title = name + ' invited you — Nanik';
+
+      loading.hidden = true;
+      shell.hidden = false;
+      syncConsent();
+
+      // Soft open-app attempt (no App Store auto-bounce — keep this page visible).
+      setTimeout(function () {
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = link;
+        document.body.appendChild(iframe);
+        setTimeout(function () {
+          try { document.body.removeChild(iframe); } catch (e) {}
+        }, 1500);
+      }, 400);
+    })
+    .catch(function () {
+      showError('Could not load this invite. Check your connection and try again.');
+    });
+})();
+</script>
+</body>
+</html>
