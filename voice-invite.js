@@ -417,11 +417,6 @@
     var level = Math.min(1, Math.pow(rms * 3.2, 0.75));
     smoothLevel += (level - smoothLevel) * 0.28;
     setSampleLevel(smoothLevel);
-    // Soft cap like the app’s max sample window — no countdown UI.
-    if (phase === 'recording' && Date.now() - startedAt >= MAX_MS) {
-      finishRecordingToSave();
-      return;
-    }
     rafId = requestAnimationFrame(tick);
   }
 
@@ -671,9 +666,10 @@
         stopMicTracks();
         if (uiRoot) uiRoot.classList.remove('is-recording');
         if (!blob || blob.size < 1000) throw new Error('Recording was too short. Please try again.');
-        if (elapsed < MIN_MS) throw new Error('Please read a bit longer (about 5–10 seconds).');
+        if (elapsed < MIN_MS) throw new Error('Please read a bit longer (at least 5 seconds).');
         pendingBlob = blob;
-        pendingDurationMs = elapsed;
+        // Cap reported duration for clone API; recording ends only when user taps Stop.
+        pendingDurationMs = Math.min(elapsed, MAX_MS);
         return prepareHiggsCloneWav(blob).then(function (prepared) {
           pendingPrepared = prepared;
           setStatus('', false);
