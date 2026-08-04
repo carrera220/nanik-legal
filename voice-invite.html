@@ -111,12 +111,25 @@
     padding: 0;
     background: transparent;
   }
-  /* Ensure only one step is visible (some WebViews ignore [hidden] in flex sheets). */
+  /* One step at a time — [hidden] alone is unreliable in some WebViews/flex sheets. */
+  #invite-step-record,
+  #invite-step-save {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
   #invite-step-record.invite-step-hidden,
   #invite-step-save.invite-step-hidden,
   #invite-step-record[hidden],
   #invite-step-save[hidden] {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    overflow: hidden !important;
   }
   .voice-invite-back {
     appearance: none;
@@ -264,6 +277,6 @@
 
 <script src="nanik-api-config.js?v=20260805samp"></script>
 <script src="site-nav.js?v=20260729u" defer></script>
-<script src="voice-invite.js?v=20260805save3" defer></script>
+<script src="voice-invite.js?v=20260805save4" defer></script>
 </body>
 </html>
