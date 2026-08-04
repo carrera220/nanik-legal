@@ -5,18 +5,18 @@ window.NANIK_API = {
   previewText: 'Once upon a time, a magical helper named Nanik turned toy photos into beautiful, illustrated bedtime stories, reading them aloud in your very own voice so little ones could sleep happily ever after.',
   maxRecordMs: 10000,
   minRecordMs: 5000,
-  // Must match Nanik app: src/constants/higgsNarration.ts + client/server ttsChunking
-  // temperature 0.7 · topK 200 · topP 0.85 · maxNewTokens 2047 · pcm · ~60-word packs
+  // Must match Nanik app: src/constants/higgsNarration.ts + supabase/functions/_shared/higgs.ts
+  // temperature 0.9 · topP 0.95 · topK 0 (omit) · maxNewTokens 2047 · pcm · ~60-word packs
   higgs: {
     sampleRate: 24000,
     cloneTargetSec: 9,
     cloneTailSilenceMs: 500,
     modelId: 'higgs-tts-3',
     responseFormat: 'pcm',
-    temperature: 0.7,
+    temperature: 0.9,
     maxNewTokens: 2047,
-    topK: 200,
-    topP: 0.85,
+    topK: 0,
+    topP: 0.95,
     speakingRate: 1.0,
     interChunkMs: 1200,
     interChunkRateLimitMs: 5000,

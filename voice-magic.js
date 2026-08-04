@@ -1222,9 +1222,9 @@
     var topP = Number(h.topP);
     var maxNewTokens = Number(h.maxNewTokens);
     // Fallbacks must match src/constants/higgsNarration.ts (not older lab presets).
-    if (!Number.isFinite(temperature)) temperature = 0.7;
-    if (!Number.isFinite(topK)) topK = 200;
-    if (!Number.isFinite(topP)) topP = 0.85;
+    if (!Number.isFinite(temperature)) temperature = 0.9;
+    if (!Number.isFinite(topK)) topK = 0;
+    if (!Number.isFinite(topP)) topP = 0.95;
     if (!Number.isFinite(maxNewTokens)) maxNewTokens = 2047;
     return {
       modelId: h.modelId || 'higgs-tts-3',
