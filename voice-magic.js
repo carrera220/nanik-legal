@@ -1,8 +1,12 @@
 (function () {
   // No countdown / auto-stop — user taps Stop (same as the Nanik app).
   var MIN_MS = 5000;
+  var MIN_BLOB_BYTES = 200;
+  var RECORDER_TIMESLICE_MS = 250;
   var SESSION_KEY = 'nanik-marketing-supabase-session';
+  var SAMPLE_CACHE_KEY = 'nanik-marketing-voice-sample-cache';
   var CLONE_USED_KEY = 'nanik-marketing-voice-cloned';
+  var Langs = window.NANIK_VOICE_LANGS || null;
 
   function resetVoiceDemoStorage() {
     try { localStorage.removeItem(CLONE_USED_KEY); } catch (e) {}
@@ -81,9 +85,66 @@
   var syncRaf = 0;
   var activeWordIndex = -1;
   var tipEl = modal.querySelector('.voice-magic-tip');
+  var langSelect = document.getElementById('voice-magic-lang');
+  var speakLang = '';
+  var activeSampleText = '';
+  var sampleLoadToken = 0;
 
   function api() {
     return window.NANIK_API || null;
+  }
+
+  function defaultPageLangCode() {
+    var lang = (document.documentElement.lang || 'en').toLowerCase();
+    if (lang.indexOf('hy') === 0) return 'hy';
+    if (lang.indexOf('ru') === 0) return 'ru';
+    return 'en';
+  }
+
+  function curatedSample(code) {
+    if (Langs && typeof Langs.curatedSample === 'function') return Langs.curatedSample(code);
+    return null;
+  }
+
+  function englishSample() {
+    return (Langs && Langs.ENGLISH_SAMPLE) ||
+      "Everyone thought the little dragon was fast asleep in his bed... but look up there! He's flying right over the moon! Can you see him waving?";
+  }
+
+  function loadSampleCache() {
+    try {
+      var raw = sessionStorage.getItem(SAMPLE_CACHE_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveSampleCache(map) {
+    try {
+      sessionStorage.setItem(SAMPLE_CACHE_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
+
+  function measureBlobDurationMs(blob) {
+    if (!blob || !blob.size) return Promise.resolve(0);
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return Promise.resolve(0);
+    var ctx = new Ctx();
+    return blob
+      .arrayBuffer()
+      .then(function (buf) {
+        return ctx.decodeAudioData(buf.slice(0));
+      })
+      .then(function (decoded) {
+        var ms = Math.round((decoded.duration || 0) * 1000);
+        return ctx.close().catch(function () {}).then(function () { return ms; });
+      })
+      .catch(function () {
+        return ctx.close().catch(function () {}).then(function () { return 0; });
+      });
   }
 
   function higgsCfg() {
@@ -590,8 +651,12 @@
       mediaRecorder.ondataavailable = function (e) {
         if (e.data && e.data.size) chunks.push(e.data);
       };
-      // No timeslice / duration cap — recording ends when the user taps Stop.
-      mediaRecorder.start();
+      // Timeslice keeps Safari/iOS flushing audio chunks so Stop isn't empty/short.
+      try {
+        mediaRecorder.start(RECORDER_TIMESLICE_MS);
+      } catch (e) {
+        mediaRecorder.start();
+      }
       tick();
     });
   }
@@ -608,14 +673,16 @@
         settled = true;
         var blob = chunks.length ? new Blob(chunks, { type: recordedMime || 'audio/webm' }) : null;
         resolve(blob);
-      }, 2500);
+      }, 3500);
+      mediaRecorder.ondataavailable = function (e) {
+        if (e.data && e.data.size) chunks.push(e.data);
+      };
       mediaRecorder.onstop = function () {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
-        resolve(new Blob(chunks, { type: recordedMime || 'audio/webm' }));
+        resolve(chunks.length ? new Blob(chunks, { type: recordedMime || 'audio/webm' }) : null);
       };
-      try { mediaRecorder.requestData(); } catch (e) {}
       try { mediaRecorder.stop(); } catch (e) {
         if (!settled) {
           settled = true;
@@ -808,10 +875,81 @@
   }
 
   function pageLanguageCode() {
-    var lang = (document.documentElement.lang || 'en').toLowerCase();
-    if (lang.indexOf('hy') === 0) return 'hye';
-    if (lang.indexOf('ru') === 0) return 'rus';
+    var code = speakLang || (langSelect && langSelect.value) || defaultPageLangCode();
+    if (Langs && typeof Langs.apiCode === 'function') return Langs.apiCode(code);
+    if (code === 'hy') return 'hye';
+    if (code === 'ru') return 'rus';
     return 'eng';
+  }
+
+  function translateSample(lang) {
+    var cfg = api();
+    var proxy = cfg && cfg.claudeProxy;
+    if (!proxy || !lang) return Promise.resolve(englishSample());
+    var cache = loadSampleCache();
+    if (cache[lang.code]) return Promise.resolve(cache[lang.code]);
+    return ensureAuth().then(function (session) {
+      return fetch(String(proxy).replace(/\/+$/, '') + '/translate-voice-sample', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: cfg.supabaseAnonKey,
+          Authorization: 'Bearer ' + session.accessToken
+        },
+        body: JSON.stringify({
+          text: englishSample(),
+          targetLanguageCode: lang.code,
+          targetLanguageName: lang.name,
+          targetNativeName: lang.native
+        })
+      }).then(function (res) {
+        return res.json().then(function (body) {
+          if (!res.ok || !body || !body.text) throw new Error((body && body.error) || 'Translate failed');
+          cache[lang.code] = String(body.text).trim();
+          saveSampleCache(cache);
+          return cache[lang.code];
+        });
+      });
+    }).catch(function () {
+      return englishSample();
+    });
+  }
+
+  function applySpeakLanguage(code) {
+    speakLang = code || defaultPageLangCode();
+    if (langSelect && langSelect.value !== speakLang) langSelect.value = speakLang;
+    var lang = Langs && typeof Langs.byCode === 'function' ? Langs.byCode(speakLang) : null;
+    var token = ++sampleLoadToken;
+    var local = curatedSample(speakLang);
+    if (local) {
+      activeSampleText = local;
+      if (sampleEl) {
+        sampleEl.textContent = local;
+        sampleEl.removeAttribute('data-i18n');
+        sampleEl.setAttribute('lang', speakLang);
+      }
+      return;
+    }
+    if (sampleEl) {
+      sampleEl.textContent = isHy
+        ? ('Բեռնում ենք նմուշը ' + ((lang && lang.native) || '') + '…')
+        : ('Loading sample in ' + ((lang && lang.name) || speakLang) + '…');
+      sampleEl.removeAttribute('data-i18n');
+      sampleEl.setAttribute('lang', speakLang);
+    }
+    if (!lang) {
+      activeSampleText = englishSample();
+      if (sampleEl) sampleEl.textContent = activeSampleText;
+      return;
+    }
+    translateSample(lang).then(function (text) {
+      if (token !== sampleLoadToken || speakLang !== lang.code) return;
+      activeSampleText = text || englishSample();
+      if (sampleEl) {
+        sampleEl.textContent = activeSampleText;
+        sampleEl.setAttribute('lang', speakLang);
+      }
+    });
   }
 
   function stopSyncLoop() {
@@ -1099,6 +1237,7 @@
     pendingDurationMs = 0;
     modal.classList.remove('is-recording', 'is-processing', 'is-ready', 'is-playing', 'is-consent');
     stopMicTracks();
+    if (langSelect) langSelect.disabled = false;
     setStatus('', false);
     setLabel(startText, 'index.magic.start');
     recordBtn.classList.remove('is-hear');
@@ -1137,6 +1276,7 @@
     stopRequested = false;
     recordBtn.disabled = true;
     setStatus('', false);
+    if (langSelect) langSelect.disabled = true;
     startMicAndRecorder().then(function () {
       phase = 'recording';
       startedAt = Date.now();
@@ -1149,6 +1289,7 @@
     }).catch(function (err) {
       phase = 'idle';
       stopRequested = false;
+      if (langSelect) langSelect.disabled = false;
       syncConsentUi();
       alert(err && err.message ? err.message : 'Microphone access is needed. Please allow the mic and try again.');
     });
@@ -1416,7 +1557,7 @@
     }
     if (phase !== 'recording' || stopRequested) return;
     stopRequested = true;
-    var durationMs = Date.now() - startedAt;
+    var wallMs = startedAt > 0 ? Date.now() - startedAt : 0;
     recordBtn.disabled = true;
     setLabel(isHy ? 'Պատրաստում…' : (isRu ? 'Подготовка…' : 'Preparing…'));
     setStatus(isHy ? 'Պատրաստում ենք ձայնագրությունը…' : (isRu ? 'Готовим запись…' : 'Preparing your recording…'), true);
@@ -1437,22 +1578,29 @@
       setSampleLevel(0);
       modal.classList.remove('is-recording');
 
-      if (!blob || blob.size < 1000) {
-        throw new Error('Recording failed. Please try again.');
+      if (!blob || blob.size < MIN_BLOB_BYTES) {
+        throw new Error(isHy
+          ? 'Ձայնագրումը չհաջողվեց։ Փորձիր կրկին՝ խոսափողը միացրած։'
+          : 'Recording failed. Please try again and keep the mic unmuted.');
       }
-      if (durationMs < MIN_MS) {
-        throw new Error('Keep reading for at least 5 seconds.');
-      }
+      return measureBlobDurationMs(blob).then(function (audioMs) {
+        var durationMs = Math.max(wallMs, audioMs);
+        if (durationMs < MIN_MS) {
+          throw new Error(isHy
+            ? 'Կարդա առնվազն 5 վայրկյան։'
+            : (isRu ? 'Читайте не менее 5 секунд.' : 'Keep reading for at least 5 seconds.'));
+        }
 
-      pendingBlob = blob;
-      pendingDurationMs = durationMs;
-      phase = 'consent';
-      if (consentCheck) consentCheck.checked = false;
-      setConsentVisible(true);
-      setStatus('', false);
-      setLabel(continueText, 'index.magic.continue');
-      recordBtn.classList.remove('is-hear');
-      syncConsentUi();
+        pendingBlob = blob;
+        pendingDurationMs = durationMs;
+        phase = 'consent';
+        if (consentCheck) consentCheck.checked = false;
+        setConsentVisible(true);
+        setStatus('', false);
+        setLabel(continueText, 'index.magic.continue');
+        recordBtn.classList.remove('is-hear');
+        syncConsentUi();
+      });
     }).catch(function (err) {
       console.error('[voice-magic]', err);
       alert(err && err.message ? err.message : 'Something went wrong. Please try again.');
@@ -1491,7 +1639,8 @@
     modal.classList.remove('is-processing', 'is-recording', 'is-ready', 'is-playing', 'is-consent');
     setMagicCta('wait');
 
-    var transcript = (sampleEl && sampleEl.textContent || '').trim()
+    var transcript = (activeSampleText || (sampleEl && sampleEl.textContent) || '')
+      .trim()
       .replace(/<\|[^|]+:[^|]+\|>/g, '')
       .slice(0, 1000);
     if (!transcript) {
@@ -1546,6 +1695,20 @@
   });
 
   recordBtn.addEventListener('click', onRecordClick);
+
+  if (Langs && typeof Langs.fillSelect === 'function' && langSelect) {
+    Langs.fillSelect(langSelect, {
+      includePlaceholder: false,
+      selected: defaultPageLangCode()
+    });
+    applySpeakLanguage(langSelect.value || defaultPageLangCode());
+    langSelect.addEventListener('change', function () {
+      if (phase === 'recording' || phase === 'processing') return;
+      applySpeakLanguage(langSelect.value);
+    });
+  } else {
+    applySpeakLanguage(defaultPageLangCode());
+  }
 
   if (consentCheck) {
     consentCheck.addEventListener('change', function () {

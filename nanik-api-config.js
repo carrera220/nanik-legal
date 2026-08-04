@@ -2,6 +2,7 @@ window.NANIK_API = {
   supabaseUrl: 'https://zljowsxavbpqfdskekwd.supabase.co',
   supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpsam93c3hhdmJwcWZkc2tla3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MjM2NjgsImV4cCI6MjA5MjE5OTY2OH0.sGswPfq4uBKgYsp2b5JNU-mETXqLCGpooVbLmUlgXi4',
   higgsProxy: 'https://zljowsxavbpqfdskekwd.supabase.co' + '/functions/v1/higgs-proxy',
+  claudeProxy: 'https://zljowsxavbpqfdskekwd.supabase.co' + '/functions/v1/claude-proxy',
   previewText: 'Once upon a time, a magical helper named Nanik turned toy photos into beautiful, illustrated bedtime stories, reading them aloud in your very own voice so little ones could sleep happily ever after.',
   maxRecordMs: 10000,
   minRecordMs: 5000,

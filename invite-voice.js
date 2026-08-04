@@ -5,34 +5,17 @@
  */
 (function () {
   var MIN_MS = 5000;
+  var MIN_BLOB_BYTES = 200;
+  var RECORDER_TIMESLICE_MS = 250;
   var SESSION_KEY = 'nanik-invite-supabase-session';
+  var SAMPLE_CACHE_KEY = 'nanik-invite-voice-sample-cache';
   var CONSENT_VERSION = 'voice_invite_v1';
   var TRIM_THRESHOLD = 420;
   var TRIM_EDGE_PAD_MS = 18;
   var TRIM_MIN_KEEP_MS = 80;
   var TAIL_TRIM_MS = 90;
   var EDGE_FADE_MS = 10;
-
-  var SAMPLES = {
-    hy: {
-      code: 'hye',
-      label: 'Armenian',
-      sample:
-        'Այնքան լավ եղանակ է այսօր՝ արևոտ ու ջինջ...Չգիտեմ նույնիսկ՝ տանը մնամ, թե՞ դուրս գամ մի քիչ քայլելու։ Դու ի՞նչ կասես։\n- Իհարկե կմիանամ, - ասաց փոքրիկը։\n- Դե, գնացինք։'
-    },
-    en: {
-      code: 'eng',
-      label: 'English',
-      sample:
-        "Everyone thought the little dragon was fast asleep in his bed... but look up there! He's flying right over the moon! Can you see him waving?"
-    },
-    ru: {
-      code: 'rus',
-      label: 'Russian',
-      sample:
-        'Все думали, что маленький дракон крепко спит в своей кроватке… а посмотрите наверх! Он летит прямо над луной! Видишь, как он машет?'
-    }
-  };
+  var Langs = window.NANIK_VOICE_LANGS || null;
 
   var params = new URLSearchParams(window.location.search);
   var inviteToken = (params.get('t') || '').trim();
@@ -88,9 +71,98 @@
   var pendingBlob = null;
   var pendingDurationMs = 0;
   var pendingPrepared = null;
+  var activeSampleText = '';
+  var sampleLoadToken = 0;
 
   function api() {
     return window.NANIK_API || null;
+  }
+
+  function langApiCode(code) {
+    if (Langs && typeof Langs.apiCode === 'function') return Langs.apiCode(code);
+    if (code === 'hy') return 'hye';
+    if (code === 'en') return 'eng';
+    if (code === 'ru') return 'rus';
+    return code || 'eng';
+  }
+
+  function curatedSample(code) {
+    if (Langs && typeof Langs.curatedSample === 'function') return Langs.curatedSample(code);
+    return null;
+  }
+
+  function englishSample() {
+    return (Langs && Langs.ENGLISH_SAMPLE) ||
+      "Everyone thought the little dragon was fast asleep in his bed... but look up there! He's flying right over the moon! Can you see him waving?";
+  }
+
+  function loadSampleCache() {
+    try {
+      var raw = sessionStorage.getItem(SAMPLE_CACHE_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveSampleCache(map) {
+    try {
+      sessionStorage.setItem(SAMPLE_CACHE_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
+
+  function measureBlobDurationMs(blob) {
+    if (!blob || !blob.size) return Promise.resolve(0);
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return Promise.resolve(0);
+    var ctx = new Ctx();
+    return blob
+      .arrayBuffer()
+      .then(function (buf) {
+        return ctx.decodeAudioData(buf.slice(0));
+      })
+      .then(function (decoded) {
+        var ms = Math.round((decoded.duration || 0) * 1000);
+        return ctx.close().catch(function () {}).then(function () { return ms; });
+      })
+      .catch(function () {
+        return ctx.close().catch(function () {}).then(function () { return 0; });
+      });
+  }
+
+  function translateSample(lang) {
+    var cfg = api();
+    var proxy = cfg && cfg.claudeProxy;
+    if (!proxy || !lang) return Promise.resolve(englishSample());
+    var cache = loadSampleCache();
+    if (cache[lang.code]) return Promise.resolve(cache[lang.code]);
+    return ensureAuth().then(function (session) {
+      return fetch(String(proxy).replace(/\/+$/, '') + '/translate-voice-sample', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: cfg.supabaseAnonKey,
+          Authorization: 'Bearer ' + session.accessToken
+        },
+        body: JSON.stringify({
+          text: englishSample(),
+          targetLanguageCode: lang.code,
+          targetLanguageName: lang.name,
+          targetNativeName: lang.native
+        })
+      }).then(function (res) {
+        return res.json().then(function (body) {
+          if (!res.ok || !body || !body.text) throw new Error((body && body.error) || 'Translate failed');
+          cache[lang.code] = String(body.text).trim();
+          saveSampleCache(cache);
+          return cache[lang.code];
+        });
+      });
+    }).catch(function () {
+      return englishSample();
+    });
   }
 
   function higgsCfg() {
@@ -463,8 +535,12 @@
             console.warn('[invite-voice] recorder stopped unexpectedly; waiting for user Stop');
           }
         };
-        // No timeslice limit / no duration cap — user taps Stop.
-        mediaRecorder.start();
+        // Timeslice keeps Safari/iOS flushing audio chunks so Stop isn't empty/short.
+        try {
+          mediaRecorder.start(RECORDER_TIMESLICE_MS);
+        } catch (e) {
+          mediaRecorder.start();
+        }
         tick();
       });
   }
@@ -480,16 +556,17 @@
         if (settled) return;
         settled = true;
         resolve(chunks.length ? new Blob(chunks, { type: recordedMime || 'audio/webm' }) : null);
-      }, 2500);
+      }, 3500);
+      mediaRecorder.ondataavailable = function (e) {
+        if (e.data && e.data.size) chunks.push(e.data);
+      };
       mediaRecorder.onstop = function () {
         if (settled) return;
         settled = true;
         clearTimeout(timer);
-        resolve(new Blob(chunks, { type: recordedMime || 'audio/webm' }));
+        resolve(chunks.length ? new Blob(chunks, { type: recordedMime || 'audio/webm' }) : null);
       };
-      try {
-        mediaRecorder.requestData();
-      } catch (e) {}
+      // requestData() is unreliable on Safari mp4 — timeslice already captured chunks.
       try {
         mediaRecorder.stop();
       } catch (e) {
@@ -549,7 +626,9 @@
   }
 
   function hasLanguage() {
-    return Boolean(speakLang && SAMPLES[speakLang]);
+    if (!speakLang) return false;
+    if (Langs && typeof Langs.byCode === 'function') return Boolean(Langs.byCode(speakLang));
+    return Boolean(curatedSample(speakLang));
   }
 
   function trimmedName() {
@@ -607,20 +686,50 @@
 
   function applyLanguage(code) {
     speakLang = code || '';
-    var entry = SAMPLES[speakLang];
-    if (sampleEl) {
-      if (entry) {
-        sampleEl.textContent = entry.sample;
-        sampleEl.classList.remove('is-placeholder');
-        sampleEl.setAttribute('lang', speakLang);
-      } else {
+    var lang = Langs && typeof Langs.byCode === 'function' ? Langs.byCode(speakLang) : null;
+    var token = ++sampleLoadToken;
+    activeSampleText = '';
+    if (!speakLang || !lang) {
+      if (sampleEl) {
         sampleEl.textContent = 'Choose the language you will speak, then read the sample aloud.';
         sampleEl.classList.add('is-placeholder');
         sampleEl.removeAttribute('lang');
       }
+      if (tipEl) tipEl.hidden = true;
+      syncRecordUi();
+      return;
     }
-    if (tipEl) tipEl.hidden = !entry;
+
+    var local = curatedSample(speakLang);
+    if (local) {
+      activeSampleText = local;
+      if (sampleEl) {
+        sampleEl.textContent = local;
+        sampleEl.classList.remove('is-placeholder');
+        sampleEl.setAttribute('lang', speakLang);
+      }
+      if (tipEl) tipEl.hidden = false;
+      syncRecordUi();
+      return;
+    }
+
+    if (sampleEl) {
+      sampleEl.textContent = 'Loading sample in ' + lang.name + '…';
+      sampleEl.classList.add('is-placeholder');
+      sampleEl.setAttribute('lang', speakLang);
+    }
+    if (tipEl) tipEl.hidden = false;
     syncRecordUi();
+    translateSample(lang).then(function (text) {
+      if (token !== sampleLoadToken || speakLang !== lang.code) return;
+      activeSampleText = text || englishSample();
+      if (sampleEl) {
+        sampleEl.textContent = activeSampleText;
+        sampleEl.classList.remove('is-placeholder');
+        sampleEl.setAttribute('lang', speakLang);
+      }
+      syncRecordUi();
+    });
   }
 
   function resetUi() {
@@ -671,7 +780,7 @@
   function finishRecordingToSave() {
     if (phase !== 'recording' || stopRequested) return;
     stopRequested = true;
-    var elapsed = Date.now() - startedAt;
+    var wallMs = startedAt > 0 ? Date.now() - startedAt : 0;
     recordBtn.disabled = true;
     setLabel('Preparing…');
     setStatus('Preparing your recording…', true);
@@ -680,15 +789,22 @@
       .then(function (blob) {
         stopMicTracks();
         if (uiRoot) uiRoot.classList.remove('is-recording');
-        if (!blob || blob.size < 1000) throw new Error('Recording was too short. Please try again.');
-        if (elapsed < MIN_MS) throw new Error('Please read a bit longer (at least 5 seconds), then tap Stop.');
-        pendingBlob = blob;
-        pendingDurationMs = elapsed;
-        return prepareHiggsCloneWav(blob).then(function (prepared) {
-          pendingPrepared = prepared;
-          setStatus('', false);
-          setLabel('Start recording');
-          showSaveStep();
+        if (!blob || blob.size < MIN_BLOB_BYTES) {
+          throw new Error('Recording failed. Please try again and keep the mic unmuted.');
+        }
+        return measureBlobDurationMs(blob).then(function (audioMs) {
+          var durationMs = Math.max(wallMs, audioMs);
+          if (durationMs < MIN_MS) {
+            throw new Error('Please read a bit longer (at least 5 seconds), then tap Stop.');
+          }
+          pendingBlob = blob;
+          pendingDurationMs = durationMs;
+          return prepareHiggsCloneWav(blob).then(function (prepared) {
+            pendingPrepared = prepared;
+            setStatus('', false);
+            setLabel('Start recording');
+            showSaveStep();
+          });
         });
       })
       .catch(function (err) {
@@ -719,9 +835,8 @@
     setSaveStatus('Creating your voice clone…', true);
     if (uiRoot) uiRoot.classList.add('is-processing');
 
-    var entry = SAMPLES[speakLang];
-    var transcript = entry ? entry.sample : '';
-    var languageCode = entry ? entry.code : 'eng';
+    var transcript = activeSampleText || curatedSample(speakLang) || englishSample();
+    var languageCode = langApiCode(speakLang);
 
     ensureAuth()
       .then(function (session) {
@@ -734,7 +849,7 @@
             filename: pendingPrepared.filename,
             audioBase64: uint8ToBase64(pendingPrepared.wavBytes),
             transcription: transcript,
-            durationMs: Math.max(pendingDurationMs, pendingPrepared.durationMs),
+            durationMs: Math.max(pendingDurationMs, pendingPrepared.durationMs || 0),
             languageCode: languageCode,
             removeBackgroundNoise: false,
             inviteToken: inviteToken,
@@ -837,6 +952,9 @@
 
       if (loading) loading.hidden = true;
       if (shell) shell.hidden = false;
+      if (Langs && typeof Langs.fillSelect === 'function' && langSelect) {
+        Langs.fillSelect(langSelect, { placeholder: 'Select language…', selected: '' });
+      }
       applyLanguage(langSelect ? langSelect.value : '');
       showRecordStep();
     })
