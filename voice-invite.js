@@ -1,12 +1,10 @@
 /**
- * Voice-clone invite landing: record in-browser (same Higgs path as voice-magic)
- * and attribute ownership to the invite requester via inviteToken.
+ * Voice-clone invite landing: record UI matches the Nanik app (purple screen,
+ * tip + sample glow + Start/Stop). Clone is attributed via inviteToken.
  */
 (function () {
   var MAX_MS = (window.NANIK_API && window.NANIK_API.maxRecordMs) || 10000;
   var MIN_MS = (window.NANIK_API && window.NANIK_API.minRecordMs) || 5000;
-  var RING_R = 54;
-  var RING_C = 2 * Math.PI * RING_R;
   var SESSION_KEY = 'nanik-invite-supabase-session';
   var CONSENT_VERSION = 'voice_invite_v1';
   var TRIM_THRESHOLD = 420;
@@ -56,15 +54,13 @@
   var nameInput = document.getElementById('voice-invite-name');
   var langSelect = document.getElementById('voice-invite-lang');
   var sampleEl = document.getElementById('voice-invite-sample');
-  var orb = document.getElementById('voice-invite-orb');
-  var countdownEl = document.getElementById('voice-invite-countdown');
   var statusEl = document.getElementById('voice-invite-status');
   var saveStatusEl = document.getElementById('voice-invite-save-status');
-  var progressFill = uiRoot ? uiRoot.querySelector('.voice-magic-progress-fill') : null;
   var successEl = document.getElementById('invite-success');
   var successBody = document.getElementById('invite-success-body');
-  var labelEl = recordBtn ? recordBtn.querySelector('span:last-child') : null;
-  var presetButtons = document.querySelectorAll('.voice-invite-preset');
+  var labelEl = document.getElementById('voice-invite-record-label');
+  var tipEl = document.getElementById('voice-invite-tip');
+  var presetButtons = document.querySelectorAll('.invite-preset');
 
   if (!recordBtn || !saveBtn || !inviteToken) {
     if (!inviteToken && errorEl) {
@@ -91,11 +87,6 @@
   var pendingBlob = null;
   var pendingDurationMs = 0;
   var pendingPrepared = null;
-
-  if (progressFill) {
-    progressFill.style.strokeDasharray = String(RING_C);
-    progressFill.style.strokeDashoffset = String(RING_C);
-  }
 
   function api() {
     return window.NANIK_API || null;
@@ -409,19 +400,9 @@
     analyser = null;
     dataArray = null;
     smoothLevel = 0;
-    setOrbLevel(0);
+    setSampleLevel(0);
     mediaRecorder = null;
     chunks = [];
-  }
-
-  function updateCountdown() {
-    if (phase !== 'recording') return;
-    var elapsed = Date.now() - startedAt;
-    var remaining = Math.max(0, Math.ceil((MAX_MS - elapsed) / 1000));
-    var progress = Math.min(1, Math.max(0, elapsed / MAX_MS));
-    if (countdownEl) countdownEl.textContent = String(remaining);
-    if (progressFill) progressFill.style.strokeDashoffset = String(RING_C * (1 - progress));
-    if (elapsed >= MAX_MS) finishRecordingToSave();
   }
 
   function tick() {
@@ -435,8 +416,12 @@
     var rms = Math.sqrt(sum / dataArray.length);
     var level = Math.min(1, Math.pow(rms * 3.2, 0.75));
     smoothLevel += (level - smoothLevel) * 0.28;
-    setOrbLevel(smoothLevel);
-    updateCountdown();
+    setSampleLevel(smoothLevel);
+    // Soft cap like the app’s max sample window — no countdown UI.
+    if (phase === 'recording' && Date.now() - startedAt >= MAX_MS) {
+      finishRecordingToSave();
+      return;
+    }
     rafId = requestAnimationFrame(tick);
   }
 
@@ -528,14 +513,10 @@
     if (labelEl) labelEl.textContent = text;
   }
 
-  function setOrbLevel(level) {
-    if (!orb) return;
-    var t = Math.max(0, Math.min(1, level));
-    orb.style.setProperty('--voice-level', t.toFixed(3));
-    orb.style.setProperty('--voice-scale-outer', (1 + t * 0.55).toFixed(3));
-    orb.style.setProperty('--voice-scale-mid', (1 + t * 0.38).toFixed(3));
-    orb.style.setProperty('--voice-scale-inner', (1 + t * 0.22).toFixed(3));
-    orb.style.setProperty('--voice-glow', (0.25 + t * 0.75).toFixed(3));
+  function setSampleLevel(level) {
+    if (!uiRoot) return;
+    var t = Math.max(0, Math.min(1, level * 1.35));
+    uiRoot.style.setProperty('--voice-level', t.toFixed(3));
   }
 
   function showError(message) {
@@ -622,11 +603,17 @@
     speakLang = code || '';
     var entry = SAMPLES[speakLang];
     if (sampleEl) {
-      sampleEl.textContent = entry
-        ? entry.sample
-        : 'Choose the language you will speak, then read the sample aloud.';
-      sampleEl.hidden = !entry;
+      if (entry) {
+        sampleEl.textContent = entry.sample;
+        sampleEl.classList.remove('is-placeholder');
+        sampleEl.setAttribute('lang', speakLang);
+      } else {
+        sampleEl.textContent = 'Choose the language you will speak, then read the sample aloud.';
+        sampleEl.classList.add('is-placeholder');
+        sampleEl.removeAttribute('lang');
+      }
     }
+    if (tipEl) tipEl.hidden = !entry;
     syncRecordUi();
   }
 
@@ -638,11 +625,7 @@
     pendingPrepared = null;
     if (uiRoot) uiRoot.classList.remove('is-recording', 'is-processing');
     stopMicTracks();
-    if (countdownEl) {
-      countdownEl.hidden = true;
-      countdownEl.textContent = '10';
-    }
-    if (progressFill) progressFill.style.strokeDashoffset = String(RING_C);
+    setSampleLevel(0);
     setStatus('', false);
     setSaveStatus('', false);
     setLabel('Start recording');
@@ -666,13 +649,8 @@
           uiRoot.classList.add('is-recording');
           uiRoot.classList.remove('is-processing');
         }
-        if (countdownEl) {
-          countdownEl.hidden = false;
-          countdownEl.textContent = '10';
-        }
         setLabel('Stop recording');
         syncRecordUi();
-        updateCountdown();
       })
       .catch(function (err) {
         phase = 'idle';

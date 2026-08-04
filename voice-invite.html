@@ -15,21 +15,20 @@
     margin: 0;
     display: flex;
     flex-direction: column;
+    background: #9869FF;
   }
   body.voice-invite-page main.voice-invite-main {
     flex: 1;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
-    padding: 24px 16px 40px;
+    padding: 0;
   }
-  .voice-invite-shell { width: min(420px, 100%); }
-  .voice-invite-shell .voice-magic-sheet { max-height: none; }
-  .voice-invite-shell .voice-magic-scroll { padding-bottom: 108px; }
   .voice-invite-loading,
   .voice-invite-error,
   .voice-invite-success {
     width: min(420px, 100%);
+    margin: auto;
     text-align: center;
     color: #fff;
     padding: 32px 20px;
@@ -45,73 +44,24 @@
     line-height: 1.5;
     margin: 0 0 20px;
   }
-  .voice-invite-requester {
-    margin: 0 0 10px;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 14px;
-    line-height: 1.4;
-    text-align: center;
-  }
-  .voice-invite-lang-wrap { margin: 0 0 12px; text-align: left; }
-  .voice-invite-lang-label,
-  .voice-invite-name-label {
-    display: block;
-    margin: 0 0 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.78);
-  }
-  .voice-invite-lang,
-  .voice-invite-name-input {
+
+  .voice-invite-shell {
     width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.28);
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    padding: 12px 14px;
-    box-sizing: border-box;
-  }
-  .voice-invite-lang {
-    padding-right: 40px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='white' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-  }
-  .voice-invite-lang option { color: #111; }
-  .voice-invite-name-input::placeholder { color: rgba(255,255,255,0.42); font-weight: 500; }
-  .voice-invite-presets {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100%;
     display: flex;
-    gap: 8px;
-    margin: 0 0 10px;
+    flex-direction: column;
   }
-  .voice-invite-preset {
+  #voice-invite-ui {
     flex: 1;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border-radius: 999px;
-    padding: 10px 8px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .voice-invite-preset.is-active {
-    border-color: rgba(243, 166, 157, 0.7);
-    background: rgba(243, 166, 157, 0.18);
-  }
-  #voice-invite-ui.voice-magic-modal {
-    position: static;
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: auto;
-    padding: 0;
-    background: transparent;
+    background: #9869FF;
   }
-  /* One step at a time — [hidden] alone is unreliable in some WebViews/flex sheets. */
+
+  /* One step at a time */
   #invite-step-record,
   #invite-step-save {
     flex: 1 1 auto;
@@ -131,16 +81,363 @@
     height: 0 !important;
     overflow: hidden !important;
   }
-  .voice-invite-back {
+
+  /* ── Record step (matches app VoiceRecordingCard inline) ── */
+  .invite-record-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px 8px;
+    min-height: 52px;
+  }
+  .invite-record-header h1 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+  }
+  .invite-requester {
+    margin: 0;
+    padding: 0 24px 8px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 13px;
+    line-height: 1.35;
+    text-align: center;
+  }
+  .invite-record-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8px 24px 28px;
+    gap: 0;
+    box-sizing: border-box;
+  }
+  .invite-lang-wrap {
+    align-self: stretch;
+    width: 100%;
+    margin: 4px 0 8px;
+    text-align: left;
+  }
+  .invite-lang-label,
+  .invite-name-label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .invite-lang,
+  .invite-name-input {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.28);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 12px 14px;
+    box-sizing: border-box;
+  }
+  .invite-lang {
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='white' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  .invite-lang option { color: #111; }
+  .invite-name-input::placeholder { color: rgba(255,255,255,0.42); font-weight: 500; }
+
+  .invite-tip {
+    align-self: stretch;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0 0 10px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 152, 105, 0.45);
+    background: rgba(255, 152, 105, 0.16);
+    box-sizing: border-box;
+  }
+  .invite-tip-icon {
+    flex: 0 0 auto;
+    margin-top: 2px;
+    color: #FF9869;
+  }
+  .invite-tip-text {
+    flex: 1;
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.92);
+    font-style: italic;
+    text-align: left;
+  }
+
+  .invite-sample-glow {
+    align-self: stretch;
+    width: 100%;
+    margin: 0 0 8px;
+    position: relative;
+  }
+  .invite-sample-outline {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    left: -2px;
+    right: -2px;
+    border: 2px solid #fff;
+    border-radius: 18px;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1);
+    transition: opacity 0.12s ease-out, transform 0.12s ease-out;
+  }
+  #voice-invite-ui.is-recording .invite-sample-outline {
+    opacity: calc(0.42 + var(--voice-level, 0) * 0.58);
+    transform: scaleX(calc(1 + var(--voice-level, 0) * 0.028))
+      scaleY(calc(1 + var(--voice-level, 0) * 0.09));
+    animation: invite-sample-breath 1.4s ease-in-out infinite;
+  }
+  @keyframes invite-sample-breath {
+    0%, 100% { opacity: calc(0.42 + var(--voice-level, 0) * 0.5); }
+    50% { opacity: calc(0.58 + var(--voice-level, 0) * 0.42); }
+  }
+  .invite-sample-panel {
+    width: 100%;
+    padding: 8px 12px 10px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.32);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .invite-sample-text {
+    margin: 0;
+    font-size: 17px;
+    line-height: 26px;
+    color: #fff;
+    text-align: center;
+    font-style: italic;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .invite-sample-text.is-placeholder {
+    font-style: normal;
+    font-size: 15px;
+    line-height: 22px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .invite-sample-text[lang="hy"] {
+    font-size: 17px;
+    line-height: 27px;
+  }
+
+  .invite-controls {
+    align-self: stretch;
+    width: 100%;
+    margin-top: 8px;
+  }
+  .invite-record-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-height: 52px;
+    border: none;
+    border-radius: 26px;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .invite-record-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .invite-record-btn .invite-record-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: #f87171;
+    flex-shrink: 0;
+  }
+  .invite-record-btn:disabled .invite-record-dot {
+    background: rgba(0, 0, 0, 0.25);
+  }
+  .invite-record-btn .invite-record-stop {
+    display: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  #voice-invite-ui.is-recording .invite-record-btn {
+    background: #f87171;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(248, 113, 113, 0.35);
+  }
+  #voice-invite-ui.is-recording .invite-record-btn .invite-record-dot {
+    display: none;
+  }
+  #voice-invite-ui.is-recording .invite-record-btn .invite-record-stop {
+    display: block;
+  }
+  .invite-status {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* ── Save step ── */
+  .invite-save-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 16px 24px 28px;
+    box-sizing: border-box;
+  }
+  .invite-save-body h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+  }
+  .invite-save-hint {
+    margin: 0 0 18px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.78);
+    text-align: center;
+  }
+  .invite-presets {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .invite-preset {
+    flex: 1;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .invite-preset.is-active {
+    border-color: rgba(243, 166, 157, 0.7);
+    background: rgba(243, 166, 157, 0.18);
+  }
+  .invite-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    text-align: left;
+    user-select: none;
+  }
+  .invite-consent.is-checked {
+    border-color: rgba(243, 166, 157, 0.55);
+    background: rgba(243, 166, 157, 0.14);
+  }
+  .invite-consent-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+  }
+  .invite-consent-box {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    margin-top: 1px;
+    border-radius: 6px;
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    background: rgba(0, 0, 0, 0.18);
+    position: relative;
+  }
+  .invite-consent.is-checked .invite-consent-box {
+    border-color: #F3A69D;
+    background: #F3A69D;
+  }
+  .invite-consent.is-checked .invite-consent-box::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid #1a0f35;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .invite-consent-text {
+    flex: 1;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.82);
+    font-weight: 500;
+  }
+  .invite-consent.is-disabled { opacity: 0.55; pointer-events: none; }
+  .invite-save-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-height: 52px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 26px;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .invite-save-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .invite-back {
     appearance: none;
     border: none;
     background: transparent;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255, 255, 255, 0.85);
     font-size: 14px;
     font-weight: 600;
-    padding: 8px 0 0;
+    padding: 12px 0 0;
     cursor: pointer;
     width: 100%;
+  }
+
+  body.voice-invite-page header.site,
+  body.voice-invite-page footer {
+    background: rgba(152, 105, 255, 0.92);
   }
 </style>
 </head>
@@ -176,97 +473,83 @@
   </div>
 
   <div class="voice-invite-shell" id="invite-shell" hidden>
-    <div class="voice-magic-modal" id="voice-invite-ui">
-      <div class="voice-magic-sheet" role="document">
+    <div id="voice-invite-ui">
 
-        <!-- Step 1: record (no consent — same as the app) -->
-        <div id="invite-step-record">
-          <div class="voice-magic-scroll">
-            <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
-            <div class="voice-magic-body">
-              <div class="voice-magic-flow">
-                <p class="voice-invite-requester" id="invite-requester-line"></p>
-                <h2>Record your voice</h2>
-                <p class="voice-magic-hint">Choose the language you will speak, tap Start recording, and read the sample text naturally in a quiet place. When you finish, tap Stop.</p>
+      <!-- Step 1: record — same layout as the Nanik app -->
+      <div id="invite-step-record">
+        <div class="invite-record-header">
+          <h1>Record your voice</h1>
+        </div>
+        <p class="invite-requester" id="invite-requester-line"></p>
+        <div class="invite-record-body">
+          <div class="invite-lang-wrap">
+            <label class="invite-lang-label" for="voice-invite-lang">Language I will speak</label>
+            <select id="voice-invite-lang" class="invite-lang">
+              <option value="">Select language…</option>
+              <option value="hy">Armenian</option>
+              <option value="en">English</option>
+              <option value="ru">Russian</option>
+            </select>
+          </div>
 
-                <div class="voice-invite-lang-wrap">
-                  <label class="voice-invite-lang-label" for="voice-invite-lang">Language I will speak</label>
-                  <select id="voice-invite-lang" class="voice-invite-lang">
-                    <option value="">Select language…</option>
-                    <option value="hy">Armenian</option>
-                    <option value="en">English</option>
-                    <option value="ru">Russian</option>
-                  </select>
-                </div>
+          <div class="invite-tip" id="voice-invite-tip" hidden>
+            <svg class="invite-tip-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+            <p class="invite-tip-text">Tap Start recording and read the sample text naturally in a quiet place. Once you read the entire text, hit Stop</p>
+          </div>
 
-                <p class="voice-magic-sample" id="voice-invite-sample" hidden></p>
-
-                <div class="voice-magic-orb" id="voice-invite-orb" aria-hidden="true">
-                  <span class="voice-magic-orb-ring ring-outer"></span>
-                  <span class="voice-magic-orb-ring ring-mid"></span>
-                  <span class="voice-magic-orb-ring ring-inner"></span>
-                  <svg class="voice-magic-progress" viewBox="0 0 120 120" aria-hidden="true">
-                    <circle class="voice-magic-progress-track" cx="60" cy="60" r="54" fill="none" />
-                    <circle class="voice-magic-progress-fill" cx="60" cy="60" r="54" fill="none" />
-                  </svg>
-                  <span class="voice-magic-orb-core">
-                    <span class="voice-magic-countdown" id="voice-invite-countdown" hidden>10</span>
-                    <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="9" y="2.5" width="6" height="11" rx="3"/>
-                      <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
-                      <path d="M12 17v3.5"/>
-                      <path d="M8.5 20.5h7"/>
-                    </svg>
-                  </span>
-                </div>
-              </div>
+          <div class="invite-sample-glow" id="voice-invite-sample-glow">
+            <div class="invite-sample-outline" aria-hidden="true"></div>
+            <div class="invite-sample-panel">
+              <p class="invite-sample-text is-placeholder" id="voice-invite-sample">Choose the language you will speak, then read the sample aloud.</p>
             </div>
           </div>
-          <div class="voice-magic-footer">
-            <button type="button" class="voice-magic-record" id="voice-invite-record" disabled>
-              <span class="voice-magic-record-dot" aria-hidden="true"></span>
-              <span>Start recording</span>
+
+          <div class="invite-controls">
+            <button type="button" class="invite-record-btn" id="voice-invite-record" disabled>
+              <span class="invite-record-dot" aria-hidden="true"></span>
+              <span class="invite-record-stop" aria-hidden="true"></span>
+              <span id="voice-invite-record-label">Start recording</span>
             </button>
-            <p class="voice-magic-status" id="voice-invite-status" hidden></p>
+            <p class="invite-status" id="voice-invite-status" hidden></p>
           </div>
         </div>
-
-        <!-- Step 2: save — name + consent (same as the app) -->
-        <div id="invite-step-save" class="invite-step-hidden" hidden>
-          <div class="voice-magic-scroll">
-            <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
-            <div class="voice-magic-body">
-              <div class="voice-magic-flow">
-                <h2>Share your voice</h2>
-                <p class="voice-magic-hint">Name this voice and confirm they can use it for bedtime stories.</p>
-
-                <div class="voice-invite-lang-wrap">
-                  <label class="voice-invite-name-label" for="voice-invite-name">Voice name</label>
-                  <div class="voice-invite-presets">
-                    <button type="button" class="voice-invite-preset" data-preset="Mom">👩 Mom</button>
-                    <button type="button" class="voice-invite-preset" data-preset="Dad">👨 Dad</button>
-                  </div>
-                  <input id="voice-invite-name" class="voice-invite-name-input" type="text" maxlength="48" placeholder="e.g. Grandma" autocomplete="off" />
-                </div>
-
-                <label class="voice-magic-consent" id="voice-invite-consent">
-                  <input type="checkbox" id="voice-invite-consent-check" class="voice-magic-consent-input">
-                  <span class="voice-magic-consent-box" aria-hidden="true"></span>
-                  <span class="voice-magic-consent-text" id="voice-invite-consent-text">I confirm this is my voice, and I allow them to use this voice clone in Nanik to narrate bedtime stories. I also allow Nanik to send this recording to third-party voice cloning services.</span>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="voice-magic-footer">
-            <button type="button" class="voice-magic-record" id="voice-invite-save" disabled>
-              <span>Share my voice</span>
-            </button>
-            <p class="voice-magic-status" id="voice-invite-save-status" hidden></p>
-            <button type="button" class="voice-invite-back" id="voice-invite-back">← Record again</button>
-          </div>
-        </div>
-
       </div>
+
+      <!-- Step 2: save — name + consent -->
+      <div id="invite-step-save" class="invite-step-hidden" hidden>
+        <div class="invite-record-header">
+          <h1>Share your voice</h1>
+        </div>
+        <div class="invite-save-body">
+          <p class="invite-save-hint">Name this voice and confirm they can use it for bedtime stories.</p>
+
+          <div class="invite-lang-wrap">
+            <label class="invite-name-label" for="voice-invite-name">Voice name</label>
+            <div class="invite-presets">
+              <button type="button" class="invite-preset" data-preset="Mom">👩 Mom</button>
+              <button type="button" class="invite-preset" data-preset="Dad">👨 Dad</button>
+            </div>
+            <input id="voice-invite-name" class="invite-name-input" type="text" maxlength="48" placeholder="e.g. Grandma" autocomplete="off" />
+          </div>
+
+          <label class="invite-consent" id="voice-invite-consent">
+            <input type="checkbox" id="voice-invite-consent-check" class="invite-consent-input">
+            <span class="invite-consent-box" aria-hidden="true"></span>
+            <span class="invite-consent-text" id="voice-invite-consent-text">I confirm this is my voice, and I allow them to use this voice clone in Nanik to narrate bedtime stories. I also allow Nanik to send this recording to third-party voice cloning services.</span>
+          </label>
+
+          <button type="button" class="invite-save-btn" id="voice-invite-save" disabled>
+            Share my voice
+          </button>
+          <p class="invite-status" id="voice-invite-save-status" hidden></p>
+          <button type="button" class="invite-back" id="voice-invite-back">← Record again</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
@@ -277,6 +560,6 @@
 
 <script src="nanik-api-config.js?v=20260805samp"></script>
 <script src="site-nav.js?v=20260729u" defer></script>
-<script src="voice-invite.js?v=20260805save4" defer></script>
+<script src="voice-invite.js?v=20260805appui1" defer></script>
 </body>
 </html>
