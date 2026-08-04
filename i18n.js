@@ -1471,7 +1471,21 @@
     return null;
   }
 
+  function currentHomeFile() {
+    return (location.pathname || '/').replace(/\/+$/, '').split('/').pop() || 'index.html';
+  }
+
+  function isHyHome() {
+    return currentHomeFile() === 'hy.html';
+  }
+
+  function isEnHome() {
+    var file = currentHomeFile();
+    return file === 'index.html' || file === '';
+  }
+
   function detect() {
+    if (isHyHome()) return 'hy';
     try {
       var saved = normalize(localStorage.getItem(STORAGE_KEY));
       if (saved) return saved;
@@ -1572,12 +1586,15 @@
         item.setAttribute('data-code', loc.code);
         item.textContent = loc.flag + ' ' + loc.native;
         item.addEventListener('click', function () {
-          // Dedicated Armenian homepage — switch there instead of translating the EN page.
-          var file = (location.pathname || '/').replace(/\/+$/, '').split('/').pop() || 'index.html';
-          var onEnHome = file === 'index.html' || file === '';
-          if (loc.code === 'hy' && onEnHome) {
+          // Dedicated Armenian homepage — navigate instead of in-place translate.
+          if (loc.code === 'hy' && isEnHome()) {
             try { localStorage.setItem(STORAGE_KEY, 'hy'); } catch (e) {}
             location.href = '/hy.html';
+            return;
+          }
+          if (loc.code !== 'hy' && isHyHome()) {
+            try { localStorage.setItem(STORAGE_KEY, loc.code); } catch (e) {}
+            location.href = '/';
             return;
           }
           apply(loc.code);
