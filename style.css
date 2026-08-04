@@ -1976,12 +1976,13 @@ body.download-app-open { overflow: hidden; }
   min-height: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  padding-top: 8px;
   padding-bottom: 96px;
 }
 .voice-magic-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 16px;
+  right: 16px;
   z-index: 3;
   width: 36px;
   height: 36px;
@@ -2001,7 +2002,7 @@ body.download-app-open { overflow: hidden; }
   margin: 0;
 }
 .voice-magic-body {
-  padding: 2px 28px 12px;
+  padding: 48px 28px 12px;
   text-align: center;
 }
 .voice-magic-footer {
@@ -2056,8 +2057,9 @@ body.download-app-open { overflow: hidden; }
   --voice-level: 0;
 }
 .voice-magic-body h2 {
-  margin: 0 auto 8px;
+  margin: 0 auto 12px;
   max-width: none;
+  padding: 0 40px;
   font-size: 22px;
   line-height: 1.25;
   letter-spacing: normal;
