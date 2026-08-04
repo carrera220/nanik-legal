@@ -8,7 +8,7 @@
 <meta name="description" content="Someone invited you to record your voice for Nanik bedtime stories.">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260805invite2">
+<link rel="stylesheet" href="style.css?v=20260805invite3">
 <style>
   body.voice-invite-page {
     min-height: 100vh;
@@ -23,15 +23,9 @@
     justify-content: center;
     padding: 24px 16px 40px;
   }
-  .voice-invite-shell {
-    width: min(420px, 100%);
-  }
-  .voice-invite-shell .voice-magic-sheet {
-    max-height: none;
-  }
-  .voice-invite-shell .voice-magic-scroll {
-    padding-bottom: 108px;
-  }
+  .voice-invite-shell { width: min(420px, 100%); }
+  .voice-invite-shell .voice-magic-sheet { max-height: none; }
+  .voice-invite-shell .voice-magic-scroll { padding-bottom: 108px; }
   .voice-invite-loading,
   .voice-invite-error,
   .voice-invite-success {
@@ -58,33 +52,57 @@
     line-height: 1.4;
     text-align: center;
   }
-  .voice-invite-lang-wrap {
-    margin: 0 0 12px;
-    text-align: left;
-  }
-  .voice-invite-lang-label {
+  .voice-invite-lang-wrap { margin: 0 0 12px; text-align: left; }
+  .voice-invite-lang-label,
+  .voice-invite-name-label {
     display: block;
     margin: 0 0 6px;
     font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.78);
   }
-  .voice-invite-lang {
+  .voice-invite-lang,
+  .voice-invite-name-input {
     width: 100%;
     appearance: none;
     -webkit-appearance: none;
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.28) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='white' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;
+    background: rgba(0, 0, 0, 0.28);
     color: #fff;
     font-size: 15px;
     font-weight: 600;
-    padding: 12px 40px 12px 14px;
+    padding: 12px 14px;
+    box-sizing: border-box;
   }
-  .voice-invite-lang option {
-    color: #111;
+  .voice-invite-lang {
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='white' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
   }
-  /* Recording states reuse voice-magic selectors via .voice-magic-modal class on #voice-invite-ui */
+  .voice-invite-lang option { color: #111; }
+  .voice-invite-name-input::placeholder { color: rgba(255,255,255,0.42); font-weight: 500; }
+  .voice-invite-presets {
+    display: flex;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .voice-invite-preset {
+    flex: 1;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .voice-invite-preset.is-active {
+    border-color: rgba(243, 166, 157, 0.7);
+    background: rgba(243, 166, 157, 0.18);
+  }
   #voice-invite-ui.voice-magic-modal {
     position: static;
     display: block;
@@ -92,6 +110,17 @@
     height: auto;
     padding: 0;
     background: transparent;
+  }
+  .voice-invite-back {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 0 0;
+    cursor: pointer;
+    width: 100%;
   }
 </style>
 </head>
@@ -129,60 +158,94 @@
   <div class="voice-invite-shell" id="invite-shell" hidden>
     <div class="voice-magic-modal" id="voice-invite-ui">
       <div class="voice-magic-sheet" role="document">
-        <div class="voice-magic-scroll">
-          <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
-          <div class="voice-magic-body">
-            <div class="voice-magic-flow">
-              <p class="voice-invite-requester" id="invite-requester-line"></p>
-              <h2>Record your voice</h2>
-              <p class="voice-magic-hint">Choose the language you will speak, tap Start recording, and read the sample text naturally in a quiet place. When you finish, tap Stop.</p>
 
-              <div class="voice-invite-lang-wrap">
-                <label class="voice-invite-lang-label" for="voice-invite-lang">Language I will speak</label>
-                <select id="voice-invite-lang" class="voice-invite-lang">
-                  <option value="">Select language…</option>
-                  <option value="hy">Armenian</option>
-                  <option value="en">English</option>
-                  <option value="ru">Russian</option>
-                </select>
-              </div>
+        <!-- Step 1: record (no consent — same as the app) -->
+        <div id="invite-step-record">
+          <div class="voice-magic-scroll">
+            <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
+            <div class="voice-magic-body">
+              <div class="voice-magic-flow">
+                <p class="voice-invite-requester" id="invite-requester-line"></p>
+                <h2>Record your voice</h2>
+                <p class="voice-magic-hint">Choose the language you will speak, tap Start recording, and read the sample text naturally in a quiet place. When you finish, tap Stop.</p>
 
-              <p class="voice-magic-sample" id="voice-invite-sample" hidden></p>
+                <div class="voice-invite-lang-wrap">
+                  <label class="voice-invite-lang-label" for="voice-invite-lang">Language I will speak</label>
+                  <select id="voice-invite-lang" class="voice-invite-lang">
+                    <option value="">Select language…</option>
+                    <option value="hy">Armenian</option>
+                    <option value="en">English</option>
+                    <option value="ru">Russian</option>
+                  </select>
+                </div>
 
-              <div class="voice-magic-orb" id="voice-invite-orb" aria-hidden="true">
-                <span class="voice-magic-orb-ring ring-outer"></span>
-                <span class="voice-magic-orb-ring ring-mid"></span>
-                <span class="voice-magic-orb-ring ring-inner"></span>
-                <svg class="voice-magic-progress" viewBox="0 0 120 120" aria-hidden="true">
-                  <circle class="voice-magic-progress-track" cx="60" cy="60" r="54" fill="none" />
-                  <circle class="voice-magic-progress-fill" cx="60" cy="60" r="54" fill="none" />
-                </svg>
-                <span class="voice-magic-orb-core">
-                  <span class="voice-magic-countdown" id="voice-invite-countdown" hidden>10</span>
-                  <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="9" y="2.5" width="6" height="11" rx="3"/>
-                    <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
-                    <path d="M12 17v3.5"/>
-                    <path d="M8.5 20.5h7"/>
+                <p class="voice-magic-sample" id="voice-invite-sample" hidden></p>
+
+                <div class="voice-magic-orb" id="voice-invite-orb" aria-hidden="true">
+                  <span class="voice-magic-orb-ring ring-outer"></span>
+                  <span class="voice-magic-orb-ring ring-mid"></span>
+                  <span class="voice-magic-orb-ring ring-inner"></span>
+                  <svg class="voice-magic-progress" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="voice-magic-progress-track" cx="60" cy="60" r="54" fill="none" />
+                    <circle class="voice-magic-progress-fill" cx="60" cy="60" r="54" fill="none" />
                   </svg>
-                </span>
+                  <span class="voice-magic-orb-core">
+                    <span class="voice-magic-countdown" id="voice-invite-countdown" hidden>10</span>
+                    <svg class="voice-magic-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="2.5" width="6" height="11" rx="3"/>
+                      <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0"/>
+                      <path d="M12 17v3.5"/>
+                      <path d="M8.5 20.5h7"/>
+                    </svg>
+                  </span>
+                </div>
               </div>
-
-              <label class="voice-magic-consent" id="voice-invite-consent">
-                <input type="checkbox" id="voice-invite-consent-check" class="voice-magic-consent-input">
-                <span class="voice-magic-consent-box" aria-hidden="true"></span>
-                <span class="voice-magic-consent-text" id="voice-invite-consent-text">I confirm this is my voice, and I allow them to use this voice clone in Nanik to narrate bedtime stories. I also allow Nanik to send this recording to third-party voice cloning services.</span>
-              </label>
             </div>
           </div>
+          <div class="voice-magic-footer">
+            <button type="button" class="voice-magic-record" id="voice-invite-record" disabled>
+              <span class="voice-magic-record-dot" aria-hidden="true"></span>
+              <span>Start recording</span>
+            </button>
+            <p class="voice-magic-status" id="voice-invite-status" hidden></p>
+          </div>
         </div>
-        <div class="voice-magic-footer">
-          <button type="button" class="voice-magic-record" id="voice-invite-record" disabled>
-            <span class="voice-magic-record-dot" aria-hidden="true"></span>
-            <span>Start recording</span>
-          </button>
-          <p class="voice-magic-status" id="voice-invite-status" hidden></p>
+
+        <!-- Step 2: save — name + consent (same as the app) -->
+        <div id="invite-step-save" hidden>
+          <div class="voice-magic-scroll">
+            <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
+            <div class="voice-magic-body">
+              <div class="voice-magic-flow">
+                <h2>Share your voice</h2>
+                <p class="voice-magic-hint">Name this voice and confirm they can use it for bedtime stories.</p>
+
+                <div class="voice-invite-lang-wrap">
+                  <label class="voice-invite-name-label" for="voice-invite-name">Voice name</label>
+                  <div class="voice-invite-presets">
+                    <button type="button" class="voice-invite-preset" data-preset="Mom">👩 Mom</button>
+                    <button type="button" class="voice-invite-preset" data-preset="Dad">👨 Dad</button>
+                  </div>
+                  <input id="voice-invite-name" class="voice-invite-name-input" type="text" maxlength="48" placeholder="e.g. Grandma" autocomplete="off" />
+                </div>
+
+                <label class="voice-magic-consent" id="voice-invite-consent">
+                  <input type="checkbox" id="voice-invite-consent-check" class="voice-magic-consent-input">
+                  <span class="voice-magic-consent-box" aria-hidden="true"></span>
+                  <span class="voice-magic-consent-text" id="voice-invite-consent-text">I confirm this is my voice, and I allow them to use this voice clone in Nanik to narrate bedtime stories. I also allow Nanik to send this recording to third-party voice cloning services.</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="voice-magic-footer">
+            <button type="button" class="voice-magic-record" id="voice-invite-save" disabled>
+              <span>Share my voice</span>
+            </button>
+            <p class="voice-magic-status" id="voice-invite-save-status" hidden></p>
+            <button type="button" class="voice-invite-back" id="voice-invite-back">← Record again</button>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -194,6 +257,6 @@
 
 <script src="nanik-api-config.js?v=20260805samp"></script>
 <script src="site-nav.js?v=20260729u" defer></script>
-<script src="voice-invite.js?v=20260805rec1" defer></script>
+<script src="voice-invite.js?v=20260805save2" defer></script>
 </body>
 </html>

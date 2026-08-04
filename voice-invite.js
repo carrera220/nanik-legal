@@ -44,22 +44,29 @@
   var errorBody = document.getElementById('invite-error-body');
   var shell = document.getElementById('invite-shell');
   var uiRoot = document.getElementById('voice-invite-ui');
+  var stepRecord = document.getElementById('invite-step-record');
+  var stepSave = document.getElementById('invite-step-save');
   var requesterLine = document.getElementById('invite-requester-line');
   var consentText = document.getElementById('voice-invite-consent-text');
   var consentLabel = document.getElementById('voice-invite-consent');
   var consentCheck = document.getElementById('voice-invite-consent-check');
   var recordBtn = document.getElementById('voice-invite-record');
+  var saveBtn = document.getElementById('voice-invite-save');
+  var backBtn = document.getElementById('voice-invite-back');
+  var nameInput = document.getElementById('voice-invite-name');
   var langSelect = document.getElementById('voice-invite-lang');
   var sampleEl = document.getElementById('voice-invite-sample');
   var orb = document.getElementById('voice-invite-orb');
   var countdownEl = document.getElementById('voice-invite-countdown');
   var statusEl = document.getElementById('voice-invite-status');
+  var saveStatusEl = document.getElementById('voice-invite-save-status');
   var progressFill = uiRoot ? uiRoot.querySelector('.voice-magic-progress-fill') : null;
   var successEl = document.getElementById('invite-success');
   var successBody = document.getElementById('invite-success-body');
   var labelEl = recordBtn ? recordBtn.querySelector('span:last-child') : null;
+  var presetButtons = document.querySelectorAll('.voice-invite-preset');
 
-  if (!recordBtn || !inviteToken) {
+  if (!recordBtn || !saveBtn || !inviteToken) {
     if (!inviteToken && errorEl) {
       if (loading) loading.hidden = true;
       errorEl.hidden = false;
@@ -68,7 +75,7 @@
     return;
   }
 
-  var phase = 'idle';
+  var phase = 'idle'; // idle | recording | save | processing
   var startedAt = 0;
   var requesterName = 'Someone';
   var speakLang = '';
@@ -81,6 +88,9 @@
   var mediaRecorder = null;
   var chunks = [];
   var recordedMime = 'audio/webm';
+  var pendingBlob = null;
+  var pendingDurationMs = 0;
+  var pendingPrepared = null;
 
   if (progressFill) {
     progressFill.style.strokeDasharray = String(RING_C);
@@ -94,78 +104,6 @@
   function higgsCfg() {
     var cfg = api();
     return (cfg && cfg.higgs) || {};
-  }
-
-  function setStatus(text, show) {
-    if (!statusEl) return;
-    statusEl.hidden = !show;
-    statusEl.textContent = text || '';
-  }
-
-  function setLabel(text) {
-    if (labelEl) labelEl.textContent = text;
-  }
-
-  function setOrbLevel(level) {
-    if (!orb) return;
-    var t = Math.max(0, Math.min(1, level));
-    orb.style.setProperty('--voice-level', t.toFixed(3));
-    orb.style.setProperty('--voice-scale-outer', (1 + t * 0.55).toFixed(3));
-    orb.style.setProperty('--voice-scale-mid', (1 + t * 0.38).toFixed(3));
-    orb.style.setProperty('--voice-scale-inner', (1 + t * 0.22).toFixed(3));
-    orb.style.setProperty('--voice-glow', (0.25 + t * 0.75).toFixed(3));
-  }
-
-  function showError(message) {
-    if (loading) loading.hidden = true;
-    if (shell) shell.hidden = true;
-    if (successEl) successEl.hidden = true;
-    if (errorEl) errorEl.hidden = false;
-    if (message && errorBody) errorBody.textContent = message;
-  }
-
-  function showSuccess() {
-    if (loading) loading.hidden = true;
-    if (shell) shell.hidden = true;
-    if (errorEl) errorEl.hidden = true;
-    if (successEl) successEl.hidden = false;
-    if (successBody) {
-      successBody.textContent =
-        'Your voice is now available for ' + requesterName + ' to use in Nanik for bedtime stories.';
-    }
-  }
-
-  function hasConsented() {
-    return Boolean(consentCheck && consentCheck.checked);
-  }
-
-  function hasLanguage() {
-    return Boolean(speakLang && SAMPLES[speakLang]);
-  }
-
-  function syncUi() {
-    if (consentLabel && consentCheck) {
-      consentLabel.classList.toggle('is-checked', consentCheck.checked);
-      var busy = phase === 'recording' || phase === 'processing';
-      consentLabel.classList.toggle('is-disabled', busy);
-      consentCheck.disabled = busy;
-    }
-    if (langSelect) langSelect.disabled = phase === 'recording' || phase === 'processing';
-    if (phase === 'idle') {
-      recordBtn.disabled = !(hasConsented() && hasLanguage());
-    }
-  }
-
-  function applyLanguage(code) {
-    speakLang = code || '';
-    var entry = SAMPLES[speakLang];
-    if (sampleEl) {
-      sampleEl.textContent = entry
-        ? entry.sample
-        : 'Choose the language you will speak, then read the sample aloud.';
-      sampleEl.hidden = !entry;
-    }
-    syncUi();
   }
 
   function pickRecorderMime() {
@@ -483,7 +421,7 @@
     var progress = Math.min(1, Math.max(0, elapsed / MAX_MS));
     if (countdownEl) countdownEl.textContent = String(remaining);
     if (progressFill) progressFill.style.strokeDashoffset = String(RING_C * (1 - progress));
-    if (elapsed >= MAX_MS) stopRecordingAndClone();
+    if (elapsed >= MAX_MS) finishRecordingToSave();
   }
 
   function tick() {
@@ -573,9 +511,124 @@
     });
   }
 
+
+  function setStatus(text, show) {
+    if (!statusEl) return;
+    statusEl.hidden = !show;
+    statusEl.textContent = text || '';
+  }
+
+  function setSaveStatus(text, show) {
+    if (!saveStatusEl) return;
+    saveStatusEl.hidden = !show;
+    saveStatusEl.textContent = text || '';
+  }
+
+  function setLabel(text) {
+    if (labelEl) labelEl.textContent = text;
+  }
+
+  function setOrbLevel(level) {
+    if (!orb) return;
+    var t = Math.max(0, Math.min(1, level));
+    orb.style.setProperty('--voice-level', t.toFixed(3));
+    orb.style.setProperty('--voice-scale-outer', (1 + t * 0.55).toFixed(3));
+    orb.style.setProperty('--voice-scale-mid', (1 + t * 0.38).toFixed(3));
+    orb.style.setProperty('--voice-scale-inner', (1 + t * 0.22).toFixed(3));
+    orb.style.setProperty('--voice-glow', (0.25 + t * 0.75).toFixed(3));
+  }
+
+  function showError(message) {
+    if (loading) loading.hidden = true;
+    if (shell) shell.hidden = true;
+    if (successEl) successEl.hidden = true;
+    if (errorEl) errorEl.hidden = false;
+    if (message && errorBody) errorBody.textContent = message;
+  }
+
+  function showSuccess() {
+    if (loading) loading.hidden = true;
+    if (shell) shell.hidden = true;
+    if (errorEl) errorEl.hidden = true;
+    if (successEl) successEl.hidden = false;
+    if (successBody) {
+      successBody.textContent =
+        'Your voice is now available for ' + requesterName + ' to use in Nanik for bedtime stories.';
+    }
+  }
+
+  function hasConsented() {
+    return Boolean(consentCheck && consentCheck.checked);
+  }
+
+  function hasLanguage() {
+    return Boolean(speakLang && SAMPLES[speakLang]);
+  }
+
+  function trimmedName() {
+    return nameInput ? String(nameInput.value || '').trim() : '';
+  }
+
+  function showRecordStep() {
+    if (stepRecord) stepRecord.hidden = false;
+    if (stepSave) stepSave.hidden = true;
+    phase = 'idle';
+    syncRecordUi();
+  }
+
+  function showSaveStep() {
+    if (stepRecord) stepRecord.hidden = true;
+    if (stepSave) stepSave.hidden = false;
+    phase = 'save';
+    if (consentCheck) consentCheck.checked = false;
+    syncSaveUi();
+    if (nameInput) setTimeout(function () { nameInput.focus(); }, 50);
+  }
+
+  function syncRecordUi() {
+    if (langSelect) langSelect.disabled = phase === 'recording';
+    if (phase === 'idle') {
+      recordBtn.disabled = !hasLanguage();
+    }
+  }
+
+  function syncSaveUi() {
+    if (consentLabel && consentCheck) {
+      consentLabel.classList.toggle('is-checked', consentCheck.checked);
+      var busy = phase === 'processing';
+      consentLabel.classList.toggle('is-disabled', busy);
+      consentCheck.disabled = busy;
+    }
+    if (nameInput) nameInput.disabled = phase === 'processing';
+    if (saveBtn) {
+      saveBtn.disabled = !(hasConsented() && trimmedName()) || phase === 'processing';
+    }
+    for (var i = 0; i < presetButtons.length; i++) {
+      var btn = presetButtons[i];
+      var preset = btn.getAttribute('data-preset') || '';
+      btn.classList.toggle('is-active', trimmedName() === preset);
+      btn.disabled = phase === 'processing';
+    }
+  }
+
+  function applyLanguage(code) {
+    speakLang = code || '';
+    var entry = SAMPLES[speakLang];
+    if (sampleEl) {
+      sampleEl.textContent = entry
+        ? entry.sample
+        : 'Choose the language you will speak, then read the sample aloud.';
+      sampleEl.hidden = !entry;
+    }
+    syncRecordUi();
+  }
+
   function resetUi() {
     phase = 'idle';
     startedAt = 0;
+    pendingBlob = null;
+    pendingDurationMs = 0;
+    pendingPrepared = null;
     if (uiRoot) uiRoot.classList.remove('is-recording', 'is-processing');
     stopMicTracks();
     if (countdownEl) {
@@ -584,18 +637,14 @@
     }
     if (progressFill) progressFill.style.strokeDashoffset = String(RING_C);
     setStatus('', false);
+    setSaveStatus('', false);
     setLabel('Start recording');
-    syncUi();
+    showRecordStep();
   }
 
   function beginRecording() {
     if (!hasLanguage()) {
       setStatus('Choose the language you will speak.', true);
-      return;
-    }
-    if (!hasConsented()) {
-      setStatus('Please confirm the consent checkbox before recording.', true);
-      syncUi();
       return;
     }
     if (phase !== 'idle') return;
@@ -615,59 +664,90 @@
           countdownEl.textContent = '10';
         }
         setLabel('Stop recording');
-        syncUi();
+        syncRecordUi();
         updateCountdown();
       })
       .catch(function (err) {
         phase = 'idle';
-        syncUi();
+        syncRecordUi();
         alert(err && err.message ? err.message : 'Microphone access is needed. Please allow the mic and try again.');
       });
   }
 
-  function stopRecordingAndClone() {
+  function finishRecordingToSave() {
     if (phase !== 'recording') return;
     var elapsed = Date.now() - startedAt;
-    phase = 'processing';
     recordBtn.disabled = true;
-    if (uiRoot) {
-      uiRoot.classList.remove('is-recording');
-      uiRoot.classList.add('is-processing');
-    }
-    setLabel('Creating voice…');
-    setStatus('Creating your voice clone…', true);
-    syncUi();
+    setLabel('Preparing…');
+    setStatus('Preparing your recording…', true);
 
     stopRecorder()
       .then(function (blob) {
         stopMicTracks();
+        if (uiRoot) uiRoot.classList.remove('is-recording');
         if (!blob || blob.size < 1000) throw new Error('Recording was too short. Please try again.');
         if (elapsed < MIN_MS) throw new Error('Please read a bit longer (about 5–10 seconds).');
-        var entry = SAMPLES[speakLang];
-        var transcript = entry ? entry.sample : '';
-        var languageCode = entry ? entry.code : 'eng';
+        pendingBlob = blob;
+        pendingDurationMs = elapsed;
         return prepareHiggsCloneWav(blob).then(function (prepared) {
-          return ensureAuth().then(function (session) {
-            return postHiggs(
-              '/clone',
-              {
-                voiceName: requesterName === 'Someone' ? 'Shared voice' : requesterName + "'s invite",
-                description: 'Shared voice for Nanik app',
-                mimeType: prepared.mimeType,
-                filename: prepared.filename,
-                audioBase64: uint8ToBase64(prepared.wavBytes),
-                transcription: transcript,
-                durationMs: Math.max(elapsed, prepared.durationMs),
-                languageCode: languageCode,
-                removeBackgroundNoise: false,
-                inviteToken: inviteToken,
-                consentTextVersion: CONSENT_VERSION
-              },
-              session.accessToken,
-              45000
-            );
-          });
+          pendingPrepared = prepared;
+          setStatus('', false);
+          setLabel('Start recording');
+          showSaveStep();
         });
+      })
+      .catch(function (err) {
+        console.error('[voice-invite]', err);
+        alert(err && err.message ? err.message : 'Something went wrong. Please try again.');
+        resetUi();
+      });
+  }
+
+  function submitSharedVoice() {
+    if (phase !== 'save') return;
+    if (!hasConsented()) {
+      setSaveStatus('Please confirm the consent checkbox.', true);
+      return;
+    }
+    var voiceName = trimmedName();
+    if (!voiceName) {
+      setSaveStatus('Please enter a voice name.', true);
+      return;
+    }
+    if (!pendingPrepared) {
+      setSaveStatus('Recording missing. Please record again.', true);
+      return;
+    }
+
+    phase = 'processing';
+    syncSaveUi();
+    setSaveStatus('Creating your voice clone…', true);
+    if (uiRoot) uiRoot.classList.add('is-processing');
+
+    var entry = SAMPLES[speakLang];
+    var transcript = entry ? entry.sample : '';
+    var languageCode = entry ? entry.code : 'eng';
+
+    ensureAuth()
+      .then(function (session) {
+        return postHiggs(
+          '/clone',
+          {
+            voiceName: voiceName,
+            description: 'Shared voice for Nanik app',
+            mimeType: pendingPrepared.mimeType,
+            filename: pendingPrepared.filename,
+            audioBase64: uint8ToBase64(pendingPrepared.wavBytes),
+            transcription: transcript,
+            durationMs: Math.max(pendingDurationMs, pendingPrepared.durationMs),
+            languageCode: languageCode,
+            removeBackgroundNoise: false,
+            inviteToken: inviteToken,
+            consentTextVersion: CONSENT_VERSION
+          },
+          session.accessToken,
+          45000
+        );
       })
       .then(function (res) {
         if (!res || !res.voiceId) throw new Error('Clone failed.');
@@ -676,28 +756,45 @@
       .catch(function (err) {
         console.error('[voice-invite]', err);
         var msg = (err && err.message) || 'Something went wrong. Please try again.';
-        if (err && err.code === 'INVITE_ALREADY_CLAIMED') {
-          msg = 'This invite was already used.';
-        } else if (err && err.code === 'INVITE_EXPIRED') {
-          msg = 'This invite has expired. Ask them to send a new link.';
-        } else if (err && err.code === 'VOICE_LIMIT_REACHED') {
-          msg = 'They already have the maximum number of voices on their plan.';
-        } else if (err && err.code === 'INVITE_SELF_CLAIM') {
-          msg = 'Open this link on someone else’s device to record for them.';
-        }
+        if (err && err.code === 'INVITE_ALREADY_CLAIMED') msg = 'This invite was already used.';
+        else if (err && err.code === 'INVITE_EXPIRED') msg = 'This invite has expired. Ask them to send a new link.';
+        else if (err && err.code === 'VOICE_LIMIT_REACHED') msg = 'They already have the maximum number of voices on their plan.';
+        else if (err && err.code === 'INVITE_SELF_CLAIM') msg = 'Open this link on someone else’s device to record for them.';
         alert(msg);
-        resetUi();
+        phase = 'save';
+        if (uiRoot) uiRoot.classList.remove('is-processing');
+        setSaveStatus('', false);
+        syncSaveUi();
       });
   }
 
   recordBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    if (phase === 'recording') stopRecordingAndClone();
+    if (phase === 'recording') finishRecordingToSave();
     else beginRecording();
   });
 
-  if (consentCheck) {
-    consentCheck.addEventListener('change', syncUi);
+  saveBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    submitSharedVoice();
+  });
+
+  if (backBtn) {
+    backBtn.addEventListener('click', function () {
+      if (phase === 'processing') return;
+      resetUi();
+    });
+  }
+
+  if (consentCheck) consentCheck.addEventListener('change', syncSaveUi);
+  if (nameInput) nameInput.addEventListener('input', syncSaveUi);
+
+  for (var p = 0; p < presetButtons.length; p++) {
+    presetButtons[p].addEventListener('click', function (ev) {
+      var preset = ev.currentTarget.getAttribute('data-preset') || '';
+      if (nameInput) nameInput.value = preset;
+      syncSaveUi();
+    });
   }
 
   if (langSelect) {
@@ -746,7 +843,7 @@
       if (loading) loading.hidden = true;
       if (shell) shell.hidden = false;
       applyLanguage(langSelect ? langSelect.value : '');
-      syncUi();
+      showRecordStep();
     })
     .catch(function () {
       showError('Could not load this invite. Check your connection and try again.');
