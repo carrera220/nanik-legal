@@ -245,6 +245,199 @@
     return peak;
   }
 
+  function bytesToPcm16Le(bytes) {
+    var even = bytes.byteLength - (bytes.byteLength % 2);
+    return new Int16Array(bytes.buffer, bytes.byteOffset, even / 2);
+  }
+
+  function concatPcm16(parts) {
+    var total = 0;
+    for (var i = 0; i < parts.length; i++) total += parts[i].length;
+    var out = new Int16Array(total);
+    var offset = 0;
+    for (var j = 0; j < parts.length; j++) {
+      out.set(parts[j], offset);
+      offset += parts[j].length;
+    }
+    return out;
+  }
+
+  function countNarrationWords(text) {
+    var tokens = String(text || '')
+      .replace(/<\|[^|]+:[^|]+\|>/g, '')
+      .trim()
+      .match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu);
+    return tokens ? tokens.length : 0;
+  }
+
+  function estimateHiggsTokens(text) {
+    var trimmed = String(text || '').trim();
+    if (!trimmed) return 0;
+    return Math.ceil(trimmed.length / 3.5);
+  }
+
+  function stripInlineHiggsPauseTags(text) {
+    return String(text || '')
+      .replace(/<\|[^|]+\|>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function ensureHiggsChunkEndsWithPeriod(text) {
+    var trimmed = stripInlineHiggsPauseTags(String(text || '').trim());
+    if (!trimmed) return trimmed;
+    if (trimmed.endsWith('.')) return trimmed;
+    var body = trimmed.replace(/[.:։!?,…]+["'»»\)]*$/u, '.');
+    return body.endsWith('.') ? body : body + '.';
+  }
+
+  /** Match app finalizeHiggsChunkText / server prepareTtsChunkText('higgs'). */
+  function prepareHiggsChunkText(text) {
+    var body = String(text || '')
+      .replace(/\s*\[SCENE_BREAKS?\]\s*/gi, ' ')
+      .replace(/[ \t]+/g, ' ')
+      .trim();
+    if (!body) return body;
+    body = stripInlineHiggsPauseTags(body);
+    var out = '';
+    var i = 0;
+    while (i < body.length) {
+      if (body.indexOf('<|', i) === i) {
+        var tagEnd = body.indexOf('|>', i);
+        if (tagEnd !== -1) {
+          i = tagEnd + 2;
+          continue;
+        }
+      }
+      var ch = body.charAt(i);
+      if (ch === '-' || ch === '–' || ch === '—') {
+        i += 1;
+        continue;
+      }
+      out += (ch === ':' || ch === '։') ? '.' : ch;
+      i += 1;
+    }
+    return ensureHiggsChunkEndsWithPeriod(out.replace(/\s+/g, ' ').trim());
+  }
+
+  function splitAtTtsSentenceBoundaries(text) {
+    var normalized = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!normalized) return [];
+    var segments = [];
+    var current = '';
+    var i = 0;
+    var boundary = { ':': 1, '.': 1, '։': 1 };
+    while (i < normalized.length) {
+      if (normalized.indexOf('<|', i) === i) {
+        var tagEnd = normalized.indexOf('|>', i);
+        if (tagEnd !== -1) {
+          current += normalized.slice(i, tagEnd + 2);
+          i = tagEnd + 2;
+          continue;
+        }
+      }
+      var ch = normalized.charAt(i);
+      current += ch;
+      if (boundary[ch]) {
+        var piece = current.trim();
+        if (piece) segments.push(piece);
+        current = '';
+      }
+      i += 1;
+    }
+    var tail = current.trim();
+    if (tail) segments.push(tail);
+    return segments.length ? segments : [normalized];
+  }
+
+  function chunkLimits() {
+    var h = higgsCfg();
+    return {
+      maxWords: Number(h.chunkMaxWords) || 60,
+      coalesceMinWords: Number(h.chunkCoalesceMinWords) || 40,
+      maxChars: Number(h.chunkMaxChars) || 1800,
+      maxTokens: Number(h.chunkMaxTokens) || 2047,
+      sentencesMax: Number(h.chunkSentencesMax) || 16
+    };
+  }
+
+  function fitsChunkLimits(text, limits) {
+    var trimmed = String(text || '').trim();
+    if (!trimmed) return false;
+    if (trimmed.length > limits.maxChars) return false;
+    if (countNarrationWords(trimmed) > limits.maxWords) return false;
+    if (estimateHiggsTokens(trimmed) > limits.maxTokens) return false;
+    return true;
+  }
+
+  function canMergeChunks(a, b, limits) {
+    var merged = (a + ' ' + b).trim();
+    if (splitAtTtsSentenceBoundaries(merged).length > limits.sentencesMax) return false;
+    return fitsChunkLimits(merged, limits);
+  }
+
+  function coalesceUndersizedChunks(chunks, limits) {
+    if (chunks.length < 2) return chunks;
+    var out = chunks.slice();
+    var i = 0;
+    while (i < out.length) {
+      if (countNarrationWords(out[i]) >= limits.coalesceMinWords) {
+        i += 1;
+        continue;
+      }
+      if (i + 1 < out.length && canMergeChunks(out[i], out[i + 1], limits)) {
+        out[i] = (out[i] + ' ' + out[i + 1]).trim();
+        out.splice(i + 1, 1);
+        continue;
+      }
+      if (i > 0 && canMergeChunks(out[i - 1], out[i], limits)) {
+        out[i - 1] = (out[i - 1] + ' ' + out[i]).trim();
+        out.splice(i, 1);
+        continue;
+      }
+      i += 1;
+    }
+    return out;
+  }
+
+  /** App-style packs: full sentences up to ~60 words / 1800 chars. */
+  function computeNarrationChunks(text) {
+    var limits = chunkLimits();
+    var scenes = String(text || '')
+      .split(/\s*\[SCENE_BREAKS?\]\s*/gi)
+      .map(function (s) { return s.trim(); })
+      .filter(Boolean);
+    if (!scenes.length) {
+      var single = String(text || '').trim();
+      return single ? [single] : [];
+    }
+    var packs = [];
+    for (var s = 0; s < scenes.length; s++) {
+      var sentences = splitAtTtsSentenceBoundaries(scenes[s]);
+      var batch = [];
+      for (var i = 0; i < sentences.length; i++) {
+        var sentence = sentences[i];
+        if (!batch.length) {
+          batch.push(sentence);
+          continue;
+        }
+        var candidate = (batch.join(' ') + ' ' + sentence).trim();
+        var over =
+          countNarrationWords(candidate) > limits.maxWords
+          || candidate.length > limits.maxChars
+          || estimateHiggsTokens(candidate) > limits.maxTokens;
+        if (over || batch.length >= limits.sentencesMax) {
+          packs.push(batch.join(' ').trim());
+          batch = [sentence];
+        } else {
+          batch.push(sentence);
+        }
+      }
+      if (batch.length) packs.push(batch.join(' ').trim());
+    }
+    return coalesceUndersizedChunks(packs.filter(Boolean), limits);
+  }
+
   function resampleLinear(input, fromRate, toRate) {
     if (fromRate === toRate) return input;
     if (!input.length) return input;
@@ -983,8 +1176,9 @@
     var bytes = atob(ttsRes.audioBase64);
     var arr = new Uint8Array(bytes.length);
     for (var i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    var mime = ttsRes.mimeType || 'audio/wav';
     if (previewUrl) URL.revokeObjectURL(previewUrl);
-    previewUrl = URL.createObjectURL(new Blob([arr], { type: 'audio/mpeg' }));
+    previewUrl = URL.createObjectURL(new Blob([arr], { type: mime }));
     previewAudio = new Audio(previewUrl);
     previewAudio.addEventListener('ended', function () {
       stopSyncLoop();
@@ -1021,12 +1215,51 @@
     return /timed out|timeout|failed to generate|rate.?limit|bad gateway|temporarily unavailable/i.test(msg);
   }
 
+  function appHiggsSampling() {
+    var h = higgsCfg();
+    var temperature = Number(h.temperature);
+    var topK = Number(h.topK);
+    var topP = Number(h.topP);
+    var maxNewTokens = Number(h.maxNewTokens);
+    // Fallbacks must match src/constants/higgsNarration.ts (not older lab presets).
+    if (!Number.isFinite(temperature)) temperature = 0.7;
+    if (!Number.isFinite(topK)) topK = 200;
+    if (!Number.isFinite(topP)) topP = 0.85;
+    if (!Number.isFinite(maxNewTokens)) maxNewTokens = 2047;
+    return {
+      modelId: h.modelId || 'higgs-tts-3',
+      responseFormat: h.responseFormat || 'pcm',
+      temperature: temperature,
+      maxNewTokens: maxNewTokens,
+      topK: topK,
+      topP: topP,
+      speakingRate: Number.isFinite(Number(h.speakingRate)) ? Number(h.speakingRate) : 1.0,
+      sampleRate: Number(h.sampleRate) || 24000,
+      interChunkMs: Number(h.interChunkMs) || 1200,
+      interChunkRateLimitMs: Number(h.interChunkRateLimitMs) || 5000
+    };
+  }
+
+  function decodeTtsAudioBytes(audioBase64, responseFormat) {
+    var raw = atob(audioBase64);
+    var bytes = new Uint8Array(raw.length);
+    for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    var fmt = String(responseFormat || 'pcm').toLowerCase();
+    if (fmt === 'pcm') {
+      return { pcm: bytesToPcm16Le(bytes), mimeType: 'audio/wav' };
+    }
+    // mp3/wav passthrough — uncommon for app parity; keep for emergency overrides.
+    return { bytes: bytes, mimeType: fmt === 'wav' ? 'audio/wav' : 'audio/mpeg' };
+  }
+
   function runHiggsPipeline(blob, durationMs, transcript, taleText) {
-    // Match app cloneVoice → prepareHiggsCloneReferenceWav → POST higgs-proxy/clone → /tts
+    // Match app: cloneVoice → prepareHiggsCloneReferenceWav → POST /clone → sequential /tts (voiceId + pcm)
     return prepareHiggsCloneWav(blob).then(function (prepared) {
       var cloneSession = null;
       var audioBase64 = uint8ToBase64(prepared.wavBytes);
-      var refAudioDataUri = 'data:audio/wav;base64,' + audioBase64;
+      var sampling = appHiggsSampling();
+      var narrationChunks = computeNarrationChunks(taleText);
+      if (!narrationChunks.length) throw new Error('Missing landing story text.');
 
       function runClone(session) {
         cloneSession = session;
@@ -1043,62 +1276,50 @@
         }, session.accessToken, 45000);
       }
 
-      function ttsBasePayload() {
-        var h = higgsCfg();
-        var temperature = Number(h.temperature);
-        var topK = Number(h.topK);
-        var topP = Number(h.topP);
-        var maxNewTokens = Number(h.maxNewTokens);
-        if (!Number.isFinite(temperature)) temperature = 0.63;
-        if (!Number.isFinite(topK)) topK = 80;
-        if (!Number.isFinite(topP)) topP = 0.95;
-        if (!Number.isFinite(maxNewTokens)) maxNewTokens = 2047;
-        return {
-          text: taleText,
-          modelId: h.modelId || 'higgs-tts-3',
-          responseFormat: h.responseFormat || 'mp3',
-          temperature: temperature,
-          maxNewTokens: maxNewTokens,
-          topK: topK,
-          topP: topP,
+      function ttsPayloadForChunk(chunkText, clonedVoiceId, useInlineRef) {
+        var preparedText = prepareHiggsChunkText(chunkText);
+        var payload = {
+          text: preparedText,
+          modelId: sampling.modelId,
+          responseFormat: sampling.responseFormat,
+          temperature: sampling.temperature,
+          maxNewTokens: sampling.maxNewTokens,
+          topK: sampling.topK,
+          topP: sampling.topP,
           languageCode: pageLanguageCode(),
-          speakingRate: Number.isFinite(Number(h.speakingRate)) ? Number(h.speakingRate) : 1.0
+          speakingRate: sampling.speakingRate
         };
+        if (useInlineRef) {
+          payload.refAudio = 'data:audio/wav;base64,' + audioBase64;
+          payload.refText = transcript;
+        } else {
+          payload.voiceId = clonedVoiceId;
+        }
+        return payload;
       }
 
-      // Reuse the clone session token — do not re-auth mid-pipeline (sessionStorage
-      // can fail / rate-limit a second anonymous signup after a successful clone).
-      function runTtsWithVoice(accessToken, clonedVoiceId) {
-        var payload = ttsBasePayload();
-        payload.voiceId = clonedVoiceId;
-        // Same sampling as app narration; also send clone transcript for Boson.
-        payload.refText = transcript;
-        return postHiggs('/tts', payload, accessToken, 150000);
+      function postTtsOnce(accessToken, chunkText, clonedVoiceId, useInlineRef) {
+        return postHiggs('/tts', ttsPayloadForChunk(chunkText, clonedVoiceId, useInlineRef), accessToken, 150000);
       }
 
-      // Preferred onboarding/demo path: ref_audio + ref_text + temp/top_k/top_p (lab-style).
-      function runTtsWithRef(accessToken) {
-        var payload = ttsBasePayload();
-        payload.refAudio = refAudioDataUri;
-        payload.refText = transcript;
-        return postHiggs('/tts', payload, accessToken, 150000);
-      }
-
-      function runTtsReliable(accessToken, clonedVoiceId) {
+      function synthesizeChunk(accessToken, chunkText, clonedVoiceId) {
         var attempts = 0;
-        function attempt(useRef) {
+        var rateLimitedRecently = false;
+        function attempt(useInlineRef) {
           attempts += 1;
-          // Prefer inline ref (params + ref_text) for the marketing/onboarding test;
-          // fall back to persisted voiceId if needed.
-          var req = useRef ? runTtsWithRef(accessToken) : runTtsWithVoice(accessToken, clonedVoiceId);
-          return req.catch(function (err) {
-            if (useRef && attempts === 1 && clonedVoiceId) {
-              return sleep(600).then(function () { return attempt(false); });
+          return postTtsOnce(accessToken, chunkText, clonedVoiceId, useInlineRef).catch(function (err) {
+            if (!useInlineRef && attempts === 1 && isTransientTtsError(err)) {
+              // App path is voiceId; only fall back to inline ref once if the clone voice fails.
+              return sleep(600).then(function () { return attempt(true); });
             }
-            if (isTransientTtsError(err) && attempts < 3) {
-              return sleep(1200 * attempts).then(function () {
-                return attempt(true);
-              });
+            if (isTransientTtsError(err) && attempts < 4) {
+              if (Number(err.status) === 429 || /rate.?limit/i.test(String(err.message || ''))) {
+                rateLimitedRecently = true;
+              }
+              var wait = rateLimitedRecently
+                ? sampling.interChunkRateLimitMs * Math.min(attempts, 2)
+                : 1200 * attempts;
+              return sleep(wait).then(function () { return attempt(false); });
             }
             var friendly = new Error('Could not generate the tale in your voice. Please try again.');
             friendly.cause = err;
@@ -1107,7 +1328,62 @@
             throw friendly;
           });
         }
-        return attempt(true);
+        return attempt(false).then(function (res) {
+          return { res: res, rateLimitedRecently: rateLimitedRecently };
+        });
+      }
+
+      function runNarration(accessToken, clonedVoiceId) {
+        var pcmParts = [];
+        var passthroughParts = [];
+        var mimeType = 'audio/wav';
+        var rateLimitedRecently = false;
+        var index = 0;
+
+        function next() {
+          if (index >= narrationChunks.length) {
+            if (passthroughParts.length) {
+              // Non-pcm override path
+              var total = 0;
+              for (var i = 0; i < passthroughParts.length; i++) total += passthroughParts[i].length;
+              var merged = new Uint8Array(total);
+              var offset = 0;
+              for (var j = 0; j < passthroughParts.length; j++) {
+                merged.set(passthroughParts[j], offset);
+                offset += passthroughParts[j].length;
+              }
+              return {
+                audioBase64: uint8ToBase64(merged),
+                mimeType: mimeType
+              };
+            }
+            var wavBytes = wrapPcm16InWav(concatPcm16(pcmParts), sampling.sampleRate);
+            return {
+              audioBase64: uint8ToBase64(wavBytes),
+              mimeType: 'audio/wav'
+            };
+          }
+
+          var chunkText = narrationChunks[index];
+          return synthesizeChunk(accessToken, chunkText, clonedVoiceId).then(function (result) {
+            rateLimitedRecently = rateLimitedRecently || result.rateLimitedRecently;
+            var decoded = decodeTtsAudioBytes(result.res.audioBase64, sampling.responseFormat);
+            if (decoded.pcm) {
+              pcmParts.push(decoded.pcm);
+              mimeType = 'audio/wav';
+            } else {
+              passthroughParts.push(decoded.bytes);
+              mimeType = decoded.mimeType;
+            }
+            index += 1;
+            if (index >= narrationChunks.length) return next();
+            var delay = rateLimitedRecently ? sampling.interChunkRateLimitMs : sampling.interChunkMs;
+            rateLimitedRecently = false;
+            return sleep(delay).then(next);
+          });
+        }
+
+        return Promise.resolve().then(next);
       }
 
       // Fresh guest each demo run — same anonymous signup as the app, avoids freemium voice-slot lock.
@@ -1124,10 +1400,10 @@
         var accessToken = (cloneSession && cloneSession.accessToken) || (loadSession() || {}).accessToken;
         if (!accessToken) {
           return ensureAuth().then(function (session) {
-            return runTtsReliable(session.accessToken, voiceId);
+            return runNarration(session.accessToken, voiceId);
           });
         }
-        return runTtsReliable(accessToken, voiceId);
+        return runNarration(accessToken, voiceId);
       }).then(function (ttsRes) {
         finishWithAudio(ttsRes, taleText);
         // Only lock the demo after the tale actually plays — a TTS failure must allow retry.
