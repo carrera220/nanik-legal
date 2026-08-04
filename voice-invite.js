@@ -569,16 +569,23 @@
     return nameInput ? String(nameInput.value || '').trim() : '';
   }
 
+  function setStepVisible(el, visible) {
+    if (!el) return;
+    el.hidden = !visible;
+    if (visible) el.classList.remove('invite-step-hidden');
+    else el.classList.add('invite-step-hidden');
+  }
+
   function showRecordStep() {
-    if (stepRecord) stepRecord.hidden = false;
-    if (stepSave) stepSave.hidden = true;
+    setStepVisible(stepRecord, true);
+    setStepVisible(stepSave, false);
     phase = 'idle';
     syncRecordUi();
   }
 
   function showSaveStep() {
-    if (stepRecord) stepRecord.hidden = true;
-    if (stepSave) stepSave.hidden = false;
+    setStepVisible(stepRecord, false);
+    setStepVisible(stepSave, true);
     phase = 'save';
     if (consentCheck) consentCheck.checked = false;
     syncSaveUi();

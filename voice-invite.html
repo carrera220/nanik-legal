@@ -111,6 +111,13 @@
     padding: 0;
     background: transparent;
   }
+  /* Ensure only one step is visible (some WebViews ignore [hidden] in flex sheets). */
+  #invite-step-record.invite-step-hidden,
+  #invite-step-save.invite-step-hidden,
+  #invite-step-record[hidden],
+  #invite-step-save[hidden] {
+    display: none !important;
+  }
   .voice-invite-back {
     appearance: none;
     border: none;
@@ -212,7 +219,7 @@
         </div>
 
         <!-- Step 2: save — name + consent (same as the app) -->
-        <div id="invite-step-save" hidden>
+        <div id="invite-step-save" class="invite-step-hidden" hidden>
           <div class="voice-magic-scroll">
             <img class="voice-magic-wave" src="images/voice-clone-intro-wave.png" width="640" height="124" alt="" decoding="async">
             <div class="voice-magic-body">
@@ -257,6 +264,6 @@
 
 <script src="nanik-api-config.js?v=20260805samp"></script>
 <script src="site-nav.js?v=20260729u" defer></script>
-<script src="voice-invite.js?v=20260805save2" defer></script>
+<script src="voice-invite.js?v=20260805save3" defer></script>
 </body>
 </html>
