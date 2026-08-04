@@ -43,15 +43,18 @@
   if (!modal || !recordBtn) return;
   if (!openBtn && !document.querySelector('[data-open-voice-magic]')) return;
 
-  var phase = 'idle'; // idle | recording | processing | ready | hero
+  var phase = 'idle'; // idle | recording | consent | processing | ready | hero
   var startedAt = 0;
   var stopRequested = false;
   var labelEl = document.getElementById('voice-magic-record-label')
     || recordBtn.querySelector('[data-i18n="index.magic.start"]')
     || recordBtn.querySelector('span:last-child');
   var startText = labelEl ? labelEl.textContent : 'Start recording';
-  var stopText = startText.indexOf('Սկսել') !== -1 ? 'Կանգնեցնել' : 'Stop recording';
-  var hearText = startText.indexOf('Սկսել') !== -1 ? 'Լսիր հեքիաթը իմ ձայնով' : 'Hear the tale in my voice';
+  var isHy = startText.indexOf('Սկսել') !== -1;
+  var isRu = /Начать|запись/i.test(startText);
+  var stopText = isHy ? 'Կանգնեցնել' : (isRu ? 'Остановить' : 'Stop recording');
+  var continueText = isHy ? 'Շարունակել' : (isRu ? 'Продолжить' : 'Continue');
+  var hearText = isHy ? 'Լսիր հեքիաթը իմ ձայնով' : (isRu ? 'Слушать сказку моим голосом' : 'Hear the tale in my voice');
   var magicCtaLabel = openBtn
     ? openBtn.querySelector('[data-i18n="index.magic.cta"], span:last-child')
     : null;
@@ -67,6 +70,8 @@
   var mediaRecorder = null;
   var chunks = [];
   var recordedMime = 'audio/webm';
+  var pendingBlob = null;
+  var pendingDurationMs = 0;
   var previewUrl = null;
   var previewAudio = null;
   var voiceId = null;
@@ -75,6 +80,7 @@
   var wordTimings = [];
   var syncRaf = 0;
   var activeWordIndex = -1;
+  var tipEl = modal.querySelector('.voice-magic-tip');
 
   function api() {
     return window.NANIK_API || null;
@@ -1008,21 +1014,31 @@
     return Boolean(consentCheck && consentCheck.checked);
   }
 
+  function setConsentVisible(visible) {
+    if (!consentLabel) return;
+    consentLabel.hidden = !visible;
+    modal.classList.toggle('is-consent', Boolean(visible));
+    if (tipEl) tipEl.hidden = Boolean(visible);
+  }
+
   function syncConsentUi() {
-    if (!consentLabel || !consentCheck) return;
-    var checked = consentCheck.checked;
-    consentLabel.classList.toggle('is-checked', checked);
-    var busy = phase === 'recording' || phase === 'processing';
-    consentLabel.classList.toggle('is-disabled', busy);
-    consentCheck.disabled = busy;
+    if (consentLabel && consentCheck) {
+      var checked = consentCheck.checked;
+      consentLabel.classList.toggle('is-checked', checked);
+      var busy = phase === 'recording' || phase === 'processing';
+      consentLabel.classList.toggle('is-disabled', busy);
+      consentCheck.disabled = busy;
+    }
     if (phase === 'idle' || phase === 'ready' || phase === 'hero') {
-      recordBtn.disabled = !checked;
+      recordBtn.disabled = false;
+    } else if (phase === 'consent') {
+      recordBtn.disabled = !hasConsented();
     }
   }
 
   function resetConsent() {
-    if (!consentCheck) return;
-    consentCheck.checked = false;
+    if (consentCheck) consentCheck.checked = false;
+    setConsentVisible(false);
     syncConsentUi();
   }
 
@@ -1060,7 +1076,7 @@
 
   function closeModal() {
     dismissModalOnly();
-    if (phase === 'recording') {
+    if (phase === 'recording' || phase === 'consent') {
       abortCapture();
       resetUi(false);
       setMagicCta('default');
@@ -1079,12 +1095,14 @@
     phase = 'idle';
     startedAt = 0;
     stopRequested = false;
-    modal.classList.remove('is-recording', 'is-processing', 'is-ready', 'is-playing');
+    pendingBlob = null;
+    pendingDurationMs = 0;
+    modal.classList.remove('is-recording', 'is-processing', 'is-ready', 'is-playing', 'is-consent');
     stopMicTracks();
     setStatus('', false);
     setLabel(startText, 'index.magic.start');
     recordBtn.classList.remove('is-hear');
-    syncConsentUi();
+    resetConsent();
     if (clearPreview) {
       voiceId = null;
       stopSyncLoop();
@@ -1108,12 +1126,8 @@
       showLockedModal();
       return;
     }
-    if (!hasConsented()) {
-      syncConsentUi();
-      setStatus('Please confirm the consent checkbox before recording.', true);
-      return;
-    }
     if (phase !== 'idle' && phase !== 'ready' && phase !== 'hero') return;
+    setConsentVisible(false);
     if (previewAudio) {
       previewAudio.pause();
       previewAudio.currentTime = 0;
@@ -1389,7 +1403,7 @@
     });
   }
 
-  function stopRecordingAndClone() {
+  function finishRecordingToConsent() {
     if (hasUsedCloneDemo()) {
       abortCapture();
       resetUi(false);
@@ -1403,11 +1417,9 @@
     if (phase !== 'recording' || stopRequested) return;
     stopRequested = true;
     var durationMs = Date.now() - startedAt;
-    phase = 'processing';
-    modal.classList.remove('is-recording');
-    modal.classList.add('is-processing');
     recordBtn.disabled = true;
-    syncConsentUi();
+    setLabel(isHy ? 'Պատրաստում…' : (isRu ? 'Подготовка…' : 'Preparing…'));
+    setStatus(isHy ? 'Պատրաստում ենք ձայնագրությունը…' : (isRu ? 'Готовим запись…' : 'Preparing your recording…'), true);
 
     stopRecorder().then(function (blob) {
       if (rafId) cancelAnimationFrame(rafId);
@@ -1423,11 +1435,7 @@
       analyser = null;
       dataArray = null;
       setSampleLevel(0);
-
-      // Close popup immediately; show waiting state on hero CTA (app-like background clone).
-      dismissModalOnly();
-      modal.classList.remove('is-processing', 'is-recording', 'is-ready', 'is-playing');
-      setMagicCta('wait');
+      modal.classList.remove('is-recording');
 
       if (!blob || blob.size < 1000) {
         throw new Error('Recording failed. Please try again.');
@@ -1436,23 +1444,74 @@
         throw new Error('Keep reading for at least 5 seconds.');
       }
 
-      var transcript = (sampleEl && sampleEl.textContent || '').trim()
-        .replace(/<\|[^|]+:[^|]+\|>/g, '')
-        .slice(0, 1000);
-      if (!transcript) throw new Error('Missing sample text.');
+      pendingBlob = blob;
+      pendingDurationMs = durationMs;
+      phase = 'consent';
+      if (consentCheck) consentCheck.checked = false;
+      setConsentVisible(true);
+      setStatus('', false);
+      setLabel(continueText, 'index.magic.continue');
+      recordBtn.classList.remove('is-hear');
+      syncConsentUi();
+    }).catch(function (err) {
+      console.error('[voice-magic]', err);
+      alert(err && err.message ? err.message : 'Something went wrong. Please try again.');
+      resetUi(false);
+    });
+  }
 
-      if (leadEl && leadWrap && !leadWrap.classList.contains('is-karaoke')) {
-        leadPlainText = (leadEl.textContent || '').trim();
-      }
-      var taleText = leadPlainText || getLeadText();
-      if (!taleText) throw new Error('Missing landing story text.');
+  function submitConsentAndClone() {
+    if (phase !== 'consent') return;
+    if (!hasConsented()) {
+      syncConsentUi();
+      setStatus(
+        isHy
+          ? 'Խնդրում ենք հաստատել համաձայնությունը՝ շարունակելու համար։'
+          : (isRu ? 'Подтвердите согласие, чтобы продолжить.' : 'Please confirm the consent checkbox to continue.'),
+        true
+      );
+      return;
+    }
+    if (!pendingBlob) {
+      setStatus('Recording missing. Please try again.', true);
+      resetUi(false);
+      return;
+    }
 
-      // Let the browser paint "Wait for a sec." before heavy WAV work / upload.
-      return new Promise(function (resolve) {
-        setTimeout(resolve, 40);
-      }).then(function () {
-        return runHiggsPipeline(blob, durationMs, transcript, taleText);
-      });
+    var blob = pendingBlob;
+    var durationMs = pendingDurationMs;
+    phase = 'processing';
+    modal.classList.add('is-processing');
+    modal.classList.remove('is-consent');
+    recordBtn.disabled = true;
+    syncConsentUi();
+
+    // Close popup immediately; show waiting state on hero CTA (app-like background clone).
+    dismissModalOnly();
+    modal.classList.remove('is-processing', 'is-recording', 'is-ready', 'is-playing', 'is-consent');
+    setMagicCta('wait');
+
+    var transcript = (sampleEl && sampleEl.textContent || '').trim()
+      .replace(/<\|[^|]+:[^|]+\|>/g, '')
+      .slice(0, 1000);
+    if (!transcript) {
+      failProcessing(new Error('Missing sample text.'));
+      return;
+    }
+
+    if (leadEl && leadWrap && !leadWrap.classList.contains('is-karaoke')) {
+      leadPlainText = (leadEl.textContent || '').trim();
+    }
+    var taleText = leadPlainText || getLeadText();
+    if (!taleText) {
+      failProcessing(new Error('Missing landing story text.'));
+      return;
+    }
+
+    new Promise(function (resolve) {
+      setTimeout(resolve, 40);
+    }).then(function () {
+      return runHiggsPipeline(blob, durationMs, transcript, taleText);
     }).catch(failProcessing);
   }
 
@@ -1462,7 +1521,11 @@
       return;
     }
     if (phase === 'recording') {
-      stopRecordingAndClone();
+      finishRecordingToConsent();
+      return;
+    }
+    if (phase === 'consent') {
+      submitConsentAndClone();
     }
   }
 
