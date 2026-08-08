@@ -401,6 +401,19 @@ footer {
   margin-top: 10px;
   flex-wrap: wrap;
 }
+.app-store-iab-tip {
+  margin: 10px auto 0;
+  max-width: 26rem;
+  padding: 0 12px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.82);
+}
+.app-store-iab-tip.is-urgent {
+  color: #fff;
+  font-weight: 600;
+}
 .hero-cta .btn,
 .hero-cta .btn-disabled {
   min-width: auto;
