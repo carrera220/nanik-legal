@@ -478,6 +478,15 @@ footer .store-cta-trial {
   width: 120px;
   object-fit: contain;
 }
+button.store-badge {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
 .store-badge-play img {
   position: absolute;
   left: 50%;
@@ -489,35 +498,102 @@ footer .store-cta-trial {
   object-fit: cover;
   transform: translate(-50%, -50%);
 }
-.store-badge-soon {
-  pointer-events: none;
-  cursor: default;
+.play-waitlist-modal {
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  max-height: none;
 }
-.store-badge-soon::before {
-  content: "";
-  position: absolute;
+.play-waitlist-modal::backdrop {
+  background: rgba(10, 8, 20, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.play-waitlist-modal[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.play-waitlist-backdrop {
+  position: fixed;
   inset: 0;
-  border-radius: inherit;
-  background: rgba(0, 0, 0, 0.58);
-  z-index: 1;
+  background: transparent;
 }
-.store-badge-soon small {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  bottom: auto;
-  transform: translateY(-50%);
-  z-index: 2;
-  margin: 0;
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: lowercase;
-  color: #ffffff;
+.play-waitlist-sheet {
+  position: relative;
+  z-index: 1;
+  width: min(400px, 100%);
+  padding: 28px 24px 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(26, 15, 53, 0.96);
+  color: #fff;
   text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+.play-waitlist-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+.play-waitlist-sheet h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  max-width: none;
+}
+.play-waitlist-body {
+  margin: 0 0 18px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.play-waitlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+.play-waitlist-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+}
+.play-waitlist-input {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 16px;
+  padding: 12px 14px;
+}
+.play-waitlist-input:focus {
+  outline: 2px solid rgba(243, 166, 157, 0.7);
+  outline-offset: 1px;
+}
+.play-waitlist-status {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.play-waitlist-status.is-error {
+  color: #F3A69D;
+}
+.play-waitlist-submit {
+  width: 100%;
 }
 .store-cta--compact {
   margin-top: 8px;
