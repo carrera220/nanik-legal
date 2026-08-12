@@ -72,24 +72,7 @@
       user_agent: navigator.userAgent || "",
     };
 
-    function postSupabase() {
-      if (!anon) return Promise.reject(new Error("no supabase"));
-      return fetch(base + "/rest/v1/play_waitlist", {
-        method: "POST",
-        headers: {
-          apikey: anon,
-          Authorization: "Bearer " + anon,
-          "Content-Type": "application/json",
-          Prefer: "return=minimal,resolution=ignore-duplicates",
-        },
-        body: JSON.stringify(payload),
-      }).then(function (res) {
-        if (res.ok || res.status === 409) return;
-        throw new Error("supabase " + res.status);
-      });
-    }
-
-    return postSupabase().catch(function () {
+    function notifyOwner() {
       return fetch("https://formsubmit.co/ajax/info@nanik.app", {
         method: "POST",
         headers: {
@@ -98,13 +81,43 @@
         },
         body: JSON.stringify({
           email: email,
-          _subject: "Nanik Play Market waitlist",
+          _subject: "New Play Market waitlist signup",
+          message: email + " wants to be notified when Nanik is on Google Play.",
           source: payload.source,
+          _captcha: "false",
+          _template: "box",
         }),
       }).then(function (res) {
         if (!res.ok) throw new Error("formsubmit");
       });
-    });
+    }
+
+    function postSupabase() {
+      if (!anon) return Promise.reject(new Error("no supabase"));
+      return fetch(base + "/rest/v1/play_waitlist", {
+        method: "POST",
+        headers: {
+          apikey: anon,
+          Authorization: "Bearer " + anon,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify(payload),
+      }).then(function (res) {
+        if (res.status === 409) return "duplicate";
+        if (res.ok) return "created";
+        throw new Error("supabase " + res.status);
+      });
+    }
+
+    return postSupabase()
+      .then(function (result) {
+        if (result === "duplicate") return;
+        return notifyOwner().catch(function () {});
+      })
+      .catch(function () {
+        return notifyOwner();
+      });
   }
 
   function ensureModal() {
