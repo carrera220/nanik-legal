@@ -459,7 +459,8 @@ footer .store-cta-trial {
   align-items: center;
   gap: 12px;
   margin: 0 auto;
-  height: 40px;
+  min-height: 40px;
+  padding-bottom: 6px;
 }
 a.store-badge,
 button.store-badge {
@@ -486,6 +487,7 @@ button.store-badge {
   height: 40px;
   max-width: none;
   object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
 }
 .store-badge-play {
   width: 134px;
