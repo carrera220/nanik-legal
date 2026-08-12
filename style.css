@@ -443,39 +443,52 @@ footer {
   align-items: center;
   gap: 12px;
   margin: 0 auto;
+  height: 44px;
 }
 .store-badge {
-  display: inline-flex;
-  flex-direction: column;
+  display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  height: 44px;
+  width: 132px;
   line-height: 0;
   text-decoration: none;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .store-badge img {
   display: block;
   height: 44px;
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 .store-badge-play img {
+  /* Official Play PNG has extra transparent padding — crop to Apple badge height. */
   height: 64px;
-  margin: -10px 0;
+  max-width: none;
+  margin: 0;
 }
 .store-badge-soon {
-  position: relative;
-  opacity: 0.85;
+  opacity: 0.9;
   pointer-events: none;
   cursor: default;
 }
 .store-badge-soon small {
-  display: block;
-  margin-top: 0;
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.2;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
   letter-spacing: 0.04em;
   text-transform: lowercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
 }
 .store-cta--compact {
   margin-top: 8px;
