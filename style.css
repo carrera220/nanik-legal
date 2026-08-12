@@ -464,6 +464,7 @@ footer .store-cta-trial {
 .store-badge {
   display: block;
   position: relative;
+  flex: 0 0 auto;
   height: 40px;
   width: 120px;
   line-height: 0;
@@ -475,7 +476,7 @@ footer .store-cta-trial {
 .store-badge img {
   display: block;
   height: 40px;
-  width: 120px;
+  width: 100%;
   object-fit: contain;
 }
 button.store-badge {
@@ -487,16 +488,15 @@ button.store-badge {
   background: transparent;
   cursor: pointer;
 }
+.store-badge-play {
+  width: 135px;
+  overflow: visible;
+  border-radius: 0;
+}
 .store-badge-play img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 146%;
-  height: 146%;
-  max-width: none;
-  margin: 0;
-  object-fit: cover;
-  transform: translate(-50%, -50%);
+  width: 135px;
+  height: 40px;
+  object-fit: contain;
 }
 .play-waitlist-modal {
   padding: 0;
