@@ -414,6 +414,72 @@ footer {
   color: #fff;
   font-weight: 600;
 }
+.store-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  width: 100%;
+}
+.store-cta-trial {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-align: center;
+}
+.store-cta-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px 14px;
+}
+.store-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0;
+  text-decoration: none;
+}
+.store-badge img {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+.store-badge-play img {
+  height: 58px;
+  margin: -9px 0;
+}
+.store-badge-soon {
+  position: relative;
+  opacity: 0.72;
+  pointer-events: none;
+  cursor: default;
+}
+.store-badge-soon small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--muted);
+}
+.store-cta--compact {
+  margin-top: 8px;
+}
+.download-app-cta.hero-cta,
+.download-app-cta {
+  flex-direction: column;
+  gap: 0;
+}
+.download-app-cta .store-cta {
+  margin-top: 4px;
+}
 .hero-cta .btn,
 .hero-cta .btn-disabled {
   min-width: auto;

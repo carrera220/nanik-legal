@@ -225,7 +225,10 @@
       }
       if (dropdown) {
         dropdown.hidden = !allowed;
-        if (allowed && (location.hash || '') === '#' + col.hash) dropdown.open = true;
+        // Keep author rows collapsed by default; only open when hash targets that author.
+        dropdown.open = Boolean(
+          allowed && (location.hash || '') === '#' + col.hash
+        );
       }
       if (list) list.hidden = false;
       if (filter && filter.parentElement) filter.parentElement.hidden = false;
