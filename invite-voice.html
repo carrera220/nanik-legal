@@ -11,7 +11,7 @@
 <meta http-equiv="Expires" content="0">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260812f">
+<link rel="stylesheet" href="style.css?v=20260812h">
 <style>
   body.voice-invite-page {
     min-height: 100vh;
@@ -555,12 +555,26 @@
 </main>
 
 <footer>
-&copy; 2026 Nanik · <a href="support.html">Support</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
+  <div class="store-cta store-cta--footer">
+    <div class="store-cta-badges">
+      <a class="store-badge store-badge-apple" href="https://apps.apple.com/app/id6762894314" aria-label="Download on the App Store">
+        <img src="images/badge-app-store.svg" width="120" height="40" alt="Download on the App Store" loading="lazy">
+      </a>
+      <span class="store-badge store-badge-play store-badge-soon" aria-disabled="true" aria-label="Get it on Google Play, coming soon">
+        <img src="images/badge-google-play.png" width="135" height="52" alt="Get it on Google Play" loading="lazy">
+        <small data-i18n="cta.playSoon">soon</small>
+      </span>
+    </div>
+    <p class="store-cta-trial" data-i18n="cta.trial">Get your free for 3 days</p>
+  </div>
+  <div class="footer-meta">
+    &copy; 2026 Nanik · <a href="support.html">Support</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
+  </div>
 </footer>
 
 <script src="nanik-api-config.js?v=20260805lang1"></script>
 <script src="voice-languages.js?v=20260805lang1"></script>
-<script src="app-store-cta.js?v=20260808ias2" defer></script>
+<script src="app-store-cta.js?v=20260812h" defer></script>
 <script src="site-nav.js?v=20260729u" defer></script>
 <script src="invite-voice.js?v=20260805lang1" defer></script>
 </body>
