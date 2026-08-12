@@ -62,7 +62,7 @@
   var magicCtaLabel = openBtn
     ? openBtn.querySelector('[data-i18n="index.magic.cta"], span:last-child')
     : null;
-  var magicCtaDefault = magicCtaLabel ? magicCtaLabel.textContent : 'Test my voice';
+  var magicCtaDefault = magicCtaLabel ? magicCtaLabel.textContent : 'Test with my voice';
   var magicCtaWait = magicCtaDefault.indexOf('Լսիր') !== -1 ? 'Մի պահ սպասիր…' : 'Wait for a sec.';
 
   var stream = null;
