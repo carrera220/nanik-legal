@@ -51,7 +51,7 @@
       'cta.appStore': 'Download on the App Store',
       'cta.play': 'Download from Play Market',
       'cta.playSoon': 'soon',
-      'cta.trial': 'Download now and get 3 days free trial',
+      'cta.trial': 'Download now and get 3 days free',
       'footer.back': '← Back to Nanik',
       'footer.copy': '© 2026 Nanik · ',
 
@@ -253,7 +253,7 @@
       'cta.appStore': 'Ներբեռնել App Store-ից',
       'cta.play': 'Ներբեռնել Play Market-ից',
       'cta.playSoon': 'շուտով',
-      'cta.trial': 'Ներբեռնիր հիմա և ստացիր 3-օրյա փորձաշրջան',
+      'cta.trial': 'Բեռնիր հիմա և ստացիր 3 օր անվճար',
       'footer.back': '← Վերադառնալ Nanik',
       'footer.copy': '© 2026 Nanik · ',
 
@@ -658,7 +658,7 @@
       'cta.appStore': 'Download on the App Store',
       'cta.play': 'Download from Play Market',
       'cta.playSoon': 'soon',
-      'cta.trial': 'Download now and get 3 days free trial',
+      'cta.trial': 'Download now and get 3 days free',
       'footer.back': '← Back to Nanik',
       'footer.copy': '© 2026 Nanik · ',
       'support.legalNote': 'Privacy Policy and Terms of Service pages remain in English.',
