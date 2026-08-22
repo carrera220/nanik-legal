@@ -187,21 +187,102 @@
     }
   }
 
+  var MIXPANEL_TOKEN = "84b6cdfa06c491b53b344e7bbc9f22a1";
+  var MIXPANEL_URL = "https://api-eu.mixpanel.com/track?ip=1&verbose=1";
+  var DISTINCT_KEY = "nanik.mixpanel.distinct_id";
+
+  function distinctId() {
+    try {
+      var existing = localStorage.getItem(DISTINCT_KEY);
+      if (existing && existing.trim()) return existing.trim();
+      var next =
+        "nanik_web_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(DISTINCT_KEY, next);
+      return next;
+    } catch (e) {
+      return "nanik_web_ephemeral_" + Date.now().toString(36);
+    }
+  }
+
+  function pageName() {
+    var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
+    if (path === "/" || path === "/index.html") return "Home";
+    if (path === "/hy.html" || path === "/hy") return "Home hy";
+    if (path.indexOf("/stories") !== -1) return "Stories";
+    if (path.indexOf("/languages") !== -1) return "Languages";
+    if (path.indexOf("/pricing") !== -1) return "Pricing";
+    if (path.indexOf("/support") !== -1) return "Support";
+    if (path.indexOf("/invite") !== -1) return "Invite";
+    if (path.indexOf("/privacy") !== -1) return "Privacy";
+    if (path.indexOf("/terms") !== -1) return "Terms";
+    return path;
+  }
+
+  function clickSource(anchor) {
+    if (!anchor || !anchor.closest) return pageName();
+    if (anchor.closest("#voice-magic-modal") || anchor.classList.contains("voice-magic-app-btn")) {
+      return "Voice magic";
+    }
+    if (anchor.closest("#download-app-modal")) return "Stories";
+    if (anchor.closest("footer") || anchor.closest(".store-cta--footer")) return "Footer";
+    if (anchor.closest(".languages-hero-cta")) return "Languages";
+    if (anchor.closest(".hero-cta") || anchor.closest(".download-cta")) return "Hero";
+    return pageName();
+  }
+
+  function encodeMixpanelData(payload) {
+    var json = JSON.stringify(payload);
+    try {
+      return btoa(unescape(encodeURIComponent(json)));
+    } catch (e) {
+      return btoa(json);
+    }
+  }
+
+  function trackAppStoreClick(anchor) {
+    var properties = {
+      token: MIXPANEL_TOKEN,
+      distinct_id: distinctId(),
+      time: Math.floor(Date.now() / 1000),
+      mp_lib: "nanik_web",
+      channel: "website",
+      source: clickSource(anchor),
+      page: pageName(),
+    };
+    var payload = [{ event: "Download from App Store", properties: properties }];
+    var url = MIXPANEL_URL + "&data=" + encodeURIComponent(encodeMixpanelData(payload));
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(url)) return;
+    } catch (e) {}
+    try {
+      var img = new Image();
+      img.src = url;
+    } catch (e2) {}
+  }
+
   function onClick(event) {
-    if (event.defaultPrevented) return;
     if (event.button != null && event.button !== 0) return;
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
     var anchor = findAppStoreAnchor(event.target);
     if (!anchor) return;
 
-    openFromMeta(event, anchor, detect());
+    trackAppStoreClick(anchor);
+
+    var det = detect();
+    if (!det.isMeta || !det.isIOS) return;
+    if (event.defaultPrevented) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    openFromMeta(event, anchor, det);
   }
 
   var det = detect();
-  if (!det.isMeta || !det.isIOS) return;
 
   function boot() {
+    if (!det.isMeta || !det.isIOS) return;
     rewriteAnchors(det);
     showTip();
   }
