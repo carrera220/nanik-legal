@@ -346,6 +346,24 @@ footer {
 .store-cta--footer {
   margin: 0 auto 18px;
 }
+.download-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 14px auto 0;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+.download-cta .hero-cta {
+  margin-top: 0;
+}
+.card .download-cta .store-cta-trial,
+.languages-hero-cta .download-cta .store-cta-trial {
+  color: var(--fg);
+}
 footer .store-cta-trial {
   color: #ffffff;
 }
