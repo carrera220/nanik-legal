@@ -1,0 +1,11 @@
+# Local Dodo secrets — never commit real keys
+supabase/.env.dodo.local
+supabase/.env.dodo.secrets
+supabase/.temp/
+.env
+.env.*
+!.env.dodo.example
+!supabase/.env.dodo.example
+
+# Local preview screenshots
+.preview-*.png

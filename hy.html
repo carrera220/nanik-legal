@@ -12,14 +12,48 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260822a">
+<link rel="stylesheet" href="style.css?v=20260911n">
+<script>
+(function () {
+  try {
+    var href = String(location.href || '');
+    if (
+      href.indexOf('access_token=') !== -1 ||
+      href.indexOf('error=') !== -1 ||
+      /[?&]code=/.test(href)
+    ) {
+      localStorage.setItem(
+        'nanik-last-oauth-return',
+        JSON.stringify({ href: href.slice(0, 800), at: Date.now() })
+      );
+    }
+  } catch (e) {}
+})();
+</script>
 <script>
 (function () {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  function isAuthReturn() {
+    try {
+      var h = String(location.hash || '');
+      if (
+        h.indexOf('access_token=') !== -1 ||
+        h.indexOf('refresh_token=') !== -1 ||
+        h.indexOf('error=') !== -1
+      ) {
+        return true;
+      }
+      var q = new URLSearchParams(location.search || '');
+      return !!(q.get('code') || q.get('access_token') || q.get('error'));
+    } catch (e) {
+      return false;
+    }
+  }
   function toTop() {
     window.scrollTo(0, 0);
   }
   function clearHashAndTop() {
+    if (isAuthReturn()) return;
     if (location.hash) {
       try {
         history.replaceState(null, '', location.pathname + location.search);
@@ -29,7 +63,9 @@
   }
   var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
   var isReload = (nav && nav.type === 'reload') || (performance.navigation && performance.navigation.type === 1);
-  if (isReload) {
+  if (isAuthReturn()) {
+    // Leave OAuth tokens/code in the URL for signup.js
+  } else if (isReload) {
     clearHashAndTop();
     document.addEventListener('DOMContentLoaded', clearHashAndTop);
     window.addEventListener('load', clearHashAndTop);
@@ -40,6 +76,7 @@
   }
   window.addEventListener('pageshow', function (e) {
     if (!e.persisted) return;
+    if (isAuthReturn()) return;
     if (location.hash && location.hash.length > 1) return;
     toTop();
   });
@@ -163,8 +200,8 @@
 <body>
 <header class="site">
   <div class="nav-shell">
-    <a class="brand" href="hy.html"><img src="images/favicon-64.png" width="28" height="28" alt="Nanik" style="border-radius:7px;display:block"></a>
-    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav-links" aria-label="Menu"><span class="nav-toggle-label">Գլխավոր</span><span class="nav-toggle-caret" aria-hidden="true"></span></button>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav-links" aria-label="Մենյու"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+    <a class="brand" href="hy.html">Nanik</a>
     <div id="site-nav-links" class="site-nav-links">
       <a href="hy.html">Գլխավոր</a>
       <a href="languages.html">Լեզուներ</a>
@@ -177,9 +214,9 @@
 <main>
   <section class="hero">
     <div>
-      <h1>Պարգևեք նրանց նոր արկած ամեն գիշեր՝ <strong>ձեր սեփական ձայնով</strong></h1>
+      <h1 data-i18n="index.h1" data-i18n-html>Ստեղծիր հեքիաթներ <strong>քո ձայնով</strong></h1>
       <div class="hero-lead-wrap" id="hero-lead-wrap">
-        <p class="lead lead-glow" id="hero-lead">Նանիկ հավելված է ծնողների համար, որը ստեղծում է հեքիաթներ երեխաների համար՝ ձեր նկարագրած հերոսով և կարդում հենց ձեր բնական ձայնով՝ ավելի քան 100 լեզվով։</p>
+        <p class="lead" id="hero-lead" data-i18n="index.lead">Լուսանկարիր երեխային կամ սիրելի խաղալիքը → ընտրիր՝ ինչ աջակցի հեքիաթը → Nanik-ը կկարդա քո ձայնով։</p>
         <div class="hero-narration-bar" id="hero-narration-bar" hidden>
           <button type="button" class="hero-narration-toggle" id="hero-narration-toggle" aria-pressed="false" aria-label="Նվագարկել">
             <svg class="hero-narration-icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"/></svg>
@@ -190,13 +227,11 @@
           </div>
         </div>
       </div>
-            <div class="download-cta">
-  <p class="store-cta-trial" data-i18n="cta.trial">Download now and get 3 days free</p>
-  <div class="hero-cta">
-    <a class="btn" href="https://apps.apple.com/app/id6762894314"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg><span data-i18n="cta.appStore">Download on the App Store</span></a>
-    <span class="btn btn-disabled btn-stacked" aria-disabled="true"><span class="btn-label"><svg viewBox="0 0 512 512" aria-hidden="true"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg><span data-i18n="cta.play">Download from Play Market</span></span><small data-i18n="cta.playSoon">coming soon</small></span>
-  </div>
-</div>
+      <div class="download-cta">
+        <button type="button" class="btn hero-start-cta" onclick="window.NANIK_OPEN_SIGNUP ? window.NANIK_OPEN_SIGNUP() : document.getElementById('site-signup-open')?.click()">
+          <span data-i18n="hero.chat.send">Ստեղծել հեքիաթ</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -554,11 +589,14 @@
 &copy; 2026 Nanik · <a href="support.html">Աջակցություն</a> · <a href="privacy.html">Գաղտնիություն</a> · <a href="terms.html">Պայմաններ</a> · <a href="/?lang=en" hreflang="en" lang="en">English</a> · <a href="mailto:info@nanik.app">info@nanik.app</a>
   </div>
 </footer>
-<script src="nanik-api-config.js?v=20260805lang1"></script>
+<script src="nanik-api-config.js?v=20260909d"></script>
+<script src="nanik-draft.js?v=20260911j"></script>
 <script src="voice-languages.js?v=20260805lang1"></script>
 <script src="app-store-cta.js?v=20260822mp" defer></script>
-<script src="site-nav.js?v=20260729u" defer></script>
-<script src="i18n.js?v=20260815b" defer></script>
+<script src="site-nav.js?v=20260911i" defer></script>
+<script src="signup.js?v=20260911n" defer></script>
+<script src="geo-lang.js?v=20260920geo1" defer></script>
+<script src="i18n.js?v=20260920geo1" defer></script>
 <script src="voice-magic.js?v=20260812g" defer></script>
 <script src="world-slider.js?v=20260728bw" defer></script>
 <script src="play-waitlist.js?v=20260812n" defer></script>

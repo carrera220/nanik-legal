@@ -21,6 +21,9 @@
   if (!isEnglishHome()) return;
 
   function normalizeLang(code) {
+    if (window.NanikGeoLang && window.NanikGeoLang.normalizeLang) {
+      return window.NanikGeoLang.normalizeLang(code);
+    }
     if (!code) return null;
     code = String(code).toLowerCase().replace('_', '-').split('-')[0];
     return code || null;
@@ -43,7 +46,6 @@
   function goHy() {
     writeSavedLang('hy');
     var target = HY_PATH + (location.search || '') + (location.hash || '');
-    // Avoid appending another ?lang= if we already have one.
     location.replace(target);
   }
 
@@ -53,7 +55,6 @@
     var forced = normalizeLang(params.get('lang'));
     if (forced === 'en' || forced === 'hy') {
       writeSavedLang(forced);
-      // Clean the query so bookmarks stay tidy.
       try {
         params.delete('lang');
         var clean = params.toString();
@@ -80,6 +81,9 @@
   if (saved && saved !== 'hy') return;
 
   function likelyArmeniaSync() {
+    if (window.NanikGeoLang && window.NanikGeoLang.detectSync) {
+      return window.NanikGeoLang.detectSync(['hy', 'en', 'ru']) === 'hy';
+    }
     try {
       if (Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Yerevan') {
         return true;
@@ -97,8 +101,7 @@
     return;
   }
 
-  // Async IP fallback for visitors whose timezone/language are not Armenian
-  // but whose network location is Armenia (e.g. English browser in Yerevan).
+  // Async IP fallback: Armenia only (full country→language is handled by i18n / dashboard).
   var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
   var timer = setTimeout(function () {
     if (ctrl) ctrl.abort();

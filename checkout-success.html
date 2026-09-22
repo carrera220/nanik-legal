@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment received - Nanik</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="stylesheet" href="style.css?v=20260910a">
+</head>
+<body>
+<header class="site">
+  <div class="nav-shell">
+    <a class="brand" href="/">Nanik</a>
+  </div>
+</header>
+<main class="legal-main" style="text-align:center;max-width:36rem;margin:0 auto;padding:48px 20px">
+  <h1 id="checkout-title">Thanks — we're confirming your plan</h1>
+  <p id="checkout-copy" class="effective">
+    Payment confirmation can take a few seconds. Activating Nanik Plus on your account…
+  </p>
+  <p style="margin-top:28px">
+    <a class="btn" href="dashboard.html">Open dashboard</a>
+  </p>
+  <p style="margin-top:12px">
+    <a href="pricing.html">Back to pricing</a>
+  </p>
+</main>
+<script src="nanik-api-config.js?v=20260918dodo"></script>
+<script src="pricing-checkout.js?v=20260920applepaytop"></script>
+<script>
+(function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var status = (params.get("status") || "").toLowerCase();
+    var subscriptionId = params.get("subscription_id") || params.get("subscriptionId") || "";
+    var sessionId = params.get("session_id") || params.get("checkout_session_id") || "";
+    var title = document.getElementById("checkout-title");
+    var copy = document.getElementById("checkout-copy");
+    if (status === "failed") {
+      if (title) title.textContent = "Checkout did not finish";
+      if (copy) copy.textContent = "No charge was completed. You can try again from the pricing page.";
+    } else if (status === "success" || !status) {
+      if (title) title.textContent = "Payment received";
+      if (copy) copy.textContent = "Activating Nanik Plus on your account…";
+      if (window.NanikPayments && typeof window.NanikPayments.syncSubscription === "function") {
+        window.NanikPayments.syncSubscription({
+          subscriptionId: subscriptionId,
+          sessionId: sessionId,
+        }).then(function (result) {
+          if (copy) {
+            copy.textContent = result && result.isPlus
+              ? "Nanik Plus is active. You can create stories now."
+              : "We're still confirming your plan. Open the dashboard and refresh if needed.";
+          }
+        });
+      }
+    }
+    var checkoutMessage = {
+      type: "nanik:checkout-complete",
+      status: status || "success",
+      subscriptionId: subscriptionId,
+      sessionId: sessionId,
+    };
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage(checkoutMessage, window.location.origin);
+    } else if (window.opener && !window.opener.closed) {
+      window.opener.postMessage(checkoutMessage, window.location.origin);
+      if (status !== "failed") window.setTimeout(function () { window.close(); }, 1400);
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

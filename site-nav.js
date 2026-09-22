@@ -1,20 +1,5 @@
 (function () {
-  var LABEL_BY_FILE = {
-    'languages.html': { key: 'nav.languages', en: 'Languages', hy: 'Լեզուներ' },
-    'stories.html': { key: 'nav.stories', en: 'Stories', hy: 'Հեքիաթներ' },
-    'pricing.html': { key: 'nav.pricing', en: 'Pricing', hy: 'Գներ' },
-    'support.html': { key: 'nav.support', en: 'Support', hy: 'Աջակցություն' },
-    'privacy.html': { key: 'nav.privacy', en: 'Privacy', hy: 'Գաղտնիություն' },
-    'terms.html': { key: 'nav.terms', en: 'Terms', hy: 'Պայմաններ' },
-    'hy.html': { key: null, en: 'Home', hy: 'Գլխավոր' }
-  };
   var DESKTOP_MQ = '(min-width: 721px)';
-
-  function currentFile() {
-    var path = (location.pathname || '/').replace(/\/+$/, '');
-    var file = path.split('/').pop();
-    return file || 'index.html';
-  }
 
   function isDesktop() {
     return window.matchMedia && window.matchMedia(DESKTOP_MQ).matches;
@@ -23,28 +8,80 @@
   function syncToggleLabel() {
     var btn = document.querySelector('.nav-toggle');
     if (!btn) return;
+    if (!btn.querySelector('.nav-toggle-bars')) {
+      var bars = document.createElement('span');
+      bars.className = 'nav-toggle-bars';
+      bars.setAttribute('aria-hidden', 'true');
+      btn.insertBefore(bars, btn.firstChild);
+    }
     var label = btn.querySelector('.nav-toggle-label');
-    if (!label) {
-      label = document.createElement('span');
-      label.className = 'nav-toggle-label';
-      btn.insertBefore(label, btn.firstChild);
-    }
-    var meta = LABEL_BY_FILE[currentFile()] || { key: 'nav.home', en: 'Home', hy: 'Գլխավոր' };
-    if (meta.key) {
-      label.setAttribute('data-i18n', meta.key);
-      label.textContent = meta.en;
-    } else {
-      label.removeAttribute('data-i18n');
-      label.textContent = meta.hy;
-    }
-    if (!btn.querySelector('.nav-toggle-caret')) {
-      var caret = document.createElement('span');
-      caret.className = 'nav-toggle-caret';
-      caret.setAttribute('aria-hidden', 'true');
-      btn.appendChild(caret);
-    }
-    btn.setAttribute('aria-label', label.textContent);
+    var caret = btn.querySelector('.nav-toggle-caret');
+    if (label) label.remove();
+    if (caret) caret.remove();
+    if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Menu');
   }
+
+  function ensureDrawerChrome(menu) {
+    if (!menu.querySelector('.site-nav-close')) {
+      var close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'site-nav-close';
+      close.setAttribute('aria-label', 'Close menu');
+      close.innerHTML = '&times;';
+      menu.insertBefore(close, menu.firstChild);
+    }
+
+    if (!menu.querySelector('.site-nav-drawer-actions')) {
+      var actions = document.createElement('div');
+      actions.className = 'site-nav-drawer-actions';
+
+      var login = document.createElement('button');
+      login.type = 'button';
+      login.className = 'site-nav-drawer-btn site-nav-drawer-btn-login';
+      login.setAttribute('data-i18n', 'signup.login');
+      login.textContent = 'Log in';
+
+      var signup = document.createElement('button');
+      signup.type = 'button';
+      signup.className = 'site-nav-drawer-btn site-nav-drawer-btn-signup';
+      signup.setAttribute('data-i18n', 'nav.startFree');
+      signup.textContent = 'Sign up';
+
+      actions.appendChild(login);
+      actions.appendChild(signup);
+      menu.appendChild(actions);
+
+      login.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenuUi();
+        if (typeof window.NANIK_OPEN_LOGIN === 'function') window.NANIK_OPEN_LOGIN();
+        else if (typeof window.NANIK_OPEN_SIGNUP === 'function') window.NANIK_OPEN_SIGNUP();
+      });
+      signup.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenuUi();
+        if (typeof window.NANIK_OPEN_SIGNUP === 'function') window.NANIK_OPEN_SIGNUP();
+        else {
+          var openBtn = document.getElementById('site-signup-open');
+          if (openBtn) openBtn.click();
+        }
+      });
+    }
+
+    var backdrop = document.getElementById('site-nav-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'site-nav-backdrop';
+      backdrop.className = 'site-nav-backdrop';
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(backdrop);
+    }
+    return backdrop;
+  }
+
+  var closeMenuUi = function () {};
 
   function initNavToggle() {
     var btn = document.querySelector('.nav-toggle');
@@ -53,14 +90,24 @@
     btn.dataset.navReady = '1';
     syncToggleLabel();
 
+    var backdrop = ensureDrawerChrome(menu);
+
     function closeMenu() {
       menu.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('nav-drawer-open');
+      backdrop.setAttribute('aria-hidden', 'true');
     }
     function openMenu() {
       menu.classList.add('is-open');
+      backdrop.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('nav-drawer-open');
+      backdrop.setAttribute('aria-hidden', 'false');
     }
+    closeMenuUi = closeMenu;
+
     function syncLayout() {
       closeMenu();
     }
@@ -74,9 +121,9 @@
 
     syncLayout();
     btn.addEventListener('click', toggleMenu);
-    document.addEventListener('click', function (e) {
-      if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
-    });
+    backdrop.addEventListener('click', closeMenu);
+    var closeBtn = menu.querySelector('.site-nav-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeMenu();
     });
@@ -196,8 +243,17 @@
   function init() {
     initNavToggle();
     initSmoothSectionScroll();
+    function isAuthHash(hash) {
+      var h = String(hash || '').replace(/^#/, '');
+      return (
+        h.indexOf('access_token=') !== -1 ||
+        h.indexOf('refresh_token=') !== -1 ||
+        h.indexOf('error=') !== -1 ||
+        h.indexOf('error_description=') !== -1
+      );
+    }
     // Arrive via /#features from another page — smooth scroll after layout.
-    if (location.hash && location.hash.length > 1) {
+    if (location.hash && location.hash.length > 1 && !isAuthHash(location.hash)) {
       var id = decodeURIComponent(location.hash.slice(1));
       var target = document.getElementById(id);
       if (target) {
