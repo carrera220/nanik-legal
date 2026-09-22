@@ -1,0 +1,9 @@
+.git
+.github
+supabase/.env.dodo.local
+supabase/.env.dodo.secrets
+supabase/.temp
+.preview-*.png
+node_modules
+.DS_Store
+data
