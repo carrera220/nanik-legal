@@ -1669,13 +1669,14 @@ body.is-create-panel .dash-main {
   grid-column: 1 / -1;
 }
 .dash-library-empty-wrap img {
-  width: 180px;
-  height: 180px;
-  border-radius: 90px;
-  object-fit: cover;
-  object-position: center 42%;
+  width: min(220px, 56vw);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 0;
+  object-fit: contain;
+  object-position: center;
   margin-bottom: 24px;
-  background: #000;
+  background: transparent;
 }
 .dash-library-empty-wrap h2 {
   margin: 0 0 8px;

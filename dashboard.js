@@ -4858,7 +4858,7 @@
     if (!list.length) {
       box.innerHTML =
         '<div class="dash-library-empty-wrap">' +
-        '<img src="images/library-empty-state.png?v=20260921fox1" alt="">' +
+        '<img src="images/library-empty-state.png?v=20260922alpha1" alt="">' +
         "<h2>" +
         escapeHtml(pack.noStoriesYet || en.noStoriesYet) +
         "</h2>" +
