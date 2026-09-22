@@ -9,3 +9,4 @@ supabase/.temp/
 
 # Local preview screenshots
 .preview-*.png
+.wrangler/
