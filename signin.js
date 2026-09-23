@@ -292,13 +292,18 @@
     } catch (e) {}
 
     function goAuthorize(extra) {
-      location.href =
+      var url =
         supabaseUrl() +
         "/auth/v1/authorize?provider=" +
         encodeURIComponent(provider) +
         "&redirect_to=" +
         encodeURIComponent(redirectTo) +
         (extra || "");
+      // Always show Google's account chooser so the last-used account is not forced.
+      if (String(provider) === "google") {
+        url += "&prompt=select_account";
+      }
+      location.href = url;
     }
 
     sha256B64Url(verifier)

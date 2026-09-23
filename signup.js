@@ -623,6 +623,10 @@
         "&redirect_to=" +
         encodeURIComponent(redirectTo) +
         (extra || "");
+      // Always show Google's account chooser so the last-used account is not forced.
+      if (String(provider) === "google") {
+        url += "&prompt=select_account";
+      }
       location.href = url;
     }
 
