@@ -7708,13 +7708,6 @@ body.has-tab-pill button.guided-plan-cta {
   font-weight: 700;
 }
 .guided-plan-quota[hidden] { display: none; }
-.guided-plan-quota a {
-  color: #fff;
-  font-weight: 800;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.guided-plan-quota a[hidden] { display: none !important; }
 .guided-promise {
   display: flex;
   gap: 10px;

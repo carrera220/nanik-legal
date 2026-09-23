@@ -44,7 +44,7 @@
     Comedy: "Զվարճալի",
     "Funny & Silly": "Զվարճալի",
     "Animals & Magic": "Կենդանիներ",
-    "Classic Folklore & Legends": "Ժողովրդական հեքիաթներ և լեգենդներ",
+    "Classic Folklore & Legends": "Ժողովրդական հեքիաթներ",
     "Surprise Me": "Անակնկալ",
   };
   var INTENT_LABELS = {
@@ -66,17 +66,17 @@
     "Surprise Me": "Create something unexpected.",
   };
   var INTENT_DESC_HY = {
-    Bedtime: "Հեքիաթներ՝ հատուկ ստեղծված երեխաներին քնելուն պատրաստելու",
-    Adventure: "Որոնումներ, հերոսներ, առեղծվածներ և բացահայտումներ։",
-    Comedy: "Խաղային հեքիաթներ՝ լի ծիծաղով և անակնկալներով։",
-    "Funny & Silly": "Խաղային հեքիաթներ՝ լի ծիծաղով և անակնկալներով։",
-    "Animals & Magic": "Խոսող կենդանիներ, կախարդական աշխարհներ և կախարդ ընկերներ։",
-    "Classic Folklore & Legends": "Անժամանակ հեքիաթներ՝ ոգեշնչված առասպելներով և ժողովրդական պատմություններով։",
+    Bedtime: "Երեխաներին քնելուն պատրաստելու",
+    Adventure: "Որոնումներ, առեղծվածներ և բացահայտումներ",
+    Comedy: "Ծիծաղով լի հեքիաթներ",
+    "Funny & Silly": "Ծիծաղով լի հեքիաթներ",
+    "Animals & Magic": "Կախարդական կենդանական աշխարհ",
+    "Classic Folklore & Legends": "Ժողովրդական պատմություններ",
     "Surprise Me": "Ստեղծիր մի անսպասելի հեքիաթ։",
   };
   var PURPOSE_LABELS_HY = {
-    "Help with something happening today": "Օգնել այսօրվա մի դեպքի հետ կապված",
-    "Help them learn or understand something": "Օգնել սովորել կամ հասկանալ մի բան",
+    "Help with something happening today": "Օգնել հասկանալ",
+    "Help them learn or understand something": "Սովորել նոր բան",
     "Just create a great story": "Պարզապես ստեղծել հիանալի հեքիաթ",
   };
   var PURPOSE_DESC = {
@@ -585,7 +585,7 @@
         "data-guided-title",
         showPicker
           ? (isArmenianUi() ? "Ո՞ւմ համար է հեքիաթը։" : "Whose story is this?")
-          : (isArmenianUi() ? "Քանի տարեկան է երեխադ։" : "How old is your kid?")
+          : (isArmenianUi() ? "Նշեք երեխայի տարիքը" : "How old is your kid?")
       );
     }
     if (title && stepKey === "basics") {
@@ -2933,7 +2933,6 @@
     var quota = raw && typeof raw === "object" ? raw : window.NANIK_QUOTA_STATE;
     var row = el("guided-plan-quota");
     var count = el("guided-plan-quota-count");
-    var upgrade = el("guided-plan-upgrade");
     if (!row || !count) return;
     var isPlus = !!(quota && quota.isPlus);
     var remaining = quota && Number.isFinite(Number(quota.storiesRemaining))
@@ -2948,16 +2947,6 @@
       : (isPlus
         ? "Nanik Plus · " + remaining + (remaining === 1 ? " story left this month" : " stories left this month")
         : remaining + (remaining === 1 ? " story remaining" : " stories remaining"));
-    if (!upgrade) return;
-    if (isPlus) {
-      upgrade.hidden = true;
-      return;
-    }
-    upgrade.hidden = false;
-    if (upgrade.getAttribute("aria-busy") === "true") return;
-    upgrade.textContent = isArmenianUi()
-      ? "Թարմացրու՝ ավելի շատ հեքիաթների համար"
-      : "Upgrade to get more stories";
   }
 
   function readPlanFields() {
@@ -3671,6 +3660,8 @@
       var deciding = state.heroPick === "surprise";
       decide.classList.toggle("is-on", deciding);
       decide.setAttribute("aria-pressed", deciding ? "true" : "false");
+      decide.innerHTML = (isArmenianUi() ? "Թող հեքիաթը որոշի" : "Let the story decide") +
+        ' <span aria-hidden="true">&#8594;</span>';
     }
     paintHeroChildPanel();
     paintPhotoControls();
