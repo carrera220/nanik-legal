@@ -2867,9 +2867,13 @@
     };
     var storyType = (hy ? INTENT_LABELS_HY : INTENT_LABELS)[planner.intentLabel] || planner.intentLabel;
     var heroTitle = plan.hero.name || (hy ? "Հեքիաթը կընտրի հերոսին" : "The story will choose the hero");
+    // Audience gender/interests are "for whom" — only show them on the hero card when
+    // the child is the hero. Story-decides has no hero details yet.
     var heroDetails = plan.hero.mode === "created"
       ? [plan.hero.characterType, plan.hero.description].filter(Boolean).join(" · ")
-      : [plan.child.gender, plan.child.interests.join(", ")].filter(Boolean).join(" · ");
+      : plan.hero.mode === "child"
+      ? [plan.child.gender, plan.child.interests.join(", ")].filter(Boolean).join(" · ")
+      : "";
     var cards = [
       {
         kind: "story",
@@ -4401,10 +4405,21 @@
 
   function storyPayload() {
     var heroKind = state.heroKind === "child" ? "kid" : state.heroKind;
-    var heroName = planner.hero || state.heroDescription;
-    if (heroKind === "kid") heroName = planner.name || state.childName || "my kid";
-    if (!heroName && heroKind === "child") heroName = planner.name || state.childName || "the child";
-    if (!heroName) heroName = HERO_LABELS[heroKind] || "a magical hero";
+    var heroName = "";
+    if (heroKind === "kid" || heroKind === "child") {
+      // Child name belongs on the hero only when the child is the illustrator subject.
+      heroName = planner.name || state.childName || "my kid";
+    } else if (heroKind === "surprise" || state.heroPick === "surprise") {
+      heroKind = "surprise";
+      heroName = "";
+    } else if (heroKind === "madeup" || state.heroPick === "madeup") {
+      heroName = tidyPhrase(
+        [state.madeUpName, state.madeUpType, state.madeUpDescription].filter(Boolean).join(", ")
+      ) || tidyPhrase(planner.hero || state.heroDescription || "");
+    } else {
+      heroName = tidyPhrase(planner.hero || state.heroDescription || "");
+      if (/^(let the story decide|թող հեքիաթը որոշի)$/i.test(heroName)) heroName = "";
+    }
     if (!heroKind && planner.name && planner.hero === planner.name) heroKind = "kid";
     if (!heroKind && planner.companion) heroKind = "imaginary";
     return {

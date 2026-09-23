@@ -7163,7 +7163,10 @@
     };
     payload.hero = {
       mode: heroMode,
-      name: answers.heroName || answers.childName || "",
+      // Child name is audience-only unless the child is explicitly the hero.
+      name: heroMode === "child"
+        ? (answers.heroName || answers.childName || "")
+        : (answers.heroName || ""),
       characterType: heroMode === "child" ? "human child" : "",
       description: heroMode === "child" ? humanChildHeroLabel(answers.childGender) : "",
       photoProvided: !!answers.image,
@@ -7276,7 +7279,17 @@
     return /^(kid|child)$/i.test(String(kind || "").trim());
   }
 
+  function isStoryDecidesHero() {
+    var kind = String(answers.heroKind || "").trim().toLowerCase();
+    if (/^(surprise|decide|story_decides)$/i.test(kind)) return true;
+    var plan = answers.summaryPlan;
+    if (plan && plan.hero && /decide/i.test(String(plan.hero.mode || ""))) return true;
+    var name = String(answers.heroName || "").trim().toLowerCase();
+    return /let the story decide|story (will )?decide|թող հեքիաթը որոշի|пусть сказка решит/i.test(name);
+  }
+
   function illustrationSummaryHero() {
+    // Child name is audience ("for whom") — only use it when the child is the hero.
     if (isKidHeroKind(answers.heroKind)) {
       return humanChildHeroLabel(resolvedChildGender());
     }
@@ -7284,7 +7297,16 @@
     if (plan && plan.hero && /child/i.test(String(plan.hero.mode || ""))) {
       return humanChildHeroLabel(resolvedChildGender());
     }
-    return answers.heroName || answers.childName || "a kind child";
+    if (isStoryDecidesHero()) return "a whimsical story hero";
+    var heroName = String(answers.heroName || "").trim();
+    if (heroName && !/let the story decide|story (will )?decide|թող հեքիաթը որոշի|пусть сказка решит/i.test(heroName)) {
+      return heroName;
+    }
+    if (plan && plan.hero) {
+      var created = [plan.hero.characterType, plan.hero.description].filter(Boolean).join(", ");
+      if (created) return created;
+    }
+    return "a whimsical story hero";
   }
 
   function heroLabelForScene(summaryHero, hasPhoto) {
@@ -7435,7 +7457,7 @@
         var coverBeat = String(result && result.imagePrompt || "").trim() ||
           coverBeatFallback(
             result && result.title,
-            answers.heroName || answers.childName
+            illustrationSummaryHero()
           );
         var hasPhoto = !!heroReferenceFromDataUrl(answers.image);
         var assembledPrompt = buildIllustrationPrompt({
