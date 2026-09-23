@@ -11,3 +11,5 @@ directory = "."
 binding = "ASSETS"
 html_handling = "auto-trailing-slash"
 not_found_handling = "404-page"
+# Intercept first so secret paths cannot be served even if present in the asset store.
+run_worker_first = true
