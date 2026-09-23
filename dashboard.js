@@ -1374,14 +1374,10 @@
     paintStoriesCapsule();
     var fontDown = document.getElementById("dash-reader-font-down");
     var fontUp = document.getElementById("dash-reader-font-up");
-    var playerFontDown = document.getElementById("dash-reader-player-font-down");
-    var playerFontUp = document.getElementById("dash-reader-player-font-up");
     var smaller = pack.readerFontSmaller || COPY.en.readerFontSmaller;
     var bigger = pack.readerFontBigger || COPY.en.readerFontBigger;
     if (fontDown) fontDown.setAttribute("aria-label", smaller);
     if (fontUp) fontUp.setAttribute("aria-label", bigger);
-    if (playerFontDown) playerFontDown.setAttribute("aria-label", smaller);
-    if (playerFontUp) playerFontUp.setAttribute("aria-label", bigger);
     syncReaderMusicButton();
     syncReaderVoiceButton();
     var telegram = document.getElementById("dash-account-telegram");
@@ -4839,17 +4835,10 @@
     }
     var atMin = readerFontSize <= READER_FONT_MIN;
     var atMax = readerFontSize >= READER_FONT_MAX;
-    [
-      "dash-reader-font-down",
-      "dash-reader-player-font-down",
-    ].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.disabled = atMin;
-    });
-    ["dash-reader-font-up", "dash-reader-player-font-up"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.disabled = atMax;
-    });
+    var fontDown = document.getElementById("dash-reader-font-down");
+    var fontUp = document.getElementById("dash-reader-font-up");
+    if (fontDown) fontDown.disabled = atMin;
+    if (fontUp) fontUp.disabled = atMax;
   }
 
   function volumeToProgress(vol) {
@@ -5110,25 +5099,18 @@
       showReaderVolume();
       syncReaderMusicButton();
     }
-    [
-      "dash-reader-font-down",
-      "dash-reader-player-font-down",
-    ].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("click", function () {
-          bumpFont(-READER_FONT_STEP);
-        });
-      }
-    });
-    ["dash-reader-font-up", "dash-reader-player-font-up"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("click", function () {
-          bumpFont(READER_FONT_STEP);
-        });
-      }
-    });
+    var fontDown = document.getElementById("dash-reader-font-down");
+    var fontUp = document.getElementById("dash-reader-font-up");
+    if (fontDown) {
+      fontDown.addEventListener("click", function () {
+        bumpFont(-READER_FONT_STEP);
+      });
+    }
+    if (fontUp) {
+      fontUp.addEventListener("click", function () {
+        bumpFont(READER_FONT_STEP);
+      });
+    }
     ["dash-reader-music", "dash-reader-player-music"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener("click", onMusicClick);

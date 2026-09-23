@@ -2275,7 +2275,7 @@ body.is-create-panel .dash-main {
   display: none !important;
 }
 .dash-reader:has(#dash-reader-player:not([hidden])) .dash-reader-bottom-blur {
-  --dash-reader-bottom-h: calc(240px + var(--dash-tab-pill-space, 0px));
+  --dash-reader-bottom-h: calc(200px + var(--dash-tab-pill-space, 0px));
 }
 .dash-reader-bottom-blur-layer {
   position: absolute;
@@ -2738,15 +2738,6 @@ body.is-create-panel .dash-main {
 .dash-reader-player-side.is-end {
   justify-content: flex-start;
 }
-.dash-reader-player-fonts {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  margin-top: 2px;
-}
-.dash-reader-player-font,
 .dash-reader-player-music {
   appearance: none;
   width: 52px;
@@ -2765,26 +2756,6 @@ body.is-create-panel .dash-main {
   -webkit-backdrop-filter: blur(12px);
   flex-shrink: 0;
 }
-.dash-reader-player-font {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-}
-.dash-reader-player-font .is-sm {
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1;
-}
-.dash-reader-player-font .is-lg {
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1;
-}
-.dash-reader-player-font:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-.dash-reader-player-font:hover:not(:disabled),
 .dash-reader-player-music:hover {
   background: rgba(255, 255, 255, 0.16);
 }
@@ -2799,8 +2770,8 @@ body.is-create-panel .dash-main {
 .dash-reader-player-music svg[hidden] {
   display: none !important;
 }
-/* When the bottom player owns music/font, hide the header duplicates. */
-.dash-reader:has(#dash-reader-player:not([hidden])) .dash-reader-actions {
+/* Player mode: music stays in the bottom bar; keep header font A/A like reading mode. */
+.dash-reader:has(#dash-reader-player:not([hidden])) .dash-reader-music {
   display: none;
 }
 .dash-reader-player-skip {
