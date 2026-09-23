@@ -2852,6 +2852,12 @@
     }
     var create = el("guided-plan-create");
     if (create) create.textContent = hy ? "Ստեղծել հեքիաթ" : "Create story";
+    var stay = el("guided-generating-stay");
+    if (stay) {
+      stay.textContent = hy
+        ? "Խնդրում ենք մնալ այս էջում — մի լքեք բրաուզերը։"
+        : "Please keep this page open — don’t leave the browser.";
+    }
     var intentField = el("guided-intent-custom");
     if (intentField && !intentField.value.trim()) {
       intentField.placeholder = hy ? INTENT_HINTS_HY[0] : INTENT_HINTS[0];
@@ -4749,6 +4755,12 @@
     paintHeroChildPanel();
     clearVisualSelections();
     el("guided-generating-title").textContent = isArmenianUi() ? "Ստեղծում եմ երեխայիդ հեքիաթը…" : "Creating your child’s story…";
+    var stayNote = el("guided-generating-stay");
+    if (stayNote) {
+      stayNote.textContent = isArmenianUi()
+        ? "Խնդրում ենք մնալ այս էջում — մի լքեք բրաուզերը։"
+        : "Please keep this page open — don’t leave the browser.";
+    }
     stopDiscoverHints();
     setParticleProgress(8, false);
     applySavedChildProfile();

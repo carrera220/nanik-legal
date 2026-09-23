@@ -164,6 +164,7 @@
       voiceoverGeneratingPct: "Generating voiceover… {percent}%",
       voiceoverReady: "Voiceover is ready",
       voiceoverFailed: "Could not generate voiceover. Please try again.",
+      stayInBrowser: "Please keep this page open — don’t leave the browser.",
       playVoiceover: "Play",
       pauseVoiceover: "Pause",
       voicesLoading: "Loading voices…",
@@ -358,6 +359,7 @@
       voiceoverGeneratingPct: "Ձայնագրում ենք… {percent}%",
       voiceoverReady: "Ձայնագրությունը պատրաստ է",
       voiceoverFailed: "Ձայնագրությունը չհաջողվեց։ Փորձիր նորից։",
+      stayInBrowser: "Խնդրում ենք մնալ այս էջում — մի լքեք բրաուզերը։",
       playVoiceover: "Նվագարկել",
       pauseVoiceover: "Դադար",
       voicesLoading: "Ձայները բեռնվում են…",
@@ -555,6 +557,7 @@
       voiceoverGeneratingPct: "Создаём озвучку… {percent}%",
       voiceoverReady: "Озвучка готова",
       voiceoverFailed: "Не удалось создать озвучку. Попробуйте ещё раз.",
+      stayInBrowser: "Пожалуйста, не закрывайте эту страницу — не уходите из браузера.",
       playVoiceover: "Слушать озвучку",
       pauseVoiceover: "Пауза",
       voicesLoading: "Загрузка голосов…",
@@ -2426,6 +2429,13 @@
     bar.classList.remove("is-ready");
     if (title) {
       title.textContent = pack.voiceoverGenerating || en.voiceoverGenerating || "Generating voiceover…";
+    }
+    var stay = document.getElementById("dash-voiceover-bar-stay");
+    if (stay) {
+      stay.textContent =
+        pack.stayInBrowser ||
+        en.stayInBrowser ||
+        "Please keep this page open — don’t leave the browser.";
     }
     if (pctEl) pctEl.textContent = pct + "%";
     if (fill) fill.style.width = pct + "%";

@@ -42,27 +42,93 @@
 
   function stripInlineHiggsPauseTags(text) {
     return String(text || "")
-      .replace(/<\|[^|]+\|>/g, " ")
+      .replace(/\s*<\|prosody:(?:long_)?pause\|>\s*/g, " ")
       .replace(/\s+/g, " ")
       .trim();
+  }
+
+  var HIGGS_DIALOGUE_EMOTION_CUES = [
+    { emotion: "fear", cues: ["afraid", "scared", "scary", "frightened", "terrified", "fear", "nightmare", "monster", "dark", "shadow", "hide", "help me", "боюсь", "страшно", "страх", "монстр", "темно", "վախ", "սարսափ", "մութ", "թաքնվ", "օգնիր"] },
+    { emotion: "anger", cues: ["angry", "mad", "furious", "hate", "stop that", "not fair", "злюсь", "злой", "сердит", "ненавижу", "բարկ", "զայր", "չարան"] },
+    { emotion: "sadness", cues: ["sad", "cry", "crying", "tears", "lonely", "miss you", "sorry", "грустн", "плач", "слёз", "слез", "один", "տխուր", "լաց", "արցունք", "մենակ"] },
+    { emotion: "shame", cues: ["shame", "embarrassed", "ashamed", "стыдно", "стыд", "ամոթ"] },
+    { emotion: "helplessness", cues: ["can't", "cannot", "i cannot", "lost", "stuck", "too hard", "не могу", "пропал", "помоги", "չեմ կարող", "կորել", "դժվար է"] },
+    { emotion: "disgust", cues: ["yuck", "gross", "disgusting", "stinky", "фу", "гадость", "զզվ", "գարշ"] },
+    { emotion: "bitterness", cues: ["unfair", "always me", "never listen", "несправедливо", "անարդար"] },
+    { emotion: "surprise", cues: ["what", "who", "wow", "really", "what's that", "who is", "что", "кто", "неужели", "ինչ", "ով", "ի՞նչ", "ո՞վ", "ինչո՞ւ"] },
+    { emotion: "confusion", cues: ["huh", "confused", "don't understand", "i do not understand", "maybe", "не понимаю", "кажется", "չեմ հասկանում", "միգուցե"] },
+    { emotion: "awe", cues: ["magic", "magical", "wonder", "beautiful", "amazing", "look", "звезд", "կախարդ", "գեղեցիկ", "աստղ"] },
+    { emotion: "longing", cues: ["i wish", "i miss", "come back", "хочу", "скучаю", "կարոտ", "կուզեի"] },
+    { emotion: "relief", cues: ["phew", "at last", "safe now", "thank goodness", "ура", "наконец", "փառք", "լավ է որ"] },
+    { emotion: "pride", cues: ["i did it", "look at me", "we did it", "я смог", "հպարտ", "ես արեցի"] },
+    { emotion: "determination", cues: ["i will", "we will", "let us try", "let's try", "must", "brave", "я буду", "мы сможем", "պիտի", "կկարողանամ", "քաջ"] },
+    { emotion: "amusement", cues: ["haha", "hehe", "funny", "silly", "giggle", "laugh", "ха-ха", "смешно", "ծիծաղ", "հա հա", "զվարճ"] },
+    { emotion: "elation", cues: ["yay", "hooray", "wonderful", "i love this", "best day", "ура", "здорово", "ուրախ", "հիանալի", "երջանիկ"] },
+    { emotion: "enthusiasm", cues: ["let's go", "come on", "hurry", "adventure", "explore", "пошли", "давай", "արի", "գնանք", "շտապ"] },
+    { emotion: "contemplation", cues: ["i think", "maybe we", "i wonder", "hmm", "думаю", "может", "մտածում", "հետաքրքիր է"] },
+    { emotion: "contentment", cues: ["cozy", "peaceful", "all is well", "goodnight", "спокойн", "спокойной ночи", "հանգիստ", "բարի գիշեր"] },
+    { emotion: "affection", cues: ["i love you", "dear", "my friend", "hug", "sweetheart", "люблю", "милый", "друг", "սիրում եմ", "սիրելի", "ընկեր"] },
+  ];
+
+  function pickHiggsDialogueEmotion(speech) {
+    var hay = " " + String(speech || "").toLowerCase() + " ";
+    for (var i = 0; i < HIGGS_DIALOGUE_EMOTION_CUES.length; i++) {
+      var row = HIGGS_DIALOGUE_EMOTION_CUES[i];
+      for (var j = 0; j < row.cues.length; j++) {
+        if (hay.indexOf(row.cues[j].toLowerCase()) !== -1) return row.emotion;
+      }
+    }
+    if (/[?՞]/.test(speech)) return "surprise";
+    if (/[!՜]/.test(speech)) return "enthusiasm";
+    return "affection";
+  }
+
+  function enrichHiggsDialogueEmotions(text) {
+    var src = String(text || "");
+    if (!src.trim()) return src;
+    var tagged = src.replace(
+      /(^|[\n.։!?…]\s*)([-–—]\s*)(?!<\|emotion:)([\s\S]*?)(?=(?:\s*[-–—]\s*)|(?:[\n.։!?…]\s*[-–—])|$)/g,
+      function (all, prefix, dash, speech) {
+        var spoken = String(speech || "");
+        if (!spoken.trim() || /<\|emotion:[a-z]+\|>/i.test(spoken)) return all;
+        var split = spoken.match(/^([\s\S]*?[.։!?…])(\s+)([A-ZԱ-ՖА-Я«"“])/);
+        var first = split ? split[1] : spoken;
+        return prefix + dash + "<|emotion:" + pickHiggsDialogueEmotion(first) + "|>" + first + (split ? spoken.slice(first.length) : "");
+      }
+    );
+    return tagged.replace(/(["«“])(?!<\|emotion:)([^"»”]+)(["»”])/g, function (_all, open, speech, close) {
+      if (/<\|emotion:[a-z]+\|>/i.test(speech)) return open + speech + close;
+      return open + "<|emotion:" + pickHiggsDialogueEmotion(speech) + "|>" + speech + close;
+    });
   }
 
   function ensureHiggsChunkEndsWithPeriod(text) {
     var trimmed = stripInlineHiggsPauseTags(String(text || "").trim());
     if (!trimmed) return trimmed;
-    if (trimmed.endsWith(".")) return trimmed;
-    var body = trimmed.replace(/[.:։!?,…]+["'»»\)]*$/u, ".");
-    return body.endsWith(".") ? body : body + ".";
+    var tags = "";
+    var body = trimmed;
+    var lead;
+    while ((lead = body.match(/^<\|[^|]+\|>/))) {
+      tags += lead[0];
+      body = body.slice(lead[0].length).trim();
+    }
+    if (!body) return tags;
+    if (!body.endsWith(".")) {
+      body = body.replace(/[.:։!?,…]+["'»»\)]*$/u, ".");
+      if (!body.endsWith(".")) body += ".";
+    }
+    return tags + body;
   }
 
-  /** Match server prepareTtsChunkText('higgs') / voice-magic prepareHiggsChunkText. */
+  /** Match server prepareTtsChunkText('higgs') — keep emotion tags, strip dialogue dashes. */
   function prepareHiggsChunkText(text) {
     var body = String(text || "")
-      .replace(/[\u00AB\u00BB]/g, "")
       .replace(/\s*\[SCENE_BREAKS?\]\s*/gi, " ")
       .replace(/[ \t]+/g, " ")
       .trim();
     if (!body) return body;
+    body = enrichHiggsDialogueEmotions(body);
+    body = body.replace(/[\u00AB\u00BB]/g, "");
     body = stripInlineHiggsPauseTags(body);
     var out = "";
     var i = 0;
@@ -70,6 +136,7 @@
       if (body.indexOf("<|", i) === i) {
         var tagEnd = body.indexOf("|>", i);
         if (tagEnd !== -1) {
+          out += body.slice(i, tagEnd + 2);
           i = tagEnd + 2;
           continue;
         }
@@ -582,6 +649,7 @@
   global.NanikTts = {
     computeNarrationChunks: computeNarrationChunks,
     prepareHiggsChunkText: prepareHiggsChunkText,
+    enrichHiggsDialogueEmotions: enrichHiggsDialogueEmotions,
     synthesizeStoryVoiceover: synthesizeStoryVoiceover,
     chunkProgressPercent: chunkProgressPercent,
   };
