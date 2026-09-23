@@ -6515,34 +6515,56 @@ body.dash:has(.guided-step[data-guided-step="generating"].is-on) #guided-title-r
   cursor: pointer;
 }
 .guided-hero-madeup-upload.has-photo {
-  grid-template-columns: 52px minmax(0, 1fr);
-  align-items: center;
-  column-gap: 10px;
-  row-gap: 2px;
-  min-height: 68px;
-  padding: 8px 12px 8px 10px;
-  border-style: solid;
-  border-color: rgba(79, 70, 199, 0.35);
-  background: #fff;
+  display: none;
 }
-.guided-hero-madeup-upload.has-photo::before,
-.guided-hero-madeup-upload.has-photo::after {
-  content: none;
+.guided-hero-photo-field {
+  display: grid;
+  gap: 8px;
 }
-.guided-hero-photo-preview {
-  grid-row: 1 / span 2;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  object-fit: cover;
-  display: block;
+.guided-hero-photo-field.has-photo {
+  justify-items: start;
+}
+.guided-hero-photo-preview-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
   background: #e2e8f0;
 }
-.guided-hero-madeup-upload.has-photo .guided-hero-child-label {
-  grid-column: 2;
+.guided-hero-photo-preview {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  object-fit: cover;
+  background: #e2e8f0;
 }
-.guided-hero-madeup-upload.has-photo .guided-hero-child-photo-hint {
-  grid-column: 2;
+.guided-hero-photo-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: #fff;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.guided-hero-photo-remove:hover,
+.guided-hero-photo-remove:focus-visible {
+  background: rgba(15, 23, 42, 0.9);
+  outline: none;
 }
 .guided-hero-card-media img.is-user-photo {
   object-fit: cover;
@@ -8954,8 +8976,8 @@ body:has(#panel-kids:not([hidden])) .dash-main {
 
 /* Opened hero and child cards fill the screen and stop above the tab pill. */
 body.has-tab-pill .guided-create.is-kid-hero-focus {
-  height: calc(100dvh - max(56px, calc(14px + env(safe-area-inset-top, 0px))));
-  max-height: calc(100dvh - max(56px, calc(14px + env(safe-area-inset-top, 0px))));
+  height: var(--app-height, 100dvh);
+  max-height: var(--app-height, 100dvh);
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -8968,7 +8990,12 @@ body.has-tab-pill .guided-create.is-kid-hero-focus .guided-card {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-padding-top: 12px;
+  scroll-padding-bottom: 28px;
   padding-bottom: 0;
 }
 body.has-tab-pill .guided-create.is-kid-hero-focus .guided-step[data-guided-step="hero"].is-kid-focus {
@@ -8996,6 +9023,20 @@ body.has-tab-pill .guided-create.is-kid-hero-focus .guided-hero-cards.is-kid-foc
   height: 100%;
   min-height: 0;
   max-height: 100%;
+}
+/* Keyboard open: keep the completed flip intact; only add scroll room above the keyboard. */
+body.has-tab-pill .guided-create.is-kid-hero-focus.is-keyboard-field {
+  padding-bottom: 8px;
+}
+body.has-tab-pill .guided-create.is-kid-hero-focus.is-keyboard-field .guided-card {
+  scroll-padding-bottom: max(24px, calc(100dvh - var(--app-height, 100dvh) + 24px));
+  padding-bottom: 20px;
+}
+body.has-tab-pill .guided-create.is-kid-hero-focus.is-keyboard-field .guided-hero-cards.is-kid-focus > .guided-hero-flip-card .guided-hero-flip-back {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-padding-bottom: 24px;
 }
 body.has-tab-pill #panel-kids:has(.dash-kids-list.is-kid-focus) {
   height: calc(100dvh - max(84px, calc(env(safe-area-inset-top, 0px) + 76px)) - var(--dash-tab-pill-space) - 8px);

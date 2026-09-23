@@ -3190,33 +3190,66 @@
     var fields = document.querySelectorAll(".guided-hero-photo-field");
     fields.forEach(function (field) {
       var upload = field.querySelector(".guided-hero-madeup-upload, .guided-hero-child-photo-upload");
+      var wrap = field.querySelector(".guided-hero-photo-preview-wrap");
       var preview = field.querySelector(".guided-hero-photo-preview");
+      var remove = field.querySelector(".guided-hero-photo-remove");
       var label = upload && upload.querySelector(".guided-hero-child-label");
       var hint = upload && upload.querySelector(".guided-hero-child-photo-hint");
       var input = upload && upload.querySelector("input[type='file']");
       var isChild = !!(input && input.id === "guided-hero-child-photo");
       if (!photo) {
         field.classList.remove("has-photo");
-        if (upload) upload.classList.remove("has-photo");
-        if (preview) preview.remove();
+        if (upload) {
+          upload.classList.remove("has-photo");
+          upload.hidden = false;
+        }
+        if (wrap) wrap.remove();
+        else if (preview) preview.remove();
         if (label) {
           label.textContent = isChild
             ? (hy ? "Ավելացնել երեխայի լուսանկար" : "Upload a photo of your child")
             : (hy ? "Ավելացնել խաղալիքի լուսանկար (ըստ ցանկության)" : "Upload a photo of the toy (optional)");
         }
         if (hint) hint.hidden = false;
+        if (input) input.value = "";
         return;
       }
       field.classList.add("has-photo");
-      if (upload) upload.classList.add("has-photo");
-      if (!preview) {
+      if (upload) {
+        upload.classList.add("has-photo");
+        upload.hidden = true;
+      }
+      if (!wrap) {
+        wrap = document.createElement("div");
+        wrap.className = "guided-hero-photo-preview-wrap";
         preview = document.createElement("img");
         preview.className = "guided-hero-photo-preview";
         preview.alt = "";
-        field.insertBefore(preview, upload || field.firstChild);
+        remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "guided-hero-photo-remove";
+        remove.setAttribute("aria-label", hy ? "Հեռացնել լուսանկարը" : "Remove photo");
+        remove.innerHTML = "&times;";
+        wrap.appendChild(preview);
+        wrap.appendChild(remove);
+        field.insertBefore(wrap, upload || field.firstChild);
+      } else {
+        if (!preview) {
+          preview = document.createElement("img");
+          preview.className = "guided-hero-photo-preview";
+          preview.alt = "";
+          wrap.insertBefore(preview, wrap.firstChild);
+        }
+        if (!remove) {
+          remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "guided-hero-photo-remove";
+          remove.innerHTML = "&times;";
+          wrap.appendChild(remove);
+        }
+        remove.setAttribute("aria-label", hy ? "Հեռացնել լուսանկարը" : "Remove photo");
       }
       if (preview.getAttribute("src") !== photo) preview.setAttribute("src", photo);
-      if (label) label.textContent = hy ? "Վերբեռնել այլ լուսանկար" : "Upload another photo";
       if (hint) hint.hidden = true;
     });
     var mediaImgs = document.querySelectorAll(
@@ -3224,32 +3257,48 @@
       '.guided-hero-flip-card[data-guided-value="madeup"] .guided-hero-card-media img'
     );
     mediaImgs.forEach(function (img) {
-      if (!photo) return;
+      var card = img.closest("[data-guided-value]");
+      var value = card && card.getAttribute("data-guided-value");
+      var fallback = value === "madeup"
+        ? "images/intent-cards/made-up-character-transparent.png?v=20260915alpha"
+        : "images/intent-cards/my-child-transparent.png?v=20260915alpha";
+      if (!photo) {
+        img.classList.remove("is-user-photo");
+        if (img.getAttribute("src") !== fallback) img.setAttribute("src", fallback);
+        return;
+      }
       img.classList.add("is-user-photo");
       if (img.getAttribute("src") !== photo) img.setAttribute("src", photo);
     });
   }
 
+  function clearHeroPhoto() {
+    state.image = "";
+    toyPhotoChosen = false;
+    if (state.heroPick === "photo") state.heroPick = "";
+    paintPhotoControls();
+    if (state.heroPick === "kid") rememberChild({ force: true });
+  }
+
   function heroPhotoUploadHtml(inputId, labelText, hintText, ariaLabel) {
     var photo = String(state.image || "").trim();
     var hy = isArmenianUi();
-    var actionLabel = photo
-      ? (hy ? "Վերբեռնել այլ լուսանկար" : "Upload another photo")
-      : labelText;
     return (
       '<div class="guided-hero-photo-field' + (photo ? " has-photo" : "") + '">' +
       (photo
-        ? '<img class="guided-hero-photo-preview" src="' + escapeHtml(photo) + '" alt="">'
+        ? '<div class="guided-hero-photo-preview-wrap">' +
+          '<img class="guided-hero-photo-preview" src="' + escapeHtml(photo) + '" alt="">' +
+          '<button type="button" class="guided-hero-photo-remove" aria-label="' +
+          (hy ? "Հեռացնել լուսանկարը" : "Remove photo") +
+          '">&times;</button></div>'
         : "") +
-      '<label class="guided-hero-madeup-upload guided-hero-child-photo-upload' +
-      (photo ? " has-photo" : "") +
-      '">' +
-      '<span class="guided-hero-child-label">' + actionLabel + "</span>" +
-      '<small class="guided-hero-child-photo-hint" id="' +
-      (inputId === "guided-hero-child-photo" ? "guided-hero-child-photo-hint" : "") +
-      '"' +
+      '<label class="guided-hero-madeup-upload guided-hero-child-photo-upload"' +
       (photo ? " hidden" : "") +
       ">" +
+      '<span class="guided-hero-child-label">' + labelText + "</span>" +
+      '<small class="guided-hero-child-photo-hint" id="' +
+      (inputId === "guided-hero-child-photo" ? "guided-hero-child-photo-hint" : "") +
+      '">' +
       hintText +
       "</small>" +
       '<input id="' +
@@ -3271,7 +3320,10 @@
       });
     }
     if (step) step.classList.remove("is-kid-focus");
-    if (root) root.classList.remove("is-kid-hero-focus");
+    if (root) {
+      root.classList.remove("is-kid-hero-focus");
+      root.classList.remove("is-keyboard-field");
+    }
   }
 
   function syncHeroCardFocusChrome(focused) {
@@ -3295,12 +3347,41 @@
     var root = el("guided-create");
     var card = grid && grid.querySelector('[data-guided-value="kid"]');
     var madeUpCard = grid && grid.querySelector('[data-guided-value="madeup"]');
-    if (card) card.classList.toggle("is-flipped", flipped);
-    if (madeUpCard) madeUpCard.classList.toggle("is-flipped", madeUpFlipped);
-    if (grid) grid.classList.toggle("is-kid-focus", focused);
-    if (step) step.classList.toggle("is-kid-focus", focused);
-    if (root) root.classList.toggle("is-kid-hero-focus", focused);
-    syncHeroCardFocusChrome(focused);
+    var activeCard = flipped ? card : madeUpFlipped ? madeUpCard : null;
+    var wasFocused = !!(grid && grid.classList.contains("is-kid-focus"));
+
+    if (!focused) {
+      if (card) card.classList.remove("is-flipped");
+      if (madeUpCard) madeUpCard.classList.remove("is-flipped");
+      if (grid) grid.classList.remove("is-kid-focus");
+      if (step) step.classList.remove("is-kid-focus");
+      if (root) root.classList.remove("is-kid-hero-focus");
+      syncHeroCardFocusChrome(false);
+    } else {
+      // Expand layout first, then flip on the next frame so the motions don't stack.
+      if (grid) grid.classList.add("is-kid-focus");
+      if (step) step.classList.add("is-kid-focus");
+      if (root) root.classList.add("is-kid-hero-focus");
+      syncHeroCardFocusChrome(true);
+      if (card && card !== activeCard) card.classList.remove("is-flipped");
+      if (madeUpCard && madeUpCard !== activeCard) madeUpCard.classList.remove("is-flipped");
+      if (activeCard && !activeCard.classList.contains("is-flipped")) {
+        if (!wasFocused) {
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(function () {
+              if (state.heroPick !== "kid" && state.heroPick !== "madeup") return;
+              var live = el("guided-hero-options") && el("guided-hero-options").querySelector(
+                state.heroPick === "kid" ? '[data-guided-value="kid"]' : '[data-guided-value="madeup"]'
+              );
+              if (live) live.classList.add("is-flipped");
+            });
+          });
+        } else {
+          activeCard.classList.add("is-flipped");
+        }
+      }
+    }
+
     var nameField = el("guided-hero-child-name");
     if (nameField && flipped && !nameField.value.trim() && (state.childName || planner.name)) {
       nameField.value = state.childName || planner.name || "";
@@ -3317,7 +3398,96 @@
     }
     var grid = el("guided-hero-options");
     if (grid) setSelected(grid, state.heroPick || "", false);
+    setHeroKeyboardField(false);
     paintHeroChildPanel();
+  }
+
+  function setHeroKeyboardField(on) {
+    var root = el("guided-create");
+    if (!root) return;
+    root.classList.toggle("is-keyboard-field", !!on);
+  }
+
+  function heroFieldScrollPad() {
+    var vv = window.visualViewport;
+    if (!vv) return 28;
+    var covered = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    return Math.max(28, covered + 20);
+  }
+
+  function ensureHeroFieldVisible(field) {
+    if (!field || !field.getBoundingClientRect) return;
+    var root = el("guided-create");
+    var card = root && root.querySelector(".guided-card");
+    if (!card) return;
+    var vv = window.visualViewport;
+    var top = vv ? vv.offsetTop + 12 : 12;
+    var bottom = vv ? vv.offsetTop + vv.height - heroFieldScrollPad() : window.innerHeight - 28;
+    var rect = field.getBoundingClientRect();
+    var delta = 0;
+    if (rect.bottom > bottom) delta = rect.bottom - bottom;
+    else if (rect.top < top) delta = rect.top - top;
+    if (!delta) return;
+    if (typeof card.scrollBy === "function") card.scrollBy({ top: delta, behavior: "smooth" });
+    else card.scrollTop += delta;
+  }
+
+  function scheduleHeroFieldVisible(field) {
+    if (!field) return;
+    setHeroKeyboardField(true);
+    window.setTimeout(function () { ensureHeroFieldVisible(field); }, 60);
+    window.setTimeout(function () { ensureHeroFieldVisible(field); }, 280);
+    window.setTimeout(function () { ensureHeroFieldVisible(field); }, 520);
+  }
+
+  function wireHeroKeyboardScroll() {
+    var root = el("guided-create");
+    if (!root || root.getAttribute("data-hero-keyboard-wired") === "1") return;
+    root.setAttribute("data-hero-keyboard-wired", "1");
+    var activeField = null;
+
+    function isHeroFormField(node) {
+      if (!node || !node.id) return false;
+      return (
+        node.id === "guided-hero-madeup-name" ||
+        node.id === "guided-hero-madeup-description" ||
+        node.id === "guided-hero-child-name" ||
+        node.id === "guided-hero-child-likes" ||
+        node.id === "guided-hero-child-age"
+      );
+    }
+
+    root.addEventListener("focusin", function (event) {
+      var field = event.target;
+      if (!isHeroFormField(field)) return;
+      if (!root.classList.contains("is-kid-hero-focus")) return;
+      activeField = field;
+      scheduleHeroFieldVisible(field);
+    });
+
+    root.addEventListener("focusout", function (event) {
+      var field = event.target;
+      if (!isHeroFormField(field)) return;
+      window.setTimeout(function () {
+        var next = document.activeElement;
+        if (isHeroFormField(next) && root.contains(next)) {
+          activeField = next;
+          return;
+        }
+        activeField = null;
+        setHeroKeyboardField(false);
+      }, 0);
+    });
+
+    function onViewportChange() {
+      if (!activeField || document.activeElement !== activeField) return;
+      ensureHeroFieldVisible(activeField);
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", onViewportChange);
+      window.visualViewport.addEventListener("scroll", onViewportChange);
+    }
+    window.addEventListener("resize", onViewportChange);
   }
 
   function paintHeroChildChrome() {
@@ -4559,7 +4729,21 @@
       var button = event.target.closest("[data-guided-value]");
       if (!button || !container.contains(button)) return;
       var value = button.getAttribute("data-guided-value") || "";
-      if (stateKey === "heroPick" && event.target.closest(".guided-hero-flip-back")) return;
+      // Clicks inside an open hero form (interests, gender, types, etc.) must not
+      // re-toggle the card closed. closest(.flip-back) alone misses hits on the card shell.
+      if (stateKey === "heroPick") {
+        if (
+          event.target.closest(".guided-hero-flip-back") ||
+          event.target.closest(".guided-hero-flip-card.is-flipped") ||
+          event.target.closest("#guided-hero-child-likes-field") ||
+          event.target.closest("#guided-hero-madeup-types") ||
+          event.target.closest("#guided-hero-gender") ||
+          event.target.closest(".guided-hero-photo-field")
+        ) {
+          return;
+        }
+        if ((value === "kid" || value === "madeup") && state.heroPick === value) return;
+      }
       if (multiple) {
         clearAutoAdvance();
         var index = state.interests.indexOf(value);
@@ -4624,20 +4808,19 @@
           paintHeroChildPanel();
           if (stateKey === "heroPick" && state.heroPick === "kid") {
             clearAutoAdvance();
-            paintHeroChildPanel();
             var nameField = el("guided-hero-child-name");
             if (nameField) {
-              window.setTimeout(function () { nameField.focus(); }, 320);
+              // Wait for the flip to finish so focus/keyboard does not start a second motion.
+              window.setTimeout(function () { nameField.focus(); }, 580);
             }
             setError("");
             return;
           }
           if (stateKey === "heroPick" && state.heroPick === "madeup") {
             clearAutoAdvance();
-            paintHeroChildPanel();
             var madeUpField = el("guided-hero-madeup-name");
             if (madeUpField) {
-              window.setTimeout(function () { madeUpField.focus(); }, 320);
+              window.setTimeout(function () { madeUpField.focus(); }, 580);
             }
             setError("");
             return;
@@ -4653,7 +4836,6 @@
           }
           if (stateKey === "heroPick" && state.heroPick !== "kid") {
             // Keep the child's gender: it belongs to the audience, not to the hero.
-            paintHeroChildPanel();
           }
         }
         if (stateKey === "support" && state[stateKey]) clearTypeInsert("guided-support-custom", "guided-support-insert");
@@ -4687,6 +4869,7 @@
 
   function init() {
     if (!el("guided-create")) return;
+    wireHeroKeyboardScroll();
     if (el("guided-plan-likes")) el("guided-plan-likes").addEventListener("change", function () {
       readPlanFields();
       paintPlan();
@@ -4856,6 +5039,12 @@
           }
           beginChoiceTransition(nextButton);
           goNext();
+        }
+        var photoRemove = event.target.closest(".guided-hero-photo-remove");
+        if (photoRemove) {
+          event.preventDefault();
+          event.stopPropagation();
+          clearHeroPhoto();
         }
       });
       el("guided-hero-options").addEventListener("input", function (event) {
