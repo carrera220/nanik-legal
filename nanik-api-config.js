@@ -8,16 +8,16 @@ window.NANIK_API = {
   maxRecordMs: 10000,
   minRecordMs: 5000,
   // Must match Nanik app: src/constants/higgsNarration.ts + supabase/functions/_shared/higgs.ts
-  // temperature 0.9 · topP 0.95 · topK 0 (omit) · maxNewTokens 2047 · pcm · ~60-word packs
+  // temperature 0.75 · topP 0.95 · topK 50 · maxNewTokens 2047 · pcm · ~60-word packs
   higgs: {
     sampleRate: 24000,
     cloneTargetSec: 9,
     cloneTailSilenceMs: 500,
     modelId: 'higgs-tts-3',
     responseFormat: 'pcm',
-    temperature: 0.9,
+    temperature: 0.75,
     maxNewTokens: 2047,
-    topK: 0,
+    topK: 50,
     topP: 0.95,
     speakingRate: 1.0,
     interChunkMs: 1200,

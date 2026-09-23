@@ -15,7 +15,6 @@
     "Finding the right adventure…",
     "Building their story world…",
     "Bringing characters to life…",
-    "Painting the pictures…",
     "Adding finishing touches…",
   ];
   var GENERATION_COPY_HY = [
@@ -23,7 +22,6 @@
     "Գտնում եմ արկածը…",
     "Կառուցում եմ հեքիաթի աշխարհը…",
     "Կենդանացնում եմ հերոսներին…",
-    "Նկարում եմ նկարները…",
     "Վերջին շտրիխներն եմ դնում…",
   ];
   var PARTICLE_COLORS = ["#8FC0FF", "#C9A6FF", "#FFD8A6", "#FFFFFF", "#7FE3FF", "#B49BFF"];
@@ -487,16 +485,22 @@
     state.childGender = child.gender || state.childGender || "";
     planner.gender = state.childGender;
     sources.gender = state.childGender ? "profile" : sources.gender;
-    if (child.photo) {
-      state.image = child.photo;
-      if (draft.setImage) draft.setImage(child.photo);
-    }
+    state.image = child.photo || "";
+    if (draft.setImage) draft.setImage(state.image);
     state.heroPick = "kid";
     state.heroKind = "kid";
     planner.hero = planner.name || "My child";
     sources.hero = "profile";
     syncSharedPlanner();
     rememberChild();
+  }
+
+  function openHeroChildEditor(child) {
+    if (!child) return;
+    applyHeroChildProfile(child);
+    heroKidFormMode = true;
+    paintHeroStep();
+    setError("");
   }
 
   function listChildProfiles() {
@@ -511,12 +515,6 @@
     if (!(n >= 2 && n <= 16)) return "";
     if (isArmenianUi()) return n + " տարեկան";
     return n === 1 ? "1 year old" : n + " years old";
-  }
-
-  function profileInitial(name) {
-    var text = String(name || "").trim();
-    if (!text) return "✦";
-    return text.charAt(0).toUpperCase();
   }
 
   var addingNewProfile = false;
@@ -604,7 +602,7 @@
       var selected = kid.id === activeId || (!activeId && String(kid.age) === String(planner.age));
       var title = kid.name || ageYearsLabel(kid.age);
       var desc = kid.name ? ageYearsLabel(kid.age) : kid.likes || "";
-      if (kid.name && kid.likes) desc += " · " + kid.likes;
+      if (kid.name && kid.likes) desc = ageYearsLabel(kid.age);
       var media = kid.photo
         ? '<img src="' +
           String(kid.photo).replace(/"/g, "&quot;") +
@@ -713,6 +711,7 @@
   var choiceTransitionActive = false;
   var choiceTransitionClone = null;
   var choiceTransitionFadeTimer = 0;
+  var topicChipsLoading = false;
   var generationIndex = 0;
   var generationProgress = 8;
   var state = {
@@ -1655,7 +1654,9 @@
     root.classList.add("is-choice-transitioning");
 
     var choices = Array.prototype.slice.call(
-      section.querySelectorAll(".guided-choice, .guided-chips button, .guided-age-chips button")
+      section.querySelectorAll(
+        ".guided-choice, .guided-chips button, .guided-age-chips button, .guided-profile-card"
+      )
     );
     choices.forEach(function (choice, index) {
       choice.style.setProperty("--choice-order", String(index));
@@ -1680,7 +1681,7 @@
     if (title) title.classList.add("is-choice-revealing");
     var revealItems = Array.prototype.slice.call(
       section.querySelectorAll(
-        ".guided-choice, .guided-chips button, .guided-age-chips button, .guided-or, .guided-insert, .guided-plan-block, .guided-plan-cta"
+        ".guided-choice, .guided-chips button, .guided-age-chips button, .guided-or, .guided-insert, .guided-plan-block, .guided-profile-card"
       )
     );
     revealItems.forEach(function (item, index) {
@@ -2058,6 +2059,21 @@
     return purposeChipPromise;
   }
 
+  function paintTopicSkeleton(container) {
+    if (!container) return;
+    var widths = [168, 132, 188, 146, 174];
+    container.innerHTML = widths
+      .map(function (width) {
+        return (
+          '<span class="guided-chip-skeleton" style="width:' +
+          width +
+          'px" aria-hidden="true"></span>'
+        );
+      })
+      .join("");
+    container.setAttribute("aria-busy", "true");
+  }
+
   function showPurposeQuestion(question) {
     var key = purposeKey();
     var next = question || (key === "today" ? supportFallbackQuestion() : purposeFallbackQuestion(key || "learn"));
@@ -2066,6 +2082,7 @@
     aiQuestion = next;
     visibleQuestion = aiQuestion;
     followupAnswered = false;
+    topicChipsLoading = false;
     showStep("topic");
   }
 
@@ -2075,34 +2092,66 @@
       showStep("hero");
       return;
     }
+    cancelChoiceTransition();
+    endAdvance();
     var fallback = key === "today" ? supportFallbackQuestion() : purposeFallbackQuestion("learn");
+    var topicTitle = key === "learn" ? purposeQuestionTitle("learn") : supportTitle();
+    aiQuestion = {
+      title: topicTitle,
+      field: key === "learn" ? "topic" : "support",
+      chips: [],
+      hints: [],
+    };
+    visibleQuestion = aiQuestion;
+    followupAnswered = false;
+    topicChipsLoading = true;
     analyzing = true;
     setAnalyzing(true);
-    beginAdvance();
+    showStep("topic");
     var pending = startPurposeChipPrefetch();
-    Promise.resolve(pending).then(function (question) {
-      if (purposeChipKind && purposeChipKind !== key) {
+    Promise.resolve(pending)
+      .then(function (question) {
+        if (purposeChipKind && purposeChipKind !== key) {
+          analyzing = false;
+          setAnalyzing(false);
+          topicChipsLoading = false;
+          return;
+        }
         analyzing = false;
         setAnalyzing(false);
-        endAdvance();
-        return;
-      }
-      analyzing = false;
-      setAnalyzing(false);
-      var finalQuestion = (question && question.chips && question.chips.length >= 3)
-        ? question
-        : fallback;
-      if (question && question.chips && question.chips.length >= 3) {
-        rememberPurposeChips(key, question.chips);
-      }
-      showPurposeQuestion(finalQuestion);
-      endAdvance();
-    }).catch(function () {
-      analyzing = false;
-      setAnalyzing(false);
-      showPurposeQuestion(fallback);
-      endAdvance();
-    });
+        topicChipsLoading = false;
+        var finalQuestion =
+          question && question.chips && question.chips.length >= 3 ? question : fallback;
+        if (question && question.chips && question.chips.length >= 3) {
+          rememberPurposeChips(key, question.chips);
+        }
+        if (key === "learn") finalQuestion.title = purposeQuestionTitle("learn");
+        else if (key === "today") finalQuestion.title = supportTitle();
+        aiQuestion = finalQuestion;
+        visibleQuestion = aiQuestion;
+        if (stepKey !== "topic") return;
+        var title = el("guided-step-title");
+        paintTreeStep("topic", title);
+        var topicGrid = el("guided-topic-options");
+        if (topicGrid) {
+          Array.prototype.forEach.call(topicGrid.querySelectorAll(".guided-choice"), function (item, index) {
+            item.style.setProperty("--choice-order", String(index + 1));
+            item.classList.add("is-choice-reveal-item");
+          });
+          window.setTimeout(function () {
+            Array.prototype.forEach.call(topicGrid.querySelectorAll(".guided-choice"), function (item) {
+              item.classList.remove("is-choice-reveal-item");
+              item.style.removeProperty("--choice-order");
+            });
+          }, 900);
+        }
+      })
+      .catch(function () {
+        analyzing = false;
+        setAnalyzing(false);
+        topicChipsLoading = false;
+        showPurposeQuestion(fallback);
+      });
   }
 
 
@@ -2281,14 +2330,44 @@
 
   var errorTimer = 0;
 
+  function clearFieldErrors() {
+    document.querySelectorAll("#guided-create .guided-floating-field.is-invalid").forEach(function (field) {
+      field.classList.remove("is-invalid");
+      var tip = field.querySelector(".guided-field-error");
+      if (tip) tip.remove();
+    });
+  }
+
+  function setNameFieldError(inputId) {
+    clearFieldErrors();
+    setError("");
+    var input = el(inputId);
+    if (!input) return;
+    var field = input.closest(".guided-floating-field");
+    if (!field) return;
+    field.classList.add("is-invalid");
+    var tip = document.createElement("span");
+    tip.className = "guided-field-error";
+    tip.textContent = isArmenianUi() ? "Գրիր անունը" : "Insert name";
+    field.appendChild(tip);
+    try {
+      input.focus();
+      input.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } catch (err) {}
+  }
+
   function setError(message, options) {
     var error = el("guided-error");
     if (!error) return;
     var opts = options || {};
     window.clearTimeout(errorTimer);
+    if (!opts.keepFieldErrors) clearFieldErrors();
     error.textContent = message || "";
     error.hidden = !message;
     if (message) {
+      try {
+        error.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      } catch (err) {}
       var holdMs = opts.holdMs || (/no stories remaining|upgrade/i.test(message) ? 12000 : 4200);
       errorTimer = window.setTimeout(function () {
         error.hidden = true;
@@ -2511,6 +2590,10 @@
       return false;
     }
     if (key === "topic") {
+      if (topicChipsLoading || analyzing) {
+        setError("");
+        return false;
+      }
       var topicPicked = state.topic && state.topic !== "Something else";
       var topicReady = !!typed || !!planner.topic || !!planner.emotion || !!planner.context || !!planner.support || topicPicked;
       if (!topicReady) {
@@ -2537,8 +2620,12 @@
         return false;
       }
       if (state.heroPick === "kid" && !heroTyped && !heroChildReady()) {
-        setError(isArmenianUi() ? "Գրիր անունը և ընտրիր սեռը։" : "Add their name and gender.");
         paintHeroChildPanel();
+        setNameFieldError("guided-hero-child-name");
+        return false;
+      }
+      if (state.heroPick === "madeup" && !heroTyped && !madeUpHeroReady()) {
+        setNameFieldError("guided-hero-madeup-name");
         return false;
       }
     }
@@ -2683,18 +2770,6 @@
     if (intent) intent.setAttribute("data-guided-title", intentTitle);
     if (plan) plan.setAttribute("data-guided-title", planTitle);
     if (purpose) purpose.setAttribute("data-guided-title", purposeTitle());
-    var purposeSubtitle = purpose && purpose.querySelector(".guided-purpose-subtitle");
-    if (purposeSubtitle) {
-      purposeSubtitle.textContent = hy
-        ? "Ընտրեք, թե ինչի վրա կենտրոնանա հեքիաթը։"
-        : "Choose what you'd like the story to focus on.";
-    }
-    var purposeFootnote = purpose && purpose.querySelector(".guided-purpose-footnote");
-    if (purposeFootnote) {
-      purposeFootnote.textContent = hy
-        ? "Առանց հատուկ նպատակի՝ թող այն լինի զվարճալի, հետաքրքիր և հիշվող։"
-        : "No specific goal - make it fun, engaging, and memorable.";
-    }
     if (stepKey === "purpose") paintPurposeStep();
     if (heroSection) heroSection.setAttribute("data-guided-title", heroTitle());
     if (heroSection) {
@@ -2742,7 +2817,7 @@
     if (elseMic) elseMic.setAttribute("aria-label", hy ? "Ձայնային մուտք" : "Voice typing");
     var back = el("guided-back");
     if (back) {
-      var backLabel = back.querySelector("span");
+      var backLabel = back.querySelector(".guided-back-label");
       if (backLabel) backLabel.textContent = hy ? "Հետ" : "Back";
       back.setAttribute("aria-label", hy ? "Հետ" : "Back");
     }
@@ -2777,75 +2852,78 @@
     if (stepKey === "basics") paintProfilePicker();
   }
 
-  function paintPlan() {
+  function planSummaryCardsHtml() {
     publishStoryPlan();
     var plan = summaryPlan();
+    var hy = isArmenianUi();
+    var intentAssets = {
+      "Bedtime": "images/intent-cards/bedtime-felt.png?v=20260915moon",
+      "Adventure": "images/intent-cards/adventure-felt.png?v=20260915map",
+      "Comedy": "images/intent-cards/funny-silly-felt.png?v=20260915funnyicon",
+      "Funny & Silly": "images/intent-cards/funny-silly-felt.png?v=20260915funnyicon",
+      "Animals & Magic": "images/intent-cards/animals-magic-felt.png?v=20260915fox",
+      "Classic Folklore & Legends": "images/intent-cards/folklore-felt.png?v=20260915storybook",
+      "Surprise Me": "images/intent-cards/surprise-me-felt.png?v=20260915gift"
+    };
+    var storyType = (hy ? INTENT_LABELS_HY : INTENT_LABELS)[planner.intentLabel] || planner.intentLabel;
+    var heroTitle = plan.hero.name || (hy ? "Հեքիաթը կընտրի հերոսին" : "The story will choose the hero");
+    var heroDetails = plan.hero.mode === "created"
+      ? [plan.hero.characterType, plan.hero.description].filter(Boolean).join(" · ")
+      : [plan.child.gender, plan.child.interests.join(", ")].filter(Boolean).join(" · ");
+    var cards = [
+      {
+        kind: "story",
+        eyebrow: hy ? "Հեքիաթի տեսակ" : "Story type",
+        title: storyType,
+        detail: "",
+        image: intentAssets[planner.intentLabel] || intentAssets["Surprise Me"]
+      },
+      {
+        kind: "hero",
+        eyebrow: hy ? "Հերոս" : "Hero",
+        title: heroTitle,
+        detail: heroDetails,
+        image: state.image || (plan.hero.mode === "child"
+          ? "images/intent-cards/my-child-transparent.png?v=20260915alpha"
+          : "images/intent-cards/made-up-character-transparent.png?v=20260915alpha")
+      }
+    ];
+    if (plan.direction && plan.direction.answer) {
+      cards.push({
+        kind: "help",
+        eyebrow: hy ? "Ինչպես է հեքիաթն օգնում" : "How the story helps",
+        title: plan.direction.answer,
+        detail: "",
+        image: plan.purpose === "learn"
+          ? "images/intent-cards/help-learn-cutout.png?v=20260915learningbook"
+          : "images/onboarding-name-voice-hero.png"
+      });
+    } else if (plan.purpose === "fun") {
+      cards.push({
+        kind: "help",
+        eyebrow: hy ? "Հեքիաթի ուղղություն" : "Story direction",
+        title: hy ? "Թող հեքիաթը զարմացնի ձեզ" : "Let the story surprise you",
+        detail: "",
+        image: "images/intent-cards/great-story-felt.png?v=20260919gift"
+      });
+    }
+    return '<div class="guided-plan-cards">' + cards.map(function (card) {
+      return '<article class="guided-plan-card is-' + card.kind + '">' +
+        '<span class="guided-plan-card-media" aria-hidden="true"><img src="' + escapeHtml(card.image) + '" alt=""></span>' +
+        '<span class="guided-plan-card-copy"><span class="guided-plan-card-eyebrow">' + escapeHtml(card.eyebrow) + '</span>' +
+        '<strong>' + escapeHtml(card.title) + '</strong>' +
+        (card.detail ? '<span class="guided-plan-card-detail">' + escapeHtml(card.detail) + '</span>' : '') +
+        '</span></article>';
+    }).join("") + "</div>";
+  }
+
+  function paintPlan() {
+    publishStoryPlan();
     var language = el("guided-plan-language");
     var likes = el("guided-plan-likes");
     if (!planner.language) planner.language = state.lang || "en";
     var details = el("guided-plan-details");
-    if (details) {
-      var hy = isArmenianUi();
-      var intentAssets = {
-        "Bedtime": "images/intent-cards/bedtime-felt.png?v=20260915moon",
-        "Adventure": "images/intent-cards/adventure-felt.png?v=20260915map",
-        "Comedy": "images/intent-cards/funny-silly-felt.png?v=20260915funnyicon",
-        "Funny & Silly": "images/intent-cards/funny-silly-felt.png?v=20260915funnyicon",
-        "Animals & Magic": "images/intent-cards/animals-magic-felt.png?v=20260915fox",
-        "Classic Folklore & Legends": "images/intent-cards/folklore-felt.png?v=20260915storybook",
-        "Surprise Me": "images/intent-cards/surprise-me-felt.png?v=20260915gift"
-      };
-      var storyType = (hy ? INTENT_LABELS_HY : INTENT_LABELS)[planner.intentLabel] || planner.intentLabel;
-      var heroTitle = plan.hero.name || (hy ? "Հեքիաթը կընտրի հերոսին" : "The story will choose the hero");
-      var heroDetails = plan.hero.mode === "created"
-        ? [plan.hero.characterType, plan.hero.description].filter(Boolean).join(" · ")
-        : [plan.child.gender, plan.child.interests.join(", ")].filter(Boolean).join(" · ");
-      var cards = [
-        {
-          kind: "story",
-          eyebrow: hy ? "Հեքիաթի տեսակ" : "Story type",
-          title: storyType,
-          detail: "",
-          image: intentAssets[planner.intentLabel] || intentAssets["Surprise Me"]
-        },
-        {
-          kind: "hero",
-          eyebrow: hy ? "Հերոս" : "Hero",
-          title: heroTitle,
-          detail: heroDetails,
-          image: state.image || (plan.hero.mode === "child"
-            ? "images/intent-cards/my-child-transparent.png?v=20260915alpha"
-            : "images/intent-cards/made-up-character-transparent.png?v=20260915alpha")
-        }
-      ];
-      if (plan.direction && plan.direction.answer) {
-        cards.push({
-          kind: "help",
-          eyebrow: hy ? "Ինչպես է հեքիաթն օգնում" : "How the story helps",
-          title: plan.direction.answer,
-          detail: "",
-          image: plan.purpose === "learn"
-            ? "images/intent-cards/help-learn-cutout.png?v=20260915learningbook"
-            : "images/onboarding-name-voice-hero.png"
-        });
-      } else if (plan.purpose === "fun") {
-        cards.push({
-          kind: "help",
-          eyebrow: hy ? "Հեքիաթի ուղղություն" : "Story direction",
-          title: hy ? "Թող հեքիաթը զարմացնի ձեզ" : "Let the story surprise you",
-          detail: "",
-          image: "images/intent-cards/great-story-felt.png?v=20260919gift"
-        });
-      }
-      details.innerHTML = '<div class="guided-plan-cards">' + cards.map(function (card) {
-        return '<article class="guided-plan-card is-' + card.kind + '">' +
-          '<span class="guided-plan-card-media" aria-hidden="true"><img src="' + escapeHtml(card.image) + '" alt=""></span>' +
-          '<span class="guided-plan-card-copy"><span class="guided-plan-card-eyebrow">' + escapeHtml(card.eyebrow) + '</span>' +
-          '<strong>' + escapeHtml(card.title) + '</strong>' +
-          (card.detail ? '<span class="guided-plan-card-detail">' + escapeHtml(card.detail) + '</span>' : '') +
-          '</span></article>';
-      }).join("") + "</div>";
-    }
+    if (details) details.innerHTML = planSummaryCardsHtml();
     if (language) language.innerHTML = languageOptions();
     if (likes && document.activeElement !== likes) likes.value = planner.likes || "";
     paintPlanQuota();
@@ -3019,6 +3097,7 @@
 
   function paintChoices(container, options, selected) {
     if (!container) return;
+    container.removeAttribute("aria-busy");
     container.innerHTML = options.map(function (option) {
       var on = option.value === selected;
       var isSomethingElse = option.value === "Something else";
@@ -3117,6 +3196,79 @@
   }
 
   function paintPhotoControls() {
+    var photo = String(state.image || "").trim();
+    var hy = isArmenianUi();
+    var fields = document.querySelectorAll(".guided-hero-photo-field");
+    fields.forEach(function (field) {
+      var upload = field.querySelector(".guided-hero-madeup-upload, .guided-hero-child-photo-upload");
+      var preview = field.querySelector(".guided-hero-photo-preview");
+      var label = upload && upload.querySelector(".guided-hero-child-label");
+      var hint = upload && upload.querySelector(".guided-hero-child-photo-hint");
+      var input = upload && upload.querySelector("input[type='file']");
+      var isChild = !!(input && input.id === "guided-hero-child-photo");
+      if (!photo) {
+        field.classList.remove("has-photo");
+        if (upload) upload.classList.remove("has-photo");
+        if (preview) preview.remove();
+        if (label) {
+          label.textContent = isChild
+            ? (hy ? "Ավելացնել երեխայի լուսանկար" : "Upload a photo of your child")
+            : (hy ? "Ավելացնել խաղալիքի լուսանկար (ըստ ցանկության)" : "Upload a photo of the toy (optional)");
+        }
+        if (hint) hint.hidden = false;
+        return;
+      }
+      field.classList.add("has-photo");
+      if (upload) upload.classList.add("has-photo");
+      if (!preview) {
+        preview = document.createElement("img");
+        preview.className = "guided-hero-photo-preview";
+        preview.alt = "";
+        field.insertBefore(preview, upload || field.firstChild);
+      }
+      if (preview.getAttribute("src") !== photo) preview.setAttribute("src", photo);
+      if (label) label.textContent = hy ? "Վերբեռնել այլ լուսանկար" : "Upload another photo";
+      if (hint) hint.hidden = true;
+    });
+    var mediaImgs = document.querySelectorAll(
+      '.guided-hero-flip-card[data-guided-value="kid"] .guided-hero-card-media img, ' +
+      '.guided-hero-flip-card[data-guided-value="madeup"] .guided-hero-card-media img'
+    );
+    mediaImgs.forEach(function (img) {
+      if (!photo) return;
+      img.classList.add("is-user-photo");
+      if (img.getAttribute("src") !== photo) img.setAttribute("src", photo);
+    });
+  }
+
+  function heroPhotoUploadHtml(inputId, labelText, hintText, ariaLabel) {
+    var photo = String(state.image || "").trim();
+    var hy = isArmenianUi();
+    var actionLabel = photo
+      ? (hy ? "Վերբեռնել այլ լուսանկար" : "Upload another photo")
+      : labelText;
+    return (
+      '<div class="guided-hero-photo-field' + (photo ? " has-photo" : "") + '">' +
+      (photo
+        ? '<img class="guided-hero-photo-preview" src="' + escapeHtml(photo) + '" alt="">'
+        : "") +
+      '<label class="guided-hero-madeup-upload guided-hero-child-photo-upload' +
+      (photo ? " has-photo" : "") +
+      '">' +
+      '<span class="guided-hero-child-label">' + actionLabel + "</span>" +
+      '<small class="guided-hero-child-photo-hint" id="' +
+      (inputId === "guided-hero-child-photo" ? "guided-hero-child-photo-hint" : "") +
+      '"' +
+      (photo ? " hidden" : "") +
+      ">" +
+      hintText +
+      "</small>" +
+      '<input id="' +
+      inputId +
+      '" type="file" accept="image/*" aria-label="' +
+      ariaLabel +
+      '"></label></div>'
+    );
   }
 
   function clearHeroCardFocus() {
@@ -3183,12 +3335,20 @@
     var hy = isArmenianUi();
     var nameInput = el("guided-hero-child-name");
     if (nameInput) {
-      nameInput.setAttribute("aria-label", hy ? "Երեխայի անունը" : "Child's name");
+      nameInput.setAttribute("aria-label", hy ? "Անուն" : "Name");
       nameInput.placeholder = " ";
       var floatingLabel = nameInput.nextElementSibling;
       if (floatingLabel && floatingLabel.classList.contains("guided-floating-label")) {
-        floatingLabel.textContent = hy ? "Երեխայի անունը" : "Child's name";
+        floatingLabel.textContent = hy ? "Անուն" : "Name";
       }
+    }
+    var ageLabel = document.querySelector("#guided-hero-child-age") && document.querySelector("#guided-hero-child-age").previousElementSibling;
+    if (ageLabel) ageLabel.textContent = hy ? "Տարիք" : "Age";
+    var ageSelect = el("guided-hero-child-age");
+    if (ageSelect) {
+      ageSelect.setAttribute("aria-label", hy ? "Տարիք" : "Age");
+      var selectedAge = String(planner.age || state.age || "");
+      if (selectedAge && ageSelect.value !== selectedAge) ageSelect.value = selectedAge;
     }
     var likesInput = el("guided-hero-child-likes");
     if (likesInput) {
@@ -3200,9 +3360,17 @@
     var likesHint = el("guided-hero-child-likes-hint");
     if (likesHint) {
       likesHint.textContent = hy
-        ? "Գրիր հետաքրքրությունները և բաժանիր ստորակետով, օր.` դինոզավրեր, նկարել"
-        : "Add interests and separate them with commas, e.g. dinosaurs, drawing";
+        ? "Ավելացրու հետաքրքրություններ՝ բաժանելով ստորակետով"
+        : "Add interests and separate them with commas";
     }
+    var photoHint = el("guided-hero-child-photo-hint");
+    if (photoHint) {
+      photoHint.textContent = hy
+        ? "Մենք կստեղծենք գեղեցիկ նկար ձեր երեխայի լուսանկարով"
+        : "We'll create a nice illustration from your child's photo";
+    }
+    var photoLabel = document.querySelector(".guided-hero-child-photo-upload .guided-hero-child-label");
+    if (photoLabel) photoLabel.textContent = hy ? "Ավելացնել երեխայի լուսանկար" : "Upload a photo of your child";
     var genderGroup = el("guided-hero-gender");
     if (genderGroup) genderGroup.setAttribute("aria-label", hy ? "Սեռ" : "Gender");
     var genderLabels = hy
@@ -3280,7 +3448,19 @@
   function heroChildReady() {
     var nameField = el("guided-hero-child-name");
     var name = nameField ? nameField.value.trim() : state.childName;
-    return !!(name && state.childGender);
+    return !!name;
+  }
+
+  function heroAgeOptionsHtml(selected) {
+    var n = parseInt(selected, 10);
+    var html = "";
+    for (var age = 2; age <= 16; age++) {
+      html +=
+        '<option value="' + age + '"' + (age === n ? " selected" : "") + ">" +
+        escapeHtml(ageYearsLabel(age)) +
+        "</option>";
+    }
+    return html;
   }
 
   function madeUpHeroReady() {
@@ -3304,10 +3484,10 @@
         '<div class="guided-hero-profile-list" role="list">' +
         kids.map(function (kid) {
           var label = kid.name || (hy ? "Երեխա" : "Child");
-          var meta = [ageYearsLabel(kid.age), kid.likes].filter(Boolean).join(" · ");
+          var meta = ageYearsLabel(kid.age);
           var avatar = kid.photo
             ? '<img class="guided-hero-profile-photo" src="' + escapeHtml(kid.photo) + '" alt="">'
-            : '<span class="guided-profile-avatar" aria-hidden="true">' + escapeHtml(profileInitial(kid.name)) + "</span>";
+            : "";
           return (
             '<div class="guided-hero-profile-row" role="listitem">' +
             '<div class="guided-hero-profile-info">' +
@@ -3315,29 +3495,40 @@
             '<span class="guided-profile-copy"><strong>' + escapeHtml(label) + "</strong>" +
             (meta ? "<span>" + escapeHtml(meta) + "</span>" : "") +
             "</span></div>" +
+            '<span class="guided-hero-profile-actions">' +
+            '<button type="button" class="guided-hero-profile-edit" data-hero-child-edit="' +
+            escapeHtml(kid.id) +
+            '">' +
+            (hy ? "Խմբագրել" : "Edit") +
+            "</button>" +
             '<button type="button" class="guided-hero-profile-select" data-hero-child-id="' +
             escapeHtml(kid.id) +
             '">' +
             (hy ? "Ընտրել" : "Select") +
-            "</button></div>"
+            "</button></span></div>"
           );
         }).join("") +
         "</div>" +
         '<button type="button" class="guided-hero-profile-new" id="guided-hero-profile-new">' +
-        (hy ? "Ավելացնել նոր երեխա" : "Add a different child") +
+        (hy ? "Ավելացնել նոր երեխա" : "Add new kid") +
         "</button></div>";
     } else {
       backFace =
         '<div class="guided-hero-flip-face guided-hero-flip-back">' +
-        (namedChildProfiles().length
+        (kids.length
           ? '<button type="button" class="guided-hero-profile-back-link" id="guided-hero-profile-back">' +
-            (hy ? "Վերադառնալ պրոֆիլներին" : "Back to profiles") +
+            (hy ? "← Պրոֆիլներ" : "← Profiles") +
             "</button>"
           : "") +
         '<label class="guided-hero-child-name guided-floating-field">' +
-        '<input id="guided-hero-child-name" type="text" maxlength="40" autocomplete="given-name" value="' + nameValue + '" placeholder=" " aria-label="' + (hy ? "Երեխայի անունը" : "Child\'s name") + '">' +
-        '<span class="guided-floating-label">' + (hy ? "Երեխայի անունը" : "Child's name") + '</span>' +
+        '<input id="guided-hero-child-name" type="text" maxlength="40" autocomplete="given-name" value="' + nameValue + '" placeholder=" " aria-label="' + (hy ? "Անուն" : "Name") + '">' +
+        '<span class="guided-floating-label">' + (hy ? "Անուն" : "Name") + '</span>' +
         "</label>" +
+        '<label class="dash-kids-age-field">' +
+        '<span class="dash-kids-age-label">' + (hy ? "Տարիք" : "Age") + "</span>" +
+        '<select id="guided-hero-child-age" aria-label="' + (hy ? "Տարիք" : "Age") + '">' +
+        heroAgeOptionsHtml(planner.age || state.age) +
+        "</select></label>" +
         '<div class="guided-hero-gender" id="guided-hero-gender" role="radiogroup" aria-label="' + (hy ? "Սեռ" : "Gender") + '">' +
         '<button type="button" class="guided-choice" role="radio" aria-checked="false" data-guided-gender="girl"><strong>' + (hy ? "Աղջիկ" : "Girl") + "</strong></button>" +
         '<button type="button" class="guided-choice" role="radio" aria-checked="false" data-guided-gender="boy"><strong>' + (hy ? "Տղա" : "Boy") + "</strong></button>" +
@@ -3346,19 +3537,22 @@
         '<div class="guided-hero-chip-field" id="guided-hero-child-likes-field">' +
         '<span class="guided-floating-label">' + (hy ? "Հետաքրքրություններ" : "Interests") + "</span>" +
         '<span class="guided-hero-child-likes-chips" id="guided-hero-child-likes-chips" aria-live="polite"></span>' +
-        '<input id="guided-hero-child-likes" type="text" maxlength="40" value="" placeholder=" " aria-label="' + (hy ? "Ինչ է սիրում երեխան" : "What your child likes") + '">' +
+        '<input id="guided-hero-child-likes" type="text" maxlength="40" placeholder=" " aria-label="' + (hy ? "Ինչ է սիրում երեխան" : "What your child likes") + '">' +
         "</div>" +
-        '<p class="guided-hero-field-hint" id="guided-hero-child-likes-hint">' +
-        (hy
-          ? "Գրիր հետաքրքրությունները և բաժանիր ստորակետով, օր.` դինոզավրեր, նկարել"
-          : "Add interests and separate them with commas, e.g. dinosaurs, drawing") +
-        "</p>" +
-        '<label class="guided-hero-madeup-upload"><span class="guided-hero-child-label">' + (hy ? "Ավելացնել երեխայի լուսանկար (ըստ ցանկության)" : "Upload a photo of your child (optional)") + "</span>" +
-        '<small>' + (hy ? "Պատմության նկարազարդումներում կլինի ձեր երեխան։" : "The story illustrations will feature your child.") + "</small>" +
-        '<input id="guided-hero-child-photo" type="file" accept="image/*" aria-label="' + (hy ? "Երեխայի լուսանկար" : "Child photo") + '"></label>' +
+        '<p class="guided-hero-child-likes-hint" id="guided-hero-child-likes-hint"></p>' +
+        heroPhotoUploadHtml(
+          "guided-hero-child-photo",
+          hy ? "Ավելացնել երեխայի լուսանկար" : "Upload a photo of your child",
+          hy
+            ? "Մենք կստեղծենք գեղեցիկ նկար ձեր երեխայի լուսանկարով"
+            : "We'll create a nice illustration from your child's photo",
+          hy ? "Երեխայի լուսանկար" : "Child photo"
+        ) +
         '<button type="button" class="guided-hero-child-next" id="guided-hero-child-next">' + (hy ? "Հաջորդ" : "Next") + "</button>" +
         "</div>";
     }
+    var kidMediaSrc = String(state.image || "").trim() || "images/intent-cards/my-child-transparent.png?v=20260915alpha";
+    var kidMediaClass = String(state.image || "").trim() ? " is-user-photo" : "";
     return (
       '<div class="guided-choice guided-intent-card guided-hero-flip-card guided-hero-card' +
       (on ? " is-on is-flipped" : "") +
@@ -3368,7 +3562,7 @@
       '<div class="guided-hero-flip-inner">' +
       '<div class="guided-hero-flip-face guided-hero-flip-front">' +
       '<span class="guided-intent-card-media guided-hero-card-media" aria-hidden="true">' +
-      '<img src="images/intent-cards/my-child-transparent.png?v=20260915alpha" alt="" width="1024" height="1024" loading="lazy" decoding="async">' +
+      '<img class="' + kidMediaClass.trim() + '" src="' + escapeHtml(kidMediaSrc) + '" alt="" width="1024" height="1024" loading="lazy" decoding="async">' +
       "</span>" +
       '<span class="guided-intent-card-copy">' +
       '<strong class="guided-intent-card-title">' + escapeHtml(option.label) + "</strong>" +
@@ -3384,6 +3578,8 @@
   function paintHeroMadeUpCard(option, selected) {
     var on = option.value === selected;
     var hy = isArmenianUi();
+    var madeupMediaSrc = String(state.image || "").trim() || "images/intent-cards/made-up-character-transparent.png?v=20260915alpha";
+    var madeupMediaClass = String(state.image || "").trim() ? " is-user-photo" : "";
     return (
       '<div class="guided-choice guided-intent-card guided-hero-flip-card guided-hero-card guided-hero-madeup-card' +
       (on ? " is-on is-flipped" : "") +
@@ -3393,7 +3589,7 @@
       '<div class="guided-hero-flip-inner">' +
       '<div class="guided-hero-flip-face guided-hero-flip-front">' +
       '<span class="guided-intent-card-media guided-hero-card-media" aria-hidden="true">' +
-      '<img src="images/intent-cards/made-up-character-transparent.png?v=20260915alpha" alt="" width="1024" height="935" loading="lazy" decoding="async">' +
+      '<img class="' + madeupMediaClass.trim() + '" src="' + escapeHtml(madeupMediaSrc) + '" alt="" width="1024" height="935" loading="lazy" decoding="async">' +
       "</span>" +
       '<span class="guided-intent-card-copy">' +
       '<strong class="guided-intent-card-title">' + escapeHtml(option.label) + "</strong>" +
@@ -3415,9 +3611,14 @@
       '<label class="guided-hero-madeup-description guided-floating-textarea">' +
       '<textarea id="guided-hero-madeup-description" rows="2" maxlength="160" placeholder=" " aria-label="' + (hy ? "Նկարագրիր հերոսին մի քանի բառով" : "Describe the hero with couple of words") + '"></textarea>' +
       '<span class="guided-floating-label">' + (hy ? "Նկարագրիր հերոսին մի քանի բառով" : "Describe the hero with couple of words") + '</span></label>' +
-      '<label class="guided-hero-madeup-upload"><span class="guided-hero-child-label">' + (hy ? "Ավելացնել խաղալիքի լուսանկար (ըստ ցանկության)" : "Upload a photo of the toy (optional)") + "</span>" +
-      '<small>' + (hy ? "Լուսանկարը կօգնի անհատականացնել հերոսին։" : "A photo helps personalize the story's hero.") + "</small>" +
-      '<input id="guided-hero-madeup-photo" type="file" accept="image/*" aria-label="' + (hy ? "Խաղալիքի լուսանկար" : "Toy photo") + '"></label>' +
+      heroPhotoUploadHtml(
+        "guided-hero-madeup-photo",
+        hy ? "Ավելացնել խաղալիքի լուսանկար (ըստ ցանկության)" : "Upload a photo of the toy (optional)",
+        hy
+          ? "Ինչ էլ վերբեռնես՝ մենք դրանով կստեղծենք գեղեցիկ նկար"
+          : "Whatever you upload will be used to create a nice illustration",
+        hy ? "Խաղալիքի լուսանկար" : "Toy photo"
+      ) +
       '<button type="button" class="guided-hero-child-next" id="guided-hero-madeup-next">' + (hy ? "Հաջորդ" : "Next") + "</button>" +
       "</div></div></div>"
     );
@@ -3491,7 +3692,11 @@
       var topicStep = document.querySelector('[data-guided-step="topic"]');
       if (topicStep) topicStep.classList.toggle("is-learn-topic", purpose === "learn");
       if (topicGrid) topicGrid.setAttribute("aria-label", topicTitle);
-      paintChoices(topicGrid, aiQuestion.chips, state.topic || planner[aiQuestion.field]);
+      if (topicChipsLoading) {
+        paintTopicSkeleton(topicGrid);
+      } else {
+        paintChoices(topicGrid, aiQuestion.chips || [], state.topic || planner[aiQuestion.field]);
+      }
     } else if (key === "detail") {
       var topic = selectedTopic();
       var next = topic && topic.next;
@@ -3519,7 +3724,27 @@
     var titleRow = el("guided-title-row");
     var title = el("guided-step-title");
     var titleText = activeSection ? activeSection.getAttribute("data-guided-title") || "" : "";
-    if (title) title.textContent = titleText;
+    var heroCardFocused = key === "hero" && (state.heroPick === "kid" || state.heroPick === "madeup");
+    var profileAddBack = key === "basics" && addingNewProfile && listChildProfiles().length > 0;
+    var backHidden = stepIndex === 0 && !heroCardFocused && !profileAddBack;
+    // Summary keeps only the back beside Create story — never the title-row back.
+    if (key === "plan" || key === "generating") {
+      if (title) {
+        title.textContent = "";
+        title.hidden = true;
+      }
+      if (titleRow) titleRow.hidden = true;
+      var topBack = el("guided-back");
+      if (topBack) topBack.hidden = true;
+    } else {
+      if (title) {
+        title.textContent = titleText;
+        title.hidden = false;
+      }
+      if (titleRow) titleRow.hidden = false;
+      var stepBack = el("guided-back");
+      if (stepBack) stepBack.hidden = backHidden;
+    }
     if (key === "basics") {
       paintProfilePicker();
       syncAgeChips(planner.age || state.age);
@@ -3529,15 +3754,15 @@
     if (key === "hero") paintHeroStep(title);
     else clearHeroCardFocus();
     if (key === "plan") paintPlan();
-    if (titleRow) titleRow.hidden = key === "plan";
-    var heroCardFocused = key === "hero" && (state.heroPick === "kid" || state.heroPick === "madeup");
-    var profileAddBack = key === "basics" && addingNewProfile && listChildProfiles().length > 0;
-    el("guided-back").hidden = stepIndex === 0 && !heroCardFocused && !profileAddBack;
-    el("guided-footer").hidden = key === "plan" || key === "generating" || heroCardFocused;
+    var planBack = el("guided-plan-back");
+    if (planBack) {
+      planBack.setAttribute("aria-label", isArmenianUi() ? "Հետ" : "Back");
+    }
+    el("guided-footer").hidden = true;
     paintDots();
     el("guided-card").scrollTop = 0;
     setError("");
-    revealChoiceStep(activeSection, titleRow);
+    revealChoiceStep(activeSection, key === "plan" || key === "generating" ? null : titleRow);
     if (key === "intent") stopDiscoverHints();
     else if (key === "purpose") stopDiscoverHints();
     else if (key === "topic") stopDiscoverHints();
@@ -3567,7 +3792,13 @@
   }
 
   function goBack() {
-    if (analyzing) return;
+    if (analyzing && !(topicChipsLoading && stepKey === "topic")) return;
+    if (topicChipsLoading) {
+      topicChipsLoading = false;
+      analyzing = false;
+      setAnalyzing(false);
+      clearPurposeChipPrefetch();
+    }
     if (el("guided-topic-else") && !el("guided-topic-else").hidden) {
       closeTopicElsePopup(true);
       return;
@@ -4017,6 +4248,7 @@
       summaryPlan: summaryPlan(),
       idea: storyIdea(),
       childName: planner.name || state.childName,
+      childGender: planner.gender || state.childGender || "",
       age: planner.age || state.age,
       lang: storyLanguage(),
       heroKind: heroKind,
@@ -4026,6 +4258,23 @@
       setting: planner.setting || state.world,
       support: planner.support || planner.emotion || planner.context || state.support,
     };
+  }
+
+  function openStoryReadyPaywall() {
+    var hy = isArmenianUi();
+    var cardsHtml = planSummaryCardsHtml();
+    if (window.NanikPayments && typeof window.NanikPayments.openPaywall === "function") {
+      window.NanikPayments.openPaywall({
+        variant: "story",
+        title: hy ? "Հեքիաթդ պատրաստ է" : "Your story is ready",
+        cardsHtml: cardsHtml,
+        orLabel: hy ? "կամ բաժանորդագրվիր՝ ավելի շատ հեքիաթներ ստանալու համար" : "or Subscribe to get more stories",
+        ctaLabel: hy ? "Բացել հեքիաթը" : "Unlock the story",
+        price: "$1.99",
+      });
+      return;
+    }
+    openCreateStoryPaywall();
   }
 
   function openCreateStoryPaywall() {
@@ -4082,14 +4331,12 @@
     beginGenerationAnimation();
 
     var started = api.start(storyPayload(), {
-      status: function (status) {
-        if (status === "illustrating") setGenerationStatus(4);
-      },
+      status: function () {},
       complete: function (story) {
         persistChildAfterStory();
         stopGenerationAnimation();
         finished = true;
-        setGenerationStatus(5);
+        setGenerationStatus(GENERATION_COPY.length - 1);
         setParticleProgress(100, true);
         var titleEl = el("guided-generating-title");
         if (titleEl) {
@@ -4102,7 +4349,7 @@
             // Leave the generating "ready" screen so Create is fresh next time.
             startCreateFlow();
           }
-        }, 650);
+        }, 450);
       },
       error: function (error) {
         if (error && error.quotaExceeded) {
@@ -4427,6 +4674,15 @@
           return;
         }
         if (state[stateKey]) {
+          if (stateKey === "purpose") {
+            var purposeNext = PURPOSE_KEYS[state.purpose] || "";
+            if (purposeNext === "today" || purposeNext === "learn") {
+              beginChoiceTransition(button);
+              scheduleAutoAdvance();
+              setError("");
+              return;
+            }
+          }
           beginChoiceTransition(button);
           scheduleAutoAdvance();
         } else {
@@ -4517,6 +4773,20 @@
           setError("");
           return;
         }
+        var profileEdit = event.target.closest("[data-hero-child-edit]");
+        if (profileEdit) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (currentKey() !== "hero" || analyzing) return;
+          var editId = profileEdit.getAttribute("data-hero-child-edit") || "";
+          var editKid = namedChildProfiles().find(function (item) { return item.id === editId; });
+          if (!editKid) {
+            setError(isArmenianUi() ? "Ընտրիր պրոֆիլը։" : "Choose a child profile.");
+            return;
+          }
+          openHeroChildEditor(editKid);
+          return;
+        }
         var profileSelect = event.target.closest("[data-hero-child-id]");
         if (profileSelect) {
           event.preventDefault();
@@ -4533,6 +4803,15 @@
           goNext();
           return;
         }
+        if (event.target.closest("#guided-hero-profile-back")) {
+          event.preventDefault();
+          event.stopPropagation();
+          if (currentKey() !== "hero" || analyzing) return;
+          heroKidFormMode = false;
+          paintHeroStep();
+          setError("");
+          return;
+        }
         if (event.target.closest("#guided-hero-profile-new")) {
           event.preventDefault();
           event.stopPropagation();
@@ -4540,18 +4819,13 @@
           state.childName = "";
           state.childGender = "";
           state.interests = [];
+          state.image = "";
           planner.name = "";
           planner.likes = "";
           planner.gender = "";
           planner.childId = "";
-          paintHeroStep();
-          setError("");
-          return;
-        }
-        if (event.target.closest("#guided-hero-profile-back")) {
-          event.preventDefault();
-          event.stopPropagation();
-          heroKidFormMode = false;
+          var draftClear = window.NANIK_DRAFT || {};
+          if (draftClear.setImage) draftClear.setImage("");
           paintHeroStep();
           setError("");
           return;
@@ -4586,9 +4860,7 @@
           if (currentKey() !== "hero" || analyzing) return;
           var isMadeUp = nextButton.id === "guided-hero-madeup-next";
           if ((isMadeUp && !madeUpHeroReady()) || (!isMadeUp && !heroChildReady())) {
-            setError(isMadeUp
-              ? (isArmenianUi() ? "Գրիր կերպարի անունը։" : "Give the character a name.")
-              : (isArmenianUi() ? "Գրիր անունը և ընտրիր սեռը։" : "Add their name and gender."));
+            setNameFieldError(isMadeUp ? "guided-hero-madeup-name" : "guided-hero-child-name");
             return;
           }
           beginChoiceTransition(nextButton);
@@ -4598,6 +4870,16 @@
       el("guided-hero-options").addEventListener("input", function (event) {
         if (event.target.id === "guided-hero-child-name") {
           state.childName = event.target.value.trim();
+          if (state.childName) clearFieldErrors();
+        } else if (event.target.id === "guided-hero-madeup-name") {
+          if (String(event.target.value || "").trim()) clearFieldErrors();
+        } else if (event.target.id === "guided-hero-child-age") {
+          var pickedAge = event.target.value;
+          state.age = pickedAge;
+          planner.age = pickedAge;
+          sources.age = "profile";
+          if (el("guided-age")) el("guided-age").value = pickedAge;
+          syncAgeChips(pickedAge);
         } else if (event.target.id === "guided-hero-child-likes") {
           if (/,/.test(event.target.value)) {
             var parts = event.target.value.split(",");
@@ -4755,6 +5037,9 @@
       });
     }
     el("guided-back").addEventListener("click", goBack);
+    if (el("guided-plan-back")) {
+      el("guided-plan-back").addEventListener("click", goBack);
+    }
     if (el("guided-plan-create")) {
       el("guided-plan-create").addEventListener("click", goNext);
     }
@@ -4793,7 +5078,14 @@
     document.addEventListener("change", function (event) {
       if (event.target.id !== "guided-hero-madeup-photo" && event.target.id !== "guided-hero-child-photo") return;
       var file = event.target.files && event.target.files[0];
-      if (file) readPhoto(file);
+      if (!file) return;
+      var isChildPhoto = event.target.id === "guided-hero-child-photo";
+      readPhoto(file);
+      photoPromise.then(function () {
+        if (!state.image) return;
+        paintPhotoControls();
+        if (isChildPhoto) rememberChild({ force: true });
+      });
     });
     wireInsertGrow("guided-interests-custom", function () {
       syncInsertFilled("guided-interests-insert", "guided-interests-custom");
@@ -4861,9 +5153,6 @@
       plan.addEventListener("input", readPlanFields);
       plan.addEventListener("change", readPlanFields);
     }
-    el("guided-cancel").addEventListener("click", function () {
-      if (window.NANIK_GUIDED_CREATE) window.NANIK_GUIDED_CREATE.cancel();
-    });
     document.querySelectorAll('.dash-nav-btn[data-panel="create"]').forEach(function (button) {
       button.addEventListener("click", function () {
         if (!hasChildProfile() || finished) startCreateFlow();

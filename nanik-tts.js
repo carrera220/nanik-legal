@@ -258,9 +258,9 @@
     return {
       modelId: h.modelId || "higgs-tts-3",
       responseFormat: h.responseFormat || "pcm",
-      temperature: Number.isFinite(Number(h.temperature)) ? Number(h.temperature) : 0.9,
+      temperature: Number.isFinite(Number(h.temperature)) ? Number(h.temperature) : 0.75,
       maxNewTokens: Number.isFinite(Number(h.maxNewTokens)) ? Number(h.maxNewTokens) : 2047,
-      topK: Number.isFinite(Number(h.topK)) ? Number(h.topK) : 0,
+      topK: Number.isFinite(Number(h.topK)) ? Number(h.topK) : 50,
       topP: Number.isFinite(Number(h.topP)) ? Number(h.topP) : 0.95,
       speakingRate: Number.isFinite(Number(h.speakingRate)) ? Number(h.speakingRate) : 1,
       sampleRate: Number(h.sampleRate) || 24000,

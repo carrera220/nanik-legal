@@ -34,6 +34,18 @@ test('created hero preserves structured inputs', () => {
   assert.equal(plan.hero.characterType, 'Animal');
   assert.equal(plan.hero.description, 'Blue wings');
 });
+test('child-as-hero locks a gendered human description', () => {
+  const plan = contract.build(
+    { name: 'Mia', gender: 'girl' },
+    { heroPick: 'kid' },
+    [],
+    'en',
+    'en',
+  );
+  assert.equal(plan.hero.mode, 'child');
+  assert.equal(plan.hero.characterType, 'human child');
+  assert.equal(plan.hero.description, 'a human girl');
+});
 test('anything else about the child reaches additional context', () => {
   const plan = contract.build({}, { heroPick: 'surprise', about: 'Just started swimming lessons' }, [], 'en', 'en');
   assert.equal(plan.additionalContext, 'Just started swimming lessons');

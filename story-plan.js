@@ -7,12 +7,20 @@
       return items.findIndex(function (other) { return other.toLowerCase() === item.toLowerCase(); }) === index;
     });
   }
+  function humanChildDescription(gender) {
+    var g = String(gender || "").trim().toLowerCase();
+    if (g === "girl") return "a human girl";
+    if (g === "boy") return "a human boy";
+    return "a human child";
+  }
   function build(planner, state, history, uiLanguage, storyLanguage) {
-    var mode = state.heroPick === "kid" ? "child" : state.heroPick === "madeup" ? "created" : "decide";
+    var pick = state.heroPick || state.heroKind || "";
+    var mode = pick === "kid" || pick === "child" ? "child" : pick === "madeup" ? "created" : "decide";
     var purpose = planner.intentKey === "surprise" ? "fun" : planner.purposeKey === "today" ? "support" : planner.purposeKey || "fun";
     var field = purpose === "support" ? "support" : "topic";
     var answer = purpose === "fun" ? null : (history || []).filter(function (item) { return item.field === field; }).slice(-1)[0];
     var interests = list(planner.likes);
+    var childGender = text(planner.gender) || text(state.childGender);
     return {
       schemaVersion: 2,
       uiLanguage: uiLanguage,
@@ -21,7 +29,7 @@
       // Who the story is told to. Kept separate from the hero so it survives a made-up
       // or story-decides hero, which is when the old hero-only gender was lost.
       child: {
-        gender: text(planner.gender) || text(state.childGender),
+        gender: childGender,
         interests: interests
       },
       storyKind: planner.intentKey || "custom",
@@ -30,8 +38,12 @@
       hero: {
         mode: mode,
         name: mode === "child" ? text(planner.name) : mode === "created" ? text(state.madeUpName) : null,
-        characterType: mode === "created" ? text(state.madeUpType) : null,
-        description: mode === "created" ? text(state.madeUpDescription) : null,
+        characterType: mode === "created" ? text(state.madeUpType) : mode === "child" ? "human child" : null,
+        description: mode === "created"
+          ? text(state.madeUpDescription)
+          : mode === "child"
+          ? humanChildDescription(childGender)
+          : null,
         photoProvided: !!state.image
       },
       additionalContext: text(planner.idea || planner.context || state.about),

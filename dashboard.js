@@ -84,7 +84,7 @@
       summaryHelpsLabel: "Help",
       tellWithVoice: "Tell with my voice",
       continueStory: "New chapter",
-      tellWithYourVoice: "Tell with your voice",
+      tellWithYourVoice: "Tell with voice",
       voiceIntroTitle: "Test my voice",
       voiceIntroBody: "Record your voice to hear how stories will sound",
       voiceIntroContinue: "Continue",
@@ -152,7 +152,7 @@
       addMyVoice: "Add my voice",
       askSomeoneToRecord: "Invite to record",
       voiceSamplesSectionTitle: "Voice samples",
-      myVoicesSection: "Voices",
+      myVoicesSection: "My voices",
       createdVoice: "Created voice",
       sharedVoice: "Shared voice",
       useThisVoice: "Use",
@@ -344,7 +344,7 @@
       addMyVoice: "Ավելացնել իմ ձայնը",
       askSomeoneToRecord: "Հրավիրել ձայնագրվելու",
       voiceSamplesSectionTitle: "Պատրաստի ձայներ",
-      myVoicesSection: "Ձայներ",
+      myVoicesSection: "Իմ ձայները",
       createdVoice: "Ստեղծված ձայն",
       sharedVoice: "Կիսված ձայն",
       useThisVoice: "Օգտագործել",
@@ -539,7 +539,7 @@
       addMyVoice: "Добавить мой голос",
       askSomeoneToRecord: "Попросить записать",
       voiceSamplesSectionTitle: "Примеры голосов",
-      myVoicesSection: "Голоса",
+      myVoicesSection: "Мои голоса",
       createdVoice: "Созданный голос",
       sharedVoice: "Общий голос",
       useThisVoice: "Выбрать",
@@ -1148,7 +1148,7 @@
   };
 
   var step = "idle";
-  var answers = { idea: "", childName: "", age: null, heroKind: "", heroName: "", image: "", support: "", likes: "", setting: "", voice: null, lang: "en", clarify: {}, planner: null };
+  var answers = { idea: "", childName: "", childGender: "", age: null, heroKind: "", heroName: "", image: "", support: "", likes: "", setting: "", voice: null, lang: "en", clarify: {}, planner: null };
   var turnAbort = null;
   var loadingTurn = false;
   var waitingOther = false;
@@ -1330,7 +1330,6 @@
     var map = [
       ["dash-welcome-title", pack.welcomeTitle],
       ["dash-welcome-lead", pack.welcomeLead],
-      ["dash-library-title", pack.libraryTitle],
       ["dash-reader-back-label", readerBackLabel(pack)],
       ["dash-reader-volume-title", pack.musicVolume || COPY.en.musicVolume],
       ["dash-account-title", pack.accountTitle || COPY.en.accountTitle],
@@ -1578,6 +1577,8 @@
   }
 
   var editingChildId = "";
+  /** Kids added via “Add” but not confirmed with Save yet — hide Delete until then. */
+  var pendingNewChildIds = Object.create(null);
 
   function childYearsLabel(age) {
     var pack = ui();
@@ -1625,10 +1626,12 @@
     var guidedAdd = document.getElementById("guided-profile-add");
     var atLimit = kidsProfileCount() >= MAX_KIDS_PROFILES;
     var locked = needsPlusForNextKid();
+    var editing = !!editingChildId;
     if (kidsAdd) {
-      kidsAdd.hidden = atLimit;
-      kidsAdd.setAttribute("aria-hidden", atLimit ? "true" : "false");
-      kidsAdd.classList.toggle("is-locked", locked && !atLimit);
+      // Hide while a profile creation/edit card is open.
+      kidsAdd.hidden = atLimit || editing;
+      kidsAdd.setAttribute("aria-hidden", kidsAdd.hidden ? "true" : "false");
+      kidsAdd.classList.toggle("is-locked", locked && !atLimit && !editing);
     }
     if (guidedAdd) {
       guidedAdd.hidden = atLimit;
@@ -1797,28 +1800,71 @@
     else if (draft.setChild) draft.setChild(null);
     editingChildId = "";
     paintKidsList();
+    paintKidsAddChrome();
     paintChildProfileSummary();
   }
 
-  function closeKidsFlipCard(card) {
+  function closeKidsFlipCard(card, opts) {
+    opts = opts || {};
     if (!card) {
       editingChildId = "";
       paintKidsList();
+      paintKidsAddChrome();
+      paintChildProfileSummary();
+      return;
+    }
+    var kidId = card.getAttribute("data-kid-id") || "";
+    if (opts.discardPending && kidId && pendingNewChildIds[kidId]) {
+      var draft = window.NANIK_DRAFT || {};
+      if (draft.removeChild) draft.removeChild(kidId);
+      delete pendingNewChildIds[kidId];
+      editingChildId = "";
+      paintKidsList();
+      paintKidsAddChrome();
       paintChildProfileSummary();
       return;
     }
     if (card.getAttribute("data-kids-closing") === "1") return;
     card.setAttribute("data-kids-closing", "1");
     saveKidFromFlipCard(card);
+    if (opts.confirm && kidId) delete pendingNewChildIds[kidId];
+    var list = card.parentElement;
+    var inner = card.querySelector(".guided-hero-flip-inner");
+    var rect = card.getBoundingClientRect();
+    card.style.height = rect.height + "px";
+    card.style.minHeight = rect.height + "px";
+    card.style.maxWidth = rect.width + "px";
+    card.style.flexBasis = rect.width + "px";
+    card.style.flexGrow = "0";
+    if (inner) {
+      inner.style.height = rect.height + "px";
+      inner.style.minHeight = rect.height + "px";
+    }
+    if (list) {
+      list.classList.add("is-kid-closing");
+      list.classList.remove("is-kid-focus");
+    }
+    void card.offsetWidth;
     card.classList.remove("is-flipped");
+    window.requestAnimationFrame(function () {
+      card.style.height = "";
+      card.style.minHeight = "";
+      card.style.maxWidth = "";
+      card.style.flexBasis = "";
+      card.style.flexGrow = "";
+      if (inner) {
+        inner.style.height = "";
+        inner.style.minHeight = "";
+      }
+    });
     var finish = function () {
       if (card.getAttribute("data-kids-closing") !== "1") return;
       card.removeAttribute("data-kids-closing");
       editingChildId = "";
       paintKidsList();
+      paintKidsAddChrome();
       paintChildProfileSummary();
     };
-    var inner = card.querySelector(".guided-hero-flip-inner");
     var done = false;
     var complete = function () {
       if (done) return;
@@ -1832,7 +1878,7 @@
       complete();
     };
     if (inner) inner.addEventListener("transitionend", onEnd);
-    window.setTimeout(complete, 620);
+    window.setTimeout(complete, 700);
   }
 
   function paintKidsList() {
@@ -1850,6 +1896,7 @@
     if (!kids.length) {
       editingChildId = "";
       list.className = "dash-kids-list dash-kids-hero-cards";
+      paintKidsAddChrome();
       return;
     }
     kids.forEach(function (kid, index) {
@@ -1950,9 +1997,11 @@
             (hy ? "Պահել" : ru ? "Сохранить" : "Save")
         ) +
         "</button>" +
-        '<button type="button" class="dash-kids-flip-delete" data-kids-delete>' +
-        escapeHtml(pack.childDelete || COPY.en.childDelete || "Delete kid profile") +
-        "</button>" +
+        (pendingNewChildIds[kid.id]
+          ? ""
+          : '<button type="button" class="dash-kids-flip-delete" data-kids-delete>' +
+            escapeHtml(pack.childDelete || COPY.en.childDelete || "Delete kid profile") +
+            "</button>") +
         "</div>" +
         "</div></div>";
       var titleEl = card.querySelector(".dash-kids-hero-title");
@@ -1971,6 +2020,7 @@
           if (draft.selectChild) draft.selectChild(kid.id);
           editingChildId = kid.id;
           paintKidsList();
+          paintKidsAddChrome();
           paintChildProfileSummary();
         });
       }
@@ -2055,7 +2105,7 @@
         backBtn.addEventListener("click", function (e) {
           e.preventDefault();
           e.stopPropagation();
-          closeKidsFlipCard(card);
+          closeKidsFlipCard(card, { discardPending: true });
         });
       }
       var doneBtn = card.querySelector("[data-kids-done]");
@@ -2063,7 +2113,7 @@
         doneBtn.addEventListener("click", function (e) {
           e.preventDefault();
           e.stopPropagation();
-          closeKidsFlipCard(card);
+          closeKidsFlipCard(card, { confirm: true });
         });
       }
       var deleteBtn = card.querySelector("[data-kids-delete]");
@@ -2119,6 +2169,7 @@
       photo: "",
     });
     editingChildId = saved && saved.id ? saved.id : "";
+    if (editingChildId) pendingNewChildIds[editingChildId] = true;
     showPanel("kids");
     paintKidsList();
     paintChildProfileSummary();
@@ -2203,13 +2254,29 @@
   }
 
   function paintVoicesTitle() {
-    var el = document.getElementById("dash-voices-title");
-    if (!el) return;
     var pack = ui();
     var en = COPY.en;
-    el.textContent = voicesPickMode
-      ? pack.pickTheVoice || en.pickTheVoice || "Pick the voice"
-      : pack.voicesTitle || en.voicesTitle || "Voices";
+    var el = document.getElementById("dash-voices-title");
+    if (el) {
+      el.textContent = voicesPickMode
+        ? pack.pickTheVoice || en.pickTheVoice || "Pick the voice"
+        : pack.voicesTitle || en.voicesTitle || "Voices";
+    }
+    var pick = document.getElementById("dash-voice-pick-title");
+    if (pick) pick.textContent = pack.pickTheVoice || en.pickTheVoice || "Pick the voice";
+  }
+
+  function closeVoicePick() {
+    var modal = document.getElementById("dash-voice-pick");
+    var panel = document.getElementById("panel-voices");
+    var voices = document.getElementById("dash-voices");
+    var wasOpen = !!(modal && !modal.hidden);
+    if (panel && voices && voices.parentNode !== panel) panel.appendChild(voices);
+    if (modal) modal.hidden = true;
+    if (wasOpen) {
+      voicesPickMode = false;
+      stopVoicesAudio();
+    }
   }
 
   function openVoicesForPick(story) {
@@ -2222,7 +2289,18 @@
       voiceoverPickStoryId = "";
     }
     voicesPickMode = true;
-    showPanel("voices");
+    var modal = document.getElementById("dash-voice-pick");
+    var body = document.getElementById("dash-voice-pick-body");
+    var voices = document.getElementById("dash-voices");
+    if (!modal || !body || !voices) {
+      showPanel("voices");
+      return;
+    }
+    body.appendChild(voices);
+    paintVoicesTitle();
+    paintVoices();
+    modal.hidden = false;
+    refreshVoices();
   }
 
   function resolveVoiceoverStory() {
@@ -2322,7 +2400,33 @@
 
   function setVoiceoverBar(state) {
     var bar = document.getElementById("dash-voiceover-bar");
-    if (bar) bar.hidden = true;
+    if (!bar) return;
+    state = state || {};
+    if (state.hidden) {
+      bar.hidden = true;
+      bar.classList.remove("is-ready");
+      return;
+    }
+    var pack = ui();
+    var en = COPY.en;
+    var pct = Math.max(0, Math.min(100, Math.round(Number(state.percent) || 0)));
+    var title = document.getElementById("dash-voiceover-bar-title");
+    var pctEl = document.getElementById("dash-voiceover-bar-pct");
+    var fill = document.getElementById("dash-voiceover-bar-fill");
+    bar.hidden = false;
+    if (state.ready) {
+      bar.classList.add("is-ready");
+      if (title) title.textContent = pack.voiceoverReady || en.voiceoverReady || "Voiceover is ready";
+      if (pctEl) pctEl.textContent = "100%";
+      if (fill) fill.style.width = "100%";
+      return;
+    }
+    bar.classList.remove("is-ready");
+    if (title) {
+      title.textContent = pack.voiceoverGenerating || en.voiceoverGenerating || "Generating voiceover…";
+    }
+    if (pctEl) pctEl.textContent = pct + "%";
+    if (fill) fill.style.width = pct + "%";
   }
 
   function readerVoiceIcon(kind) {
@@ -2430,7 +2534,7 @@
         label.textContent = pack.playVoiceover || en.playVoiceover || pack.playVoiceSample || "Play";
         iconKind = "play";
       } else {
-        label.textContent = pack.tellWithYourVoice || en.tellWithYourVoice || "Tell with your voice";
+        label.textContent = pack.tellWithYourVoice || en.tellWithYourVoice || "Tell with voice";
       }
     }
     if (btn) {
@@ -2458,6 +2562,11 @@
       }
     }
     syncReaderPlayerUi();
+    if (generating) {
+      setVoiceoverBar({ percent: voiceoverProgressPercent || 0 });
+    } else if (!hasAudio) {
+      setVoiceoverBar({ hidden: true });
+    }
   }
 
   function ensureVoiceoverAudio(audioUrl) {
@@ -2599,7 +2708,7 @@
       clearTimeout(voiceoverReadyTimer);
       voiceoverReadyTimer = 0;
     }
-    setVoiceoverBar({ hidden: true });
+    setVoiceoverBar({ percent: 0 });
     voiceoverProgressPercent = 0;
     syncReaderVoiceButton();
 
@@ -2613,6 +2722,7 @@
       onProgress: function (info) {
         voiceoverProgressPercent =
           info && info.percent != null ? info.percent : voiceoverProgressPercent || 0;
+        setVoiceoverBar({ percent: voiceoverProgressPercent });
         syncReaderVoiceButton();
       },
     })
@@ -2623,6 +2733,12 @@
         // Play immediately from the blob, then promote to a durable Storage URL.
         patchStoryVoiceover(story.id, result.url);
         voiceoverProgressPercent = null;
+        setVoiceoverBar({ ready: true, percent: 100 });
+        if (voiceoverReadyTimer) clearTimeout(voiceoverReadyTimer);
+        voiceoverReadyTimer = setTimeout(function () {
+          voiceoverReadyTimer = 0;
+          setVoiceoverBar({ hidden: true });
+        }, 1800);
         syncReaderVoiceButton();
         paintLibrary();
         if (result.blob) {
@@ -2650,6 +2766,7 @@
       .catch(function (err) {
         voiceoverJob = null;
         voiceoverProgressPercent = null;
+        setVoiceoverBar({ hidden: true });
         console.warn("[voiceover]", err);
         syncReaderVoiceButton();
         window.alert((err && err.message) || pack.voiceoverFailed || en.voiceoverFailed);
@@ -2762,49 +2879,22 @@
         openWebPaywall();
       });
     }
-    if (billingBtn) {
-      billingBtn.addEventListener("click", function () {
-        closeAccountSheet();
-        if (window.NanikPayments && typeof window.NanikPayments.openBilling === "function") {
-          window.NanikPayments.openBilling({
-            title: "Manage payment",
-            statusValue: quotaState.isPlus ? "Plus" : "Freemium",
-            statusPill: quotaState.isPlus ? "Plus" : "Free",
-          }).catch(function (err) {
-            console.warn("[billing]", err);
-            if (!quotaState.isPlus) openWebPaywall({ title: "Upgrade your plan" });
-            else {
-              window.alert(
-                (err && err.message) || "Could not open payment management."
-              );
-            }
-          });
-          return;
-        }
-        if (quotaState.isPlus && window.NanikPayments && typeof window.NanikPayments.openPortal === "function") {
-          window.NanikPayments.openPortal().catch(function (err) {
-            console.warn("[billing portal]", err);
-            window.alert(
-              (err && err.message) || "Could not open payment management."
-            );
-          });
-          return;
-        }
-        openWebPaywall({
-          title: "Manage payment",
+    function openSubscribedBilling() {
+      if (!quotaState.isPlus) return;
+      closeAccountSheet();
+      if (window.NanikPayments && typeof window.NanikPayments.openPortal === "function") {
+        window.NanikPayments.openPortal().catch(function (err) {
+          console.warn("[billing portal]", err);
+          window.alert((err && err.message) || "Could not open payment management.");
         });
-      });
+      }
     }
+    if (billingBtn) billingBtn.addEventListener("click", openSubscribedBilling);
+    var billingPageBtn = document.getElementById("dash-account-billing-page");
+    if (billingPageBtn) billingPageBtn.addEventListener("click", openSubscribedBilling);
     if (capsule) {
       capsule.addEventListener("click", function () {
-        if (quotaState.isPlus) {
-          if (window.NanikPayments && typeof window.NanikPayments.openPortal === "function") {
-            window.NanikPayments.openPortal().catch(function (err) {
-              console.warn("[billing portal]", err);
-            });
-          }
-          return;
-        }
+        if (quotaState.isPlus) return;
         openWebPaywall();
       });
     }
@@ -3183,6 +3273,13 @@
       upgradeBtn.hidden = !!quotaState.isPlus;
       upgradeBtn.textContent = pack.upgrade || en.upgrade || "Upgrade";
     }
+    var showBilling = !!quotaState.isPlus;
+    var billingSection = document.getElementById("dash-account-billing-section");
+    var billingPageBtn = document.getElementById("dash-account-billing-page");
+    var billingSheetBtn = document.getElementById("dash-account-billing");
+    if (billingSheetBtn) billingSheetBtn.hidden = !showBilling;
+    if (billingSection) billingSection.hidden = !showBilling;
+    if (billingPageBtn) billingPageBtn.hidden = !showBilling;
     if (avatarEl) {
       avatarEl.classList.toggle("is-plus", !!quotaState.isPlus);
       avatarEl.classList.remove("is-empty");
@@ -3330,6 +3427,196 @@
     var s = session();
     if (s && s.user && s.user.id) return String(s.user.id);
     return s && s.access_token ? jwtUserId(s.access_token) : null;
+  }
+
+  /** Same Supabase `children` table — signed-in kids profiles sync across accounts/devices. */
+  var cloudChildrenSyncPromise = null;
+
+  function likesToInterests(likes) {
+    return String(likes || "")
+      .split(",")
+      .map(function (item) {
+        return item.trim();
+      })
+      .filter(Boolean)
+      .slice(0, 24);
+  }
+
+  function interestsToLikes(interests) {
+    if (!Array.isArray(interests)) return "";
+    return interests
+      .map(function (item) {
+        return String(item || "").trim();
+      })
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  function mapCloudChildRow(row) {
+    if (!row || typeof row !== "object") return null;
+    var age = parseInt(row.age, 10);
+    if (!(age >= 2 && age <= 16)) return null;
+    var gender = String(row.gender || "").trim().toLowerCase();
+    if (gender !== "girl" && gender !== "boy") gender = "unspecified";
+    return {
+      id: String(row.id || "").trim(),
+      name: String(row.name || "").trim().slice(0, 40),
+      age: age,
+      gender: gender,
+      likes: interestsToLikes(row.interests),
+      photo: "",
+    };
+  }
+
+  function fetchCloudChildren() {
+    var s = session();
+    var base = supabaseUrl();
+    if (!s || !s.access_token || !base) return Promise.resolve([]);
+    return fetch(
+      base +
+        "/rest/v1/children?select=id,name,age,gender,interests,created_at&order=created_at.asc",
+      { headers: authHeaders() }
+    )
+      .then(function (res) {
+        if (!res.ok) throw new Error("cloud children " + res.status);
+        return res.json();
+      })
+      .then(function (rows) {
+        if (!Array.isArray(rows)) return [];
+        return rows.map(mapCloudChildRow).filter(Boolean);
+      })
+      .catch(function (err) {
+        console.warn("[kids] cloud fetch failed", err);
+        return [];
+      });
+  }
+
+  function upsertCloudChild(kid) {
+    var s = session();
+    var base = supabaseUrl();
+    var userId = sessionUserId();
+    if (!s || !s.access_token || !base || !userId || !kid || !kid.id) {
+      return Promise.resolve();
+    }
+    var age = parseInt(kid.age, 10);
+    if (!(age >= 2 && age <= 16)) return Promise.resolve();
+    var gender = String(kid.gender || "").trim().toLowerCase();
+    if (gender !== "girl" && gender !== "boy") gender = "unspecified";
+    var name = String(kid.name || "").trim().slice(0, 40) || "Child";
+    return fetch(base + "/rest/v1/children?on_conflict=id", {
+      method: "POST",
+      headers: Object.assign({}, authHeaders(), {
+        Prefer: "resolution=merge-duplicates,return=minimal",
+      }),
+      body: JSON.stringify([
+        {
+          id: String(kid.id),
+          user_id: userId,
+          name: name,
+          age: age,
+          gender: gender,
+          interests: likesToInterests(kid.likes),
+        },
+      ]),
+    })
+      .then(function (res) {
+        if (!res.ok) console.warn("[kids] cloud upsert failed", res.status);
+      })
+      .catch(function (err) {
+        console.warn("[kids] cloud upsert failed", err);
+      });
+  }
+
+  function deleteCloudChild(id) {
+    var s = session();
+    var base = supabaseUrl();
+    var kidId = String(id || "").trim();
+    if (!s || !s.access_token || !base || !kidId) return Promise.resolve();
+    return fetch(
+      base + "/rest/v1/children?id=eq." + encodeURIComponent(kidId),
+      {
+        method: "DELETE",
+        headers: Object.assign({}, authHeaders(), { Prefer: "return=minimal" }),
+      }
+    )
+      .then(function (res) {
+        if (!res.ok) console.warn("[kids] cloud delete failed", res.status);
+      })
+      .catch(function (err) {
+        console.warn("[kids] cloud delete failed", err);
+      });
+  }
+
+  function refreshCloudChildren() {
+    if (cloudChildrenSyncPromise) return cloudChildrenSyncPromise;
+    var d = draft();
+    if (!sessionUserId()) return Promise.resolve([]);
+    cloudChildrenSyncPromise = fetchCloudChildren()
+      .then(function (cloudKids) {
+        var localKids = typeof d.getChildren === "function" ? d.getChildren() || [] : [];
+        var cloudIds = {};
+        cloudKids.forEach(function (kid) {
+          cloudIds[kid.id] = true;
+        });
+        // First sign-in on this browser: push any local-only kids up, then re-pull.
+        var localOnly = localKids.filter(function (kid) {
+          return kid && kid.id && !cloudIds[kid.id];
+        });
+        var uploads = localOnly.map(function (kid) {
+          return upsertCloudChild(kid);
+        });
+        return Promise.all(uploads).then(function () {
+          if (!uploads.length) return cloudKids;
+          return fetchCloudChildren();
+        });
+      })
+      .then(function (kids) {
+        var active = typeof d.getChild === "function" ? d.getChild() : null;
+        if (typeof d.replaceChildren === "function") {
+          d.replaceChildren(kids, active && active.id);
+        } else {
+          kids.forEach(function (kid) {
+            if (d.setChild) d.setChild(kid);
+          });
+        }
+        paintKidsPage();
+        paintChildProfileSummary();
+        return kids;
+      })
+      .finally(function () {
+        cloudChildrenSyncPromise = null;
+      });
+    return cloudChildrenSyncPromise;
+  }
+
+  function wrapChildDraftCloudSync() {
+    var d = window.NANIK_DRAFT;
+    if (!d || d.__cloudKidsWrapped) return;
+    var origSet = d.setChild;
+    var origRemove = d.removeChild;
+    var origGet = d.getChildren;
+    if (typeof origSet === "function") {
+      d.setChild = function (profile) {
+        var previous = typeof origGet === "function" ? origGet() || [] : [];
+        var result = origSet(profile);
+        if (!profile) {
+          previous.forEach(function (kid) {
+            if (kid && kid.id) void deleteCloudChild(kid.id);
+          });
+          return result;
+        }
+        if (result) void upsertCloudChild(result);
+        return result;
+      };
+    }
+    if (typeof origRemove === "function") {
+      d.removeChild = function (id) {
+        var result = origRemove(id);
+        if (id) void deleteCloudChild(id);
+        return result;
+      };
+    }
+    d.__cloudKidsWrapped = true;
   }
 
   function cleanLead(value) {
@@ -3654,9 +3941,9 @@
       voiceId: voiceId,
       modelId: h.modelId || "higgs-tts-3",
       responseFormat: h.responseFormat || "pcm",
-      temperature: Number.isFinite(Number(h.temperature)) ? Number(h.temperature) : 0.9,
+      temperature: Number.isFinite(Number(h.temperature)) ? Number(h.temperature) : 0.75,
       maxNewTokens: Number.isFinite(Number(h.maxNewTokens)) ? Number(h.maxNewTokens) : 2047,
-      topK: Number.isFinite(Number(h.topK)) ? Number(h.topK) : 0,
+      topK: Number.isFinite(Number(h.topK)) ? Number(h.topK) : 50,
       topP: Number.isFinite(Number(h.topP)) ? Number(h.topP) : 0.95,
       languageCode: lang,
       speakingRate: Number.isFinite(Number(h.speakingRate)) ? Number(h.speakingRate) : 1,
@@ -3937,7 +4224,7 @@
 
   function voiceTrashIcon() {
     return (
-      '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v10h-2V9zm4 0h2v10h-2V9zM7 9h2v10H7V9z"/></svg>'
+      '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M9 3a1 1 0 0 0-1 1v1H4.75a.75.75 0 0 0 0 1.5h14.5a.75.75 0 0 0 0-1.5H16V4a1 1 0 0 0-1-1H9zm1.5 1.5h3V5h-3V4.5zM7.75 8.25a.75.75 0 0 1 .75.75v9.5a.75.75 0 0 0 .75.75h5.5a.75.75 0 0 0 .75-.75V9a.75.75 0 0 1 1.5 0v9.5A2.25 2.25 0 0 1 14.75 20.75h-5.5A2.25 2.25 0 0 1 7 18.5V9a.75.75 0 0 1 .75-.75zm2.5 2a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75zm3 0a.75.75 0 0 1 .75.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 .75-.75z"/></svg>'
     );
   }
 
@@ -4073,14 +4360,15 @@
           "</p>"
         : "") +
       "</div>" +
-      deleteBtn +
       '<button type="button" class="dash-voice-use" data-use="' +
       escapeHtml(opts.id) +
       '"' +
       (opts.cloneVoiceId ? ' data-use-clone="' + escapeHtml(opts.cloneVoiceId) + '"' : "") +
       ">" +
       escapeHtml(opts.useLabel) +
-      "</button></div>"
+      "</button>" +
+      deleteBtn +
+      "</div>"
     );
   }
 
@@ -4465,6 +4753,7 @@
   }
 
   function showPanel(name) {
+    closeVoicePick();
     document.querySelectorAll(".dash-panel").forEach(function (el) {
       el.hidden = el.id !== "panel-" + name;
       el.classList.toggle("is-on", !el.hidden);
@@ -4642,10 +4931,72 @@
       .trim();
   }
 
+  function coverLoadingLabel() {
+    var lang = uiLang();
+    if (lang === "hy") return "Ստեղծում եմ շապիկը…";
+    if (lang === "ru") return "Создаём обложку…";
+    return "Creating cover…";
+  }
+
+  function setReaderCoverState(story) {
+    var wrap = document.getElementById("dash-reader-cover-wrap");
+    var cover = document.getElementById("dash-reader-cover");
+    var loading = document.getElementById("dash-reader-cover-loading");
+    var label = document.getElementById("dash-reader-cover-loading-label");
+    var url = story && String(story.cover || "").trim();
+    var pending = !!(story && story.coverPending);
+    if (wrap) wrap.hidden = !(pending || url);
+    if (label) label.textContent = coverLoadingLabel();
+    if (loading) loading.hidden = !pending;
+    if (cover) {
+      if (url && !pending) {
+        if (cover.getAttribute("src") !== url) cover.src = url;
+        cover.hidden = false;
+      } else {
+        cover.removeAttribute("src");
+        cover.hidden = true;
+      }
+    }
+  }
+
+  function patchStoryCover(storyId, coverUrl, options) {
+    var opts = options || {};
+    var id = storyIdKey(storyId);
+    if (!id) return;
+    var cover = String(coverUrl || "").trim();
+    var pending = !!opts.pending && !cover;
+    var list = readLocalStories().map(function (item) {
+      if (storyIdKey(item.id) !== id) return item;
+      return Object.assign({}, item, {
+        cover: cover || "",
+        coverPending: pending,
+      });
+    });
+    writeStories(list);
+    cloudStoriesCache = cloudStoriesCache.map(function (item) {
+      if (storyIdKey(item.id) !== id) return item;
+      return Object.assign({}, item, {
+        cover: cover || "",
+        coverPending: pending,
+      });
+    });
+    var updated = list.find(function (item) {
+      return storyIdKey(item.id) === id;
+    });
+    if (activeReaderStory && storyIdKey(activeReaderStory.id) === id) {
+      activeReaderStory = Object.assign({}, activeReaderStory, {
+        cover: cover || "",
+        coverPending: pending,
+      });
+      setReaderCoverState(activeReaderStory);
+    }
+    paintLibrary();
+    if (updated && cover) void upsertCloudStory(updated);
+  }
+
   function openStory(story) {
     var listWrap = document.getElementById("dash-library-list");
     var reader = document.getElementById("dash-reader");
-    var cover = document.getElementById("dash-reader-cover");
     var title = document.getElementById("dash-reader-title");
     var body = document.getElementById("dash-reader-body");
     var note = document.getElementById("dash-reader-note");
@@ -4654,7 +5005,7 @@
     var merged = readStories().find(function (item) {
       return storyIdKey(item.id) === storyIdKey(story.id);
     });
-    if (merged) story = merged;
+    if (merged) story = Object.assign({}, merged, story);
     var audioUrl = storyVoiceoverUrl(story);
     if (audioUrl && story.voiceoverUrl !== audioUrl) {
       story = Object.assign({}, story, { voice: true, voiceoverUrl: audioUrl });
@@ -4672,15 +5023,7 @@
     if (title) title.textContent = story.title || "Untitled story";
     if (body) body.textContent = formatReaderBody(story.body || "");
     applyReaderFont();
-    if (cover) {
-      if (story.cover) {
-        cover.src = story.cover;
-        cover.hidden = false;
-      } else {
-        cover.removeAttribute("src");
-        cover.hidden = true;
-      }
-    }
+    setReaderCoverState(story);
     if (summary) {
       summary.innerHTML = storySummaryHtml(story);
       summary.hidden = !summary.innerHTML;
@@ -4719,12 +5062,6 @@
         window.setTimeout(function () { button.textContent = previous; }, 1600);
       }).catch(function () {});
     }
-  }
-
-  function createAnotherStory() {
-    closeReader();
-    window.dispatchEvent(new CustomEvent("nanik:create-new"));
-    showPanel("create");
   }
 
   function wireReaderChrome() {
@@ -4768,6 +5105,12 @@
       var el = document.getElementById(id);
       if (el) el.addEventListener("click", onMusicClick);
     });
+    var readerScroll = document.querySelector("#dash-reader .dash-reader-scroll");
+    if (readerScroll) {
+      readerScroll.addEventListener("click", function () {
+        hideReaderVolume();
+      });
+    }
     if (slider) {
       slider.value = String(volumeToProgress(readerMusicVolume));
       slider.addEventListener("input", function () {
@@ -4791,11 +5134,6 @@
     var pack = ui();
     var en = COPY.en;
     var rows = [
-      {
-        icon: "person",
-        label: pack.summaryHeroLabel || en.summaryHeroLabel,
-        value: storyHeroText(story),
-      },
       {
         icon: "location",
         label: pack.summarySettingLabel || en.summarySettingLabel,
@@ -4880,7 +5218,11 @@
       .map(function (story, index) {
         var img = story.cover
           ? '<img src="' + escapeHtml(story.cover) + '" alt="">'
-          : '<div class="dash-story-cover-ph"></div>';
+          : story.coverPending
+            ? '<div class="dash-story-cover-ph is-loading" aria-label="' +
+              escapeHtml(coverLoadingLabel()) +
+              '"></div>'
+            : '<div class="dash-story-cover-ph"></div>';
         var summary = storySummaryHtml(story);
         var divider =
           index + 1 < list.length ? '<div class="dash-story-divider" aria-hidden="true"></div>' : "";
@@ -6747,7 +7089,7 @@
     if (plan) {
       payload.audience = { age: (plan.audience && plan.audience.age) || answers.age || null };
       payload.child = {
-        gender: (plan.child && plan.child.gender) || "",
+        gender: (plan.child && plan.child.gender) || answers.childGender || "",
         interests: (plan.child && Array.isArray(plan.child.interests)) ? plan.child.interests : [],
       };
       payload.storyKind = plan.storyKind || "custom";
@@ -6756,7 +7098,13 @@
         value: (plan.direction && plan.direction.answer) || "",
         source: (plan.direction && plan.direction.source) || "selection",
       };
-      payload.hero = plan.hero || {};
+      payload.hero = Object.assign({}, plan.hero || {});
+      if (/child|kid/i.test(String(payload.hero.mode || answers.heroKind || ""))) {
+        payload.hero.mode = "child";
+        payload.hero.characterType = payload.hero.characterType || "human child";
+        payload.hero.description = payload.hero.description ||
+          humanChildHeroLabel(payload.child.gender || answers.childGender);
+      }
       payload.additionalContext = plan.additionalContext || "";
       return payload;
     }
@@ -6778,6 +7126,8 @@
     payload.hero = {
       mode: heroMode,
       name: answers.heroName || answers.childName || "",
+      characterType: heroMode === "child" ? "human child" : "",
+      description: heroMode === "child" ? humanChildHeroLabel(answers.childGender) : "",
       photoProvided: !!answers.image,
       interests: commaList(answers.likes),
     };
@@ -6857,30 +7207,167 @@
     }).catch(function () {});
   }
 
-  function generateCover(imagePrompt, imageDataUrl) {
+  /**
+   * Writer returns a short English cover beat only. This assembler builds the final fal
+   * prompt as Style → Scene → Composition (same contract as the app).
+   */
+  var ILLUSTRATION_ART_STYLE =
+    "Authentic claymation stop-motion film still, whimsical character design. Tactile polymer clay and plasticine, sculpted with visible fingerprints, surface imperfections, and soft smudges. Handcrafted miniature diorama set with real-world materials. Shot with macro photography, shallow depth of field (bokeh), and cinematic miniature studio lighting";
+  var ILLUSTRATION_COMPOSITION_DEFAULT = "dynamic action shot, sense of the action";
+  var HERO_REFERENCE_FACE_PHRASE = "with the face of the reference image";
+
+  function normalizePromptText(text) {
+    return String(text || "").replace(/\s+/g, " ").trim();
+  }
+
+  function resolvedChildGender() {
+    var plan = answers.summaryPlan;
+    var fromPlan = plan && plan.child && plan.child.gender;
+    return String(answers.childGender || fromPlan || "").trim().toLowerCase();
+  }
+
+  /** Kid-as-hero covers must stay a human child with the right gender — never an animal/toy morph. */
+  function humanChildHeroLabel(gender) {
+    var g = String(gender || "").trim().toLowerCase();
+    if (g === "girl") return "a human girl";
+    if (g === "boy") return "a human boy";
+    return "a human child";
+  }
+
+  function isKidHeroKind(kind) {
+    return /^(kid|child)$/i.test(String(kind || "").trim());
+  }
+
+  function illustrationSummaryHero() {
+    if (isKidHeroKind(answers.heroKind)) {
+      return humanChildHeroLabel(resolvedChildGender());
+    }
+    var plan = answers.summaryPlan;
+    if (plan && plan.hero && /child/i.test(String(plan.hero.mode || ""))) {
+      return humanChildHeroLabel(resolvedChildGender());
+    }
+    return answers.heroName || answers.childName || "a kind child";
+  }
+
+  function heroLabelForScene(summaryHero, hasPhoto) {
+    var label = normalizePromptText(summaryHero)
+      .replace(/\bthe hero\b/gi, "")
+      .replace(/\bhero\b/gi, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+    if (!label) label = "a child";
+    if (!/^(a|an|the)\s+/i.test(label)) {
+      label = /^[aeiou]/i.test(label) ? "an " + label : "a " + label;
+    }
+    if (hasPhoto && !new RegExp(HERO_REFERENCE_FACE_PHRASE, "i").test(label)) {
+      return label + " " + HERO_REFERENCE_FACE_PHRASE;
+    }
+    return label;
+  }
+
+  function actionFromCoverBeat(beat) {
+    var cleaned = normalizePromptText(beat)
+      .replace(/^cinematic,?\s*wide-angle\s*movie\s*still\.?\s*/i, "")
+      .replace(/\b(claymation|stop-motion|watercolor|composition|camera|lens|bokeh|no text)\b/gi, "")
+      .replace(/,?\s*[\w\s-]+\s+emotion[.!]?$/i, "")
+      .trim();
+    cleaned = cleaned.replace(
+      /^(?:a|an|the)\s+[\w'-]+(?:\s+[\w'-]+){0,3}\s+(?=(?:is|are|was|were)\s+\w+|[\w'-]+ing\b)/i,
+      ""
+    );
+    cleaned = cleaned.replace(/^(?:is|are|was|were)\s+/i, "");
+    cleaned = normalizePromptText(cleaned).replace(/[.!]+$/, "");
+    return cleaned || "mid-action";
+  }
+
+  function emotionFromSupport(supportTheme) {
+    var lower = String(supportTheme || "").toLowerCase();
+    if (/\b(fear|afraid|scared|anxiety|anxious|worry|worried|nightmare)\b/i.test(lower)) return "Brave";
+    if (/\b(anger|angry|hit|hitting|rage|frustrat)\b/i.test(lower)) return "Calm";
+    if (/\b(sad|grief|loss|lonely|loneliness|miss)\b/i.test(lower)) return "Hopeful";
+    if (/\b(sleep|bedtime|night|rest)\b/i.test(lower)) return "Peaceful";
+    if (/\b(friend|share|kind|kindness|help)\b/i.test(lower)) return "Joyful";
+    if (/\b(curious|adventure|explore|brave)\b/i.test(lower)) return "Curious";
+    if (/\b(surpris|shock|awe|amaz)\b/i.test(lower)) return "Surprised";
+    if (lower) return "Warm";
+    return "Surprised";
+  }
+
+  function buildIllustrationPrompt(options) {
+    var hasPhoto = !!options.hasHeroReferencePhoto;
+    var hero = heroLabelForScene(options.summaryHero || "", hasPhoto);
+    var world = normalizePromptText(options.summaryWorld || "");
+    var action = actionFromCoverBeat(options.storyCoreAction || "");
+    var emotion = emotionFromSupport(options.supportTheme || "");
+    var scene = world
+      ? hero + " " + action + ", in " + world + ", " + emotion + " emotion"
+      : hero + " " + action + ", " + emotion + " emotion";
+    return normalizePromptText(
+      "Style: " + ILLUSTRATION_ART_STYLE +
+      " Scene: " + scene +
+      " Composition: " + ILLUSTRATION_COMPOSITION_DEFAULT
+    );
+  }
+
+  function coverBeatFallback(title, heroName) {
+    var who = normalizePromptText(heroName) || "a kind child";
+    var what = normalizePromptText(title) || "a gentle adventure";
+    return who + " discovering something wonderful in " + what;
+  }
+
+  function heroReferenceFromDataUrl(imageDataUrl) {
+    var src = String(imageDataUrl || "").trim();
+    var match = src.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+    if (!match) return null;
+    return {
+      base64: match[2],
+      mime: match[1] === "image/png" ? "image/png" : "image/jpeg",
+    };
+  }
+
+  function generateCover(assembledPrompt, imageDataUrl) {
+    var ref = heroReferenceFromDataUrl(imageDataUrl);
     var body = {
-      prompt:
-        "Claymation children's book cover, soft lighting, no text. " +
-        (imagePrompt || "A kind child hero in a magical bedtime world."),
+      prompt: assembledPrompt || buildIllustrationPrompt({
+        summaryHero: "a kind child",
+        storyCoreAction: "discovering something wonderful",
+        supportTheme: "",
+        hasHeroReferencePhoto: !!ref,
+      }),
       output_format: "jpeg",
     };
-    if (imageDataUrl && imageDataUrl.indexOf("base64,") !== -1) {
-      body.reference_image_base64 = imageDataUrl.split("base64,")[1];
-      body.reference_mime_type = "image/jpeg";
+    // Same contract as the app: fal-proxy switches to gemini-25-flash-image/edit
+    // and sends image_urls[0] when reference_image_base64 is present.
+    if (ref) {
+      body.reference_image_base64 = ref.base64;
+      body.reference_mime_type = ref.mime;
     }
+    console.log("[cover] fal generate-image", {
+      hasReference: !!ref,
+      promptChars: String(body.prompt || "").length,
+    });
     return fetch(supabaseUrl() + "/functions/v1/fal-proxy/generate-image", {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify(body),
     })
       .then(function (res) {
-        if (!res.ok) return null;
+        if (!res.ok) {
+          return res.text().then(function (text) {
+            console.warn("[cover] fal failed", res.status, String(text || "").slice(0, 240));
+            return null;
+          });
+        }
         return res.json();
       })
       .then(function (data) {
-        return (data && (data.imageUrl || data.url)) || "";
+        var url = (data && (data.imageUrl || data.url)) || "";
+        if (!url) console.warn("[cover] fal returned no imageUrl", data && data.model);
+        else console.log("[cover] fal ok", { model: data && data.model, requestId: data && data.requestId });
+        return url;
       })
-      .catch(function () {
+      .catch(function (err) {
+        console.warn("[cover] fal error", err);
         return "";
       });
   }
@@ -6907,10 +7394,23 @@
       })
       .then(function (result) {
         var serverStoryId = result && result.storyId ? String(result.storyId).trim() : "";
+        var coverBeat = String(result && result.imagePrompt || "").trim() ||
+          coverBeatFallback(
+            result && result.title,
+            answers.heroName || answers.childName
+          );
+        var hasPhoto = !!heroReferenceFromDataUrl(answers.image);
+        var assembledPrompt = buildIllustrationPrompt({
+          summaryHero: illustrationSummaryHero(),
+          summaryWorld: answers.setting || "",
+          storyCoreAction: coverBeat,
+          supportTheme: answers.support || "",
+          hasHeroReferencePhoto: hasPhoto,
+        });
         var parsed = {
           title: String(result && result.title || "Your story"),
           body: formatReaderBody(String(result && result.story || "")),
-          imagePrompt: "Claymation children's book cover for " + String(result && result.title || answers.idea || "a gentle story") + ". Hero: " + String(answers.heroName || answers.childName || "a kind child hero") + ".",
+          imagePrompt: assembledPrompt,
         };
         var candidate = {
           id: serverStoryId || "web_" + Date.now(),
@@ -6924,43 +7424,44 @@
           checkErr.storyCheckFailed = true;
           throw checkErr;
         }
-        setPin(t().status[4], false);
-        notifyGuidedCreate("status", "illustrating");
-        return generateCover(parsed.imagePrompt, answers.image).then(function (cover) {
-          var story = {
-            id: candidate.id,
-            title: parsed.title,
-            body: parsed.body,
-            cover: cover || answers.image || "",
-            voice: !!answers.voice,
-            heroName: answers.heroName || "",
-            childName: answers.childName || "",
-            setting: answers.setting || "",
-            helpsWith: answers.support || "",
-            createdAt: new Date().toISOString(),
-          };
-          var list = readLocalStories().filter(function (item) {
-            return storyIdKey(item.id) !== storyIdKey(story.id);
-          });
-          list.unshift(story);
-          writeStories(list);
-          cloudStoriesCache = [story].concat(
-            cloudStoriesCache.filter(function (item) {
-              return storyIdKey(item.id) !== storyIdKey(story.id);
-            })
-          );
-          paintLibrary();
-          // The job already wrote user_stories; upsert the same id only to attach cover.
-          void upsertCloudStory(story);
-          void refreshQuotaStatus();
-          if (draft().setPrompt) draft().setPrompt("");
-          step = "done";
-          setPin(t().readyLibrary, true);
-          if (answers.voice != null) clearSuggest();
-          notifyGuidedCreate("complete", story);
-          guidedCreateHooks = null;
-          return story;
+        var story = {
+          id: candidate.id,
+          title: parsed.title,
+          body: parsed.body,
+          cover: "",
+          coverPending: true,
+          voice: !!answers.voice,
+          heroName: answers.heroName || "",
+          childName: answers.childName || "",
+          setting: answers.setting || "",
+          helpsWith: answers.support || "",
+          createdAt: new Date().toISOString(),
+        };
+        var list = readLocalStories().filter(function (item) {
+          return storyIdKey(item.id) !== storyIdKey(story.id);
         });
+        list.unshift(story);
+        writeStories(list);
+        cloudStoriesCache = [story].concat(
+          cloudStoriesCache.filter(function (item) {
+            return storyIdKey(item.id) !== storyIdKey(story.id);
+          })
+        );
+        paintLibrary();
+        void upsertCloudStory(story);
+        void refreshQuotaStatus();
+        if (draft().setPrompt) draft().setPrompt("");
+        step = "done";
+        setPin(t().readyLibrary, true);
+        if (answers.voice != null) clearSuggest();
+        // Open the reader as soon as the text is ready; paint cover in the background.
+        notifyGuidedCreate("complete", story);
+        guidedCreateHooks = null;
+        generateCover(parsed.imagePrompt, answers.image).then(function (cover) {
+          if (cover) patchStoryCover(story.id, cover);
+          else patchStoryCover(story.id, "", { pending: false });
+        });
+        return story;
       })
       .catch(function (err) {
         if (err && err.name === "AbortError") {
@@ -7208,6 +7709,11 @@
         : null;
       answers.idea = String(payload.idea || "").trim() || "A gentle bedtime story.";
       answers.childName = String(payload.childName || "").trim();
+      answers.childGender = String(
+        payload.childGender
+        || (payload.summaryPlan && payload.summaryPlan.child && payload.summaryPlan.child.gender)
+        || ""
+      ).trim().toLowerCase();
       answers.age = parseAge(payload.age);
       answers.lang = String(payload.lang || "en").toLowerCase();
       answers.heroKind = String(payload.heroKind || "imaginary");
@@ -7287,6 +7793,14 @@
     }
     var readerBack = document.getElementById("dash-reader-back");
     if (readerBack) readerBack.addEventListener("click", closeReader);
+    var voicePickClose = document.getElementById("dash-voice-pick-close");
+    var voicePickBackdrop = document.getElementById("dash-voice-pick-backdrop");
+    if (voicePickClose) voicePickClose.addEventListener("click", closeVoicePick);
+    if (voicePickBackdrop) voicePickBackdrop.addEventListener("click", closeVoicePick);
+    document.addEventListener("keydown", function (ev) {
+      var modal = document.getElementById("dash-voice-pick");
+      if (ev.key === "Escape" && modal && !modal.hidden) closeVoicePick();
+    });
     var readerVoice = document.getElementById("dash-reader-voice");
     if (readerVoice) {
       readerVoice.addEventListener("click", function () {
@@ -7354,8 +7868,6 @@
         setVoiceoverPlaybackRate(playbackRateFromSliderIndex(speedSlider.value));
       });
     }
-    var readerCreateAnother = document.getElementById("dash-reader-create-another");
-    if (readerCreateAnother) readerCreateAnother.addEventListener("click", createAnotherStory);
     wireReaderChrome();
 
     var form = document.getElementById("dash-composer");
@@ -7437,11 +7949,13 @@
         })
         .catch(function () {});
     }
+    wrapChildDraftCloudSync();
     showWelcome();
     paintThumbs();
     setFilled();
     setPlaceholder();
     void refreshCloudLibrary();
+    void refreshCloudChildren();
     window.addEventListener("nanik:langchange", function () {
       paintChrome();
       paintVoices();

@@ -1353,9 +1353,9 @@
     var topK = Number(h.topK);
     var topP = Number(h.topP);
     var maxNewTokens = Number(h.maxNewTokens);
-    // Fallbacks must match src/constants/higgsNarration.ts (not older lab presets).
-    if (!Number.isFinite(temperature)) temperature = 0.9;
-    if (!Number.isFinite(topK)) topK = 0;
+    // Fallbacks must match nanik-api-config.js higgs defaults.
+    if (!Number.isFinite(temperature)) temperature = 0.75;
+    if (!Number.isFinite(topK)) topK = 50;
     if (!Number.isFinite(topP)) topP = 0.95;
     if (!Number.isFinite(maxNewTokens)) maxNewTokens = 2047;
     return {

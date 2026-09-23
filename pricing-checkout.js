@@ -566,7 +566,7 @@
     )
       .then(function (data) {
         if (!data || !data.portalUrl) throw new Error("Portal URL missing");
-        window.location.href = data.portalUrl;
+        window.location.assign(data.portalUrl);
         return data;
       })
       .catch(function (err) {
@@ -632,6 +632,10 @@
   var paywallEl = null;
   var paywallSelected = "yearly";
   var paywallStep = "plans";
+  var paywallMode = "";
+  var paywallCheckoutPlan = "";
+  var paywallStoryCta = "Unlock the story";
+  var paywallStoryPrice = "$1.99";
   var paywallInlineBusy = false;
   var PAYWALL_PLANS = {
     monthly: {
@@ -649,7 +653,7 @@
       perMonth: "5.00$",
       strikeMonthly: "9.99$",
       savings: 50,
-      trialDays: 3,
+      trialDays: 7,
       trial: true,
     },
   };
@@ -662,51 +666,66 @@
     style.textContent = [
       ".nanik-paywall{position:fixed;inset:0;z-index:6859500;display:flex;align-items:stretch;justify-content:center;background:#9869FF}",
       ".nanik-paywall[hidden]{display:none!important}",
-      ".nanik-paywall-shell{position:relative;width:min(100%,480px);margin:0 auto;min-height:100%;min-height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#9869FF}",
-      ".nanik-paywall-shell.is-pay{height:100%;height:100dvh;max-height:100dvh;justify-content:stretch;overflow:hidden}",
+      ".nanik-paywall-shell{position:relative;width:min(100%,480px);margin:0 auto;height:100%;height:100dvh;max-height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#9869FF}",
+      ".nanik-paywall-shell.is-pay{justify-content:stretch}",
       ".nanik-paywall-bg{position:absolute;inset:0;background:#9869FF}",
       ".nanik-paywall-scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(152,105,255,.12) 0%,rgba(72,40,140,.28) 45%,rgba(40,18,90,.62) 100%)}",
-      ".nanik-paywall-top{position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:max(52px,calc(env(safe-area-inset-top) + 36px)) 22px 8px;flex-shrink:0}",
+      ".nanik-paywall-top{position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:max(16px,calc(env(safe-area-inset-top) + 12px)) 20px 4px;flex-shrink:0}",
       ".nanik-paywall-shell.is-pay .nanik-paywall-top{padding:max(14px,calc(env(safe-area-inset-top) + 10px)) 16px 8px;align-items:center}",
-      ".nanik-paywall-title{margin:0;max-width:14ch;color:#fff;font:800 34px/1.15 ui-rounded,system-ui,sans-serif;letter-spacing:-.03em}",
+      ".nanik-paywall-title{margin:0;max-width:16ch;color:#fff;font:800 24px/1.15 ui-rounded,system-ui,sans-serif;letter-spacing:-.03em}",
       ".nanik-paywall-shell.is-pay .nanik-paywall-title{max-width:none;flex:1;font:800 18px/1.25 ui-rounded,system-ui,sans-serif;letter-spacing:-.02em}",
-      ".nanik-paywall-close{appearance:none;width:36px;height:36px;border:0;border-radius:18px;background:rgba(0,0,0,.35);color:#fff;font:700 22px/1 system-ui,sans-serif;cursor:pointer;flex-shrink:0;margin-top:2px}",
+      ".nanik-paywall-close{appearance:none;width:36px;height:36px;border:0;border-radius:18px;background:rgba(0,0,0,.35);color:#fff;font:700 22px/1 system-ui,sans-serif;cursor:pointer;flex-shrink:0;margin-top:0}",
       ".nanik-paywall-shell.is-pay .nanik-paywall-close{margin-top:0}",
-      ".nanik-paywall-hero{position:relative;z-index:1;flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:120px;padding:8px 24px;pointer-events:none}",
+      ".nanik-paywall-hero{position:relative;z-index:1;flex:0 1 auto;display:flex;align-items:center;justify-content:center;min-height:0;max-height:min(22vh,140px);padding:4px 20px;pointer-events:none}",
       ".nanik-paywall-shell.is-pay .nanik-paywall-hero{display:none}",
-      ".nanik-paywall-hero img{display:block;width:min(52vw,220px);height:auto;max-height:min(34vh,240px);object-fit:contain;filter:drop-shadow(0 0 18px rgba(255,214,90,.45)) drop-shadow(0 12px 28px rgba(0,0,0,.35));animation:nanik-paywall-gift 3.2s ease-in-out infinite}",
+      ".nanik-paywall-hero img{display:block;width:min(36vw,140px);height:auto;max-height:min(20vh,130px);object-fit:contain;filter:drop-shadow(0 0 18px rgba(255,214,90,.45)) drop-shadow(0 12px 28px rgba(0,0,0,.35));animation:nanik-paywall-gift 3.2s ease-in-out infinite}",
       "@keyframes nanik-paywall-gift{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 14px rgba(255,214,90,.38)) drop-shadow(0 12px 28px rgba(0,0,0,.35))}50%{transform:translateY(-6px) scale(1.04);filter:drop-shadow(0 0 26px rgba(255,214,90,.7)) drop-shadow(0 14px 32px rgba(0,0,0,.4))}}",
       "@media(prefers-reduced-motion:reduce){.nanik-paywall-hero img{animation:none}}",
-      ".nanik-paywall-dock{position:relative;z-index:2;padding:12px 24px max(28px,env(safe-area-inset-bottom));animation:nanik-paywall-up .45s ease;flex-shrink:0}",
-      ".nanik-paywall-shell.is-pay .nanik-paywall-dock{flex:1;display:flex;flex-direction:column;min-height:0;padding:0 12px max(10px,env(safe-area-inset-bottom));animation:none}",
+      ".nanik-paywall-dock{position:relative;z-index:2;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;padding:8px 20px max(16px,env(safe-area-inset-bottom));animation:nanik-paywall-up .45s ease}",
+      ".nanik-paywall-shell.is-pay .nanik-paywall-dock{flex:1;padding:0 12px max(10px,env(safe-area-inset-bottom));animation:none}",
       "@keyframes nanik-paywall-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}",
-      ".nanik-paywall-trial-badge{display:inline-flex;align-items:center;gap:6px;margin:0 0 12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font:700 13px/1.2 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-trial-badge{display:inline-flex;align-items:center;gap:6px;margin:0 0 8px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font:700 12px/1.2 ui-rounded,system-ui,sans-serif;flex-shrink:0}",
       ".nanik-paywall-trial-badge[hidden]{display:none!important}",
-      ".nanik-paywall-status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff}",
+      ".nanik-paywall-status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;flex-shrink:0}",
       ".nanik-paywall-status[hidden]{display:none!important}",
       ".nanik-paywall-status-copy{display:grid;gap:2px;min-width:0}",
       ".nanik-paywall-status-label{font:650 12px/1.2 ui-rounded,system-ui,sans-serif;opacity:.78}",
-      ".nanik-paywall-status-value{font:800 16px/1.2 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-status-value{font:800 15px/1.2 ui-rounded,system-ui,sans-serif}",
       ".nanik-paywall-status-pill{flex-shrink:0;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.16);font:800 11px/1 ui-rounded,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase}",
       ".nanik-paywall-status-pill.is-free{background:rgba(255,229,102,.22);color:#ffe566}",
-      ".nanik-paywall-benefits{display:grid;gap:10px;margin:0 0 16px}",
-      ".nanik-paywall-benefit{display:flex;align-items:center;gap:10px;color:#fff;font:600 15px/1.25 ui-rounded,system-ui,sans-serif}",
-      ".nanik-paywall-ico{width:32px;height:32px;border-radius:16px;background:rgba(0,0,0,.28);display:grid;place-items:center;flex-shrink:0;color:#ffe566}",
-      ".nanik-paywall-ico svg{width:16px;height:16px}",
-      ".nanik-paywall-plans{display:grid;gap:10px;margin:0 0 14px}",
-      ".nanik-paywall-plan{appearance:none;width:100%;text-align:left;border:1.5px solid rgba(255,255,255,.22);border-radius:18px;background:rgba(0,0,0,.36);color:#fff;padding:14px 16px;cursor:pointer;font:inherit}",
-      ".nanik-paywall-plan.is-on{border-color:#d946ef;background:rgba(217,70,239,.28)}",
-      ".nanik-paywall-plan-row{display:flex;align-items:center;justify-content:space-between;gap:10px}",
-      ".nanik-paywall-plan-label{font:800 16px/1.2 ui-rounded,system-ui,sans-serif}",
-      ".nanik-paywall-plan-price{font:800 18px/1.1 ui-rounded,system-ui,sans-serif}",
-      ".nanik-paywall-save{display:inline-flex;margin-left:8px;padding:2px 8px;border-radius:999px;background:#d946ef;color:#fff;font:800 11px/1.2 ui-rounded,system-ui,sans-serif;vertical-align:middle}",
-      ".nanik-paywall-plan-meta{margin-top:6px;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;font:600 13px/1.2 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-step[data-paywall-step=plans]{flex:1;min-height:0;display:flex;flex-direction:column}",
+      ".nanik-paywall-benefits{display:grid;gap:8px;margin:0 0 10px;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch}",
+      ".nanik-paywall-benefit{display:flex;align-items:center;gap:8px;color:#fff;font:600 14px/1.25 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-ico{width:28px;height:28px;border-radius:14px;background:rgba(0,0,0,.28);display:grid;place-items:center;flex-shrink:0;color:#ffe566}",
+      ".nanik-paywall-ico svg{width:14px;height:14px}",
+      ".nanik-paywall-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;flex-shrink:0;align-items:stretch}",
+      ".nanik-paywall-plan{appearance:none;width:100%;min-height:118px;text-align:left;border:1.5px solid rgba(255,255,255,.22);border-radius:18px;background:rgba(0,0,0,.36);color:#fff;padding:14px 12px;cursor:pointer;font:inherit;display:flex;flex-direction:column;gap:6px;box-sizing:border-box;overflow:hidden}",
+      ".nanik-paywall-plan.is-on{border-color:#d946ef;background:rgba(217,70,239,.28);box-shadow:0 0 0 1px rgba(217,70,239,.45)}",
+      ".nanik-paywall-plan.is-yearly{padding:0;gap:0}",
+      ".nanik-paywall-plan-banner{display:flex;align-items:center;justify-content:center;width:100%;min-height:28px;padding:6px 10px;background:#d946ef;color:#fff;font:800 12px/1 ui-rounded,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;box-sizing:border-box}",
+      ".nanik-paywall-plan.is-on .nanik-paywall-plan-banner{background:#e879f9}",
+      ".nanik-paywall-plan.is-yearly .nanik-paywall-plan-body{display:flex;flex-direction:column;gap:6px;flex:1;padding:12px;box-sizing:border-box}",
+      ".nanik-paywall-plan-row{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px}",
+      ".nanik-paywall-plan-label{font:800 14px/1.2 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-plan-price{font:800 22px/1.05 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-save{display:inline-flex;margin:0;padding:3px 8px;border-radius:999px;background:#d946ef;color:#fff;font:800 10px/1.2 ui-rounded,system-ui,sans-serif;vertical-align:middle}",
+      ".nanik-paywall-plan-meta{margin-top:auto;display:flex;flex-direction:column;flex-wrap:nowrap;align-items:flex-start;gap:2px;font:600 11px/1.25 ui-rounded,system-ui,sans-serif}",
       ".nanik-paywall-strike{color:rgba(255,255,255,.55);text-decoration:line-through}",
       ".nanik-paywall-gold{color:#ffe566}",
-      ".nanik-paywall-plan-trial{margin-top:4px;color:rgba(255,255,255,.82);font:650 12px/1.2 ui-rounded,system-ui,sans-serif}",
-      ".nanik-paywall-cta{appearance:none;width:100%;min-height:52px;border:0;border-radius:999px;background:#fff;color:#181818;font:800 17px/1.1 ui-rounded,system-ui,sans-serif;cursor:pointer}",
+      ".nanik-paywall-plan-trial{margin-top:2px;color:rgba(255,255,255,.82);font:650 11px/1.25 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-story{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;margin:4px 0 12px}",
+      ".nanik-paywall-story[hidden]{display:none!important}",
+      ".nanik-paywall-story .guided-plan-cards{margin:0}",
+      ".nanik-paywall-or{margin:0 0 8px;color:#fff;font:700 14px/1.35 ui-rounded,system-ui,sans-serif;text-align:center;flex-shrink:0}",
+      ".nanik-paywall-or[hidden]{display:none!important}",
+      ".nanik-paywall-shell.is-story .nanik-paywall-hero,.nanik-paywall-shell.is-story .nanik-paywall-benefits,.nanik-paywall-shell.is-story .nanik-paywall-trial-badge{display:none!important}",
+      ".nanik-paywall-shell.is-story .nanik-paywall-title{max-width:none}",
+      ".nanik-paywall-cta{appearance:none;width:100%;min-height:50px;border:0;border-radius:999px;background:#fff;color:#181818;font:800 16px/1.1 ui-rounded,system-ui,sans-serif;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:12px}",
+      ".nanik-paywall-shell.is-story .nanik-paywall-cta{justify-content:space-between;padding:0 22px}",
+      ".nanik-paywall-cta-price{font:800 16px/1 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-cta-price[hidden]{display:none!important}",
       ".nanik-paywall-cta[aria-busy=true]{opacity:.7;cursor:wait}",
-      ".nanik-paywall-legal{margin:12px 0 0;text-align:center;color:rgba(255,255,255,.78);font:500 12px/1.4 ui-rounded,system-ui,sans-serif}",
+      ".nanik-paywall-legal{margin:8px 0 0;text-align:center;color:rgba(255,255,255,.78);font:500 11px/1.4 ui-rounded,system-ui,sans-serif;flex-shrink:0}",
       ".nanik-paywall-legal a{color:rgba(255,255,255,.9);text-decoration:none}",
       ".nanik-paywall-legal span{opacity:.45;margin:0 6px}",
       ".nanik-paywall-step[hidden]{display:none!important}",
@@ -721,7 +740,9 @@
       ".nanik-paywall-checkout-status[hidden]{display:none!important}",
       ".nanik-paywall-checkout-status p{margin:0;max-width:280px;font:600 15px/1.4 ui-rounded,system-ui,sans-serif}",
       ".nanik-paywall-checkout-status button{appearance:none;border:0;border-radius:999px;padding:10px 16px;background:#1c1630;color:#fff;font:700 13px/1.2 ui-rounded,system-ui,sans-serif;cursor:pointer}",
-      "@media(min-width:720px){.nanik-paywall{align-items:center;padding:24px;background:rgba(152,105,255,.55);backdrop-filter:blur(10px)}.nanik-paywall-shell{min-height:min(820px,92dvh);border-radius:28px;box-shadow:0 24px 80px rgba(72,40,140,.45)}.nanik-paywall-shell.is-pay{min-height:min(860px,94dvh);height:min(860px,94dvh);max-height:94dvh}.nanik-paywall-title{font-size:38px;max-width:15ch}.nanik-paywall-shell.is-pay .nanik-paywall-title{font-size:18px}.nanik-paywall-checkout-card{border-radius:18px}.nanik-paywall-dodo>div,.nanik-paywall-dodo iframe{min-height:640px!important}}",
+      "@media(max-height:700px){.nanik-paywall-title{font-size:22px}.nanik-paywall-hero{max-height:min(16vh,108px)}.nanik-paywall-hero img{width:min(30vw,112px);max-height:min(14vh,96px)}.nanik-paywall-benefit{font-size:13px}.nanik-paywall-benefits{gap:6px}.nanik-paywall-plan{min-height:104px;padding:12px 10px}.nanik-paywall-plan.is-yearly{padding:0}.nanik-paywall-plan.is-yearly .nanik-paywall-plan-body{padding:10px}.nanik-paywall-plan-banner{min-height:26px;font-size:11px}.nanik-paywall-plan-price{font-size:20px}.nanik-paywall-cta{min-height:48px}}",
+      "@media(max-height:620px){.nanik-paywall-title{font-size:20px;max-width:18ch}.nanik-paywall-top{padding-top:max(10px,calc(env(safe-area-inset-top) + 8px));padding-bottom:2px}.nanik-paywall-hero{max-height:min(12vh,80px);padding:2px 16px}.nanik-paywall-hero img{width:min(26vw,88px);max-height:min(11vh,72px)}.nanik-paywall-dock{padding-left:16px;padding-right:16px}.nanik-paywall-benefits{gap:5px;margin-bottom:8px}.nanik-paywall-benefit{font-size:12px;gap:6px}.nanik-paywall-ico{width:24px;height:24px;border-radius:12px}.nanik-paywall-ico svg{width:12px;height:12px}.nanik-paywall-plans{gap:8px;margin-bottom:8px}.nanik-paywall-plan{min-height:96px;padding:10px 8px;border-radius:16px}.nanik-paywall-plan.is-yearly{padding:0}.nanik-paywall-plan.is-yearly .nanik-paywall-plan-body{padding:8px}.nanik-paywall-plan-banner{min-height:24px;padding:5px 8px;font-size:11px}.nanik-paywall-plan-label{font-size:13px}.nanik-paywall-plan-price{font-size:18px}.nanik-paywall-cta{min-height:46px;font-size:15px}.nanik-paywall-legal{margin-top:6px;font-size:10px}}",
+      "@media(min-width:720px){.nanik-paywall{align-items:center;padding:24px;background:rgba(152,105,255,.55);backdrop-filter:blur(10px)}.nanik-paywall-shell{height:min(820px,92dvh);max-height:92dvh;border-radius:28px;box-shadow:0 24px 80px rgba(72,40,140,.45)}.nanik-paywall-shell.is-pay{height:min(860px,94dvh);max-height:94dvh}.nanik-paywall-title{font-size:28px;max-width:15ch}.nanik-paywall-shell.is-pay .nanik-paywall-title{font-size:18px}.nanik-paywall-hero{max-height:min(24vh,160px)}.nanik-paywall-hero img{width:min(28vw,160px);max-height:min(22vh,150px)}.nanik-paywall-checkout-card{border-radius:18px}.nanik-paywall-dodo>div,.nanik-paywall-dodo iframe{min-height:640px!important}}",
     ].join("");
     document.head.appendChild(style);
   }
@@ -789,6 +810,7 @@
     if (mount) mount.innerHTML = "";
     var cta = paywallEl && paywallEl.querySelector("[data-paywall-cta]");
     if (cta) cta.removeAttribute("aria-busy");
+    paywallCheckoutPlan = "";
     setPaywallStep("plans");
     renderPaywallPlans();
   }
@@ -797,6 +819,10 @@
     if (!paywallEl) return;
     var chip = paywallEl.querySelector("[data-paywall-plan-chip]");
     if (!chip) return;
+    if (paywallCheckoutPlan === "story") {
+      chip.textContent = paywallStoryCta + " · " + paywallStoryPrice;
+      return;
+    }
     var plan = PAYWALL_PLANS[paywallSelected] || PAYWALL_PLANS.yearly;
     chip.textContent =
       plan.label +
@@ -809,8 +835,9 @@
   function startPaywallInlineCheckout(planId) {
     if (!paywallEl || paywallInlineBusy) return Promise.resolve(null);
     paywallInlineBusy = true;
-    planId = planId === "monthly" ? "monthly" : "yearly";
-    paywallSelected = planId;
+    planId = planId === "monthly" || planId === "story" ? planId : "yearly";
+    if (planId !== "story") paywallSelected = planId;
+    paywallCheckoutPlan = planId;
     updatePaywallPlanChip();
     setPaywallStep("pay");
     setPaywallCheckoutLoading(true);
@@ -849,54 +876,64 @@
     var yearly = PAYWALL_PLANS.yearly;
     var plans = paywallEl.querySelector("[data-paywall-plans]");
     var badge = paywallEl.querySelector("[data-paywall-trial-badge]");
-    var cta = paywallEl.querySelector("[data-paywall-cta]");
     if (badge) {
-      var showBadge = paywallSelected === "yearly" && yearly.trial;
+      var showBadge = paywallMode !== "story" && paywallSelected === "yearly" && yearly.trial;
       badge.hidden = !showBadge;
       badge.textContent = yearly.trialDays + "-day free trial";
     }
     if (plans) {
+      var monthlyOn = paywallMode !== "story" && paywallSelected === "monthly";
+      var yearlyOn = paywallMode !== "story" && paywallSelected === "yearly";
       plans.innerHTML =
         '<button type="button" class="nanik-paywall-plan' +
-        (paywallSelected === "monthly" ? " is-on" : "") +
+        (monthlyOn ? " is-on" : "") +
         '" data-paywall-plan="monthly">' +
         '<div class="nanik-paywall-plan-row"><span class="nanik-paywall-plan-label">' +
         monthly.label +
         '</span><span class="nanik-paywall-plan-price">' +
         monthly.price +
+        '<span style="font-size:13px;font-weight:700;opacity:.85">' +
         monthly.period +
-        "</span></div></button>" +
-        '<button type="button" class="nanik-paywall-plan' +
-        (paywallSelected === "yearly" ? " is-on" : "") +
+        "</span></span></div></button>" +
+        '<button type="button" class="nanik-paywall-plan is-yearly' +
+        (yearlyOn ? " is-on" : "") +
         '" data-paywall-plan="yearly">' +
+        '<div class="nanik-paywall-plan-banner">' +
+        yearly.savings +
+        "% off</div>" +
+        '<div class="nanik-paywall-plan-body">' +
         '<div class="nanik-paywall-plan-row"><span class="nanik-paywall-plan-label">' +
         yearly.label +
-        '<span class="nanik-paywall-save">-' +
-        yearly.savings +
-        '%</span></span><span class="nanik-paywall-plan-price">' +
+        '</span><span class="nanik-paywall-plan-price">' +
         yearly.price +
+        '<span style="font-size:13px;font-weight:700;opacity:.85">' +
         yearly.period +
-        "</span></div>" +
+        "</span></span></div>" +
         '<div class="nanik-paywall-plan-meta"><span class="nanik-paywall-strike">' +
         yearly.strikeMonthly +
-        '/month</span><span class="nanik-paywall-gold">' +
+        '/mo</span><span class="nanik-paywall-gold">' +
         yearly.perMonth +
-        "/month</span></div>" +
-        (yearly.trial
-          ? '<div class="nanik-paywall-plan-trial">' + yearly.trialDays + "-day free trial</div>"
-          : "") +
-        "</button>";
+        "/mo</span></div>" +
+        "</div></button>";
       plans.querySelectorAll("[data-paywall-plan]").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          paywallSelected = btn.getAttribute("data-paywall-plan") === "monthly" ? "monthly" : "yearly";
+          var next = btn.getAttribute("data-paywall-plan") === "monthly" ? "monthly" : "yearly";
+          paywallSelected = next;
+          if (paywallMode === "story") {
+            var unlock = paywallEl.querySelector("[data-paywall-cta]");
+            if (unlock && unlock.getAttribute("aria-busy") === "true") return;
+            if (unlock) unlock.setAttribute("aria-busy", "true");
+            startPaywallInlineCheckout(next).finally(function () {
+              if (unlock) unlock.removeAttribute("aria-busy");
+            });
+            return;
+          }
           renderPaywallPlans();
         });
       });
     }
-    if (cta) {
-      cta.textContent =
-        paywallSelected === "yearly" && yearly.trial ? "Start my free trial" : "Subscribe";
-    }
+    if (paywallMode === "story") setPaywallCta(paywallStoryCta, paywallStoryPrice);
+    else setPaywallCta(paywallSelected === "yearly" && yearly.trial ? "Try for Free 7 days" : "Subscribe");
   }
 
   function ensurePaywall() {
@@ -930,6 +967,8 @@
       '<span class="nanik-paywall-status-pill is-free" data-paywall-status-pill>Free</span>' +
       "</div>" +
       '<div class="nanik-paywall-trial-badge" data-paywall-trial-badge hidden></div>' +
+      '<div class="nanik-paywall-story" data-paywall-story hidden></div>' +
+      '<p class="nanik-paywall-or" data-paywall-or hidden>or Subscribe to get more stories</p>' +
       '<div class="nanik-paywall-benefits">' +
       '<div class="nanik-paywall-benefit"><span class="nanik-paywall-ico" aria-hidden="true">' +
       paywallIcon("book") +
@@ -948,7 +987,7 @@
       "</span>Advanced AI models for story generation</div>" +
       "</div>" +
       '<div class="nanik-paywall-plans" data-paywall-plans></div>' +
-      '<button type="button" class="nanik-paywall-cta" data-paywall-cta>Start my free trial</button>' +
+      '<button type="button" class="nanik-paywall-cta" data-paywall-cta><span data-paywall-cta-label>Try for Free 7 days</span><span class="nanik-paywall-cta-price" data-paywall-cta-price hidden>$1.99</span></button>' +
       '<p class="nanik-paywall-legal">' +
       '<a href="terms.html" target="_blank" rel="noopener">Terms of Use</a><span>·</span>' +
       '<a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>' +
@@ -980,7 +1019,9 @@
     paywallEl.querySelector("[data-paywall-cta]").addEventListener("click", function () {
       var cta = paywallEl.querySelector("[data-paywall-cta]");
       if (cta.getAttribute("aria-busy") === "true") return;
-      var planId = paywallSelected === "monthly" ? "monthly" : "yearly";
+      var planId = paywallMode === "story"
+        ? "story"
+        : (paywallSelected === "monthly" ? "monthly" : "yearly");
       cta.setAttribute("aria-busy", "true");
       startPaywallInlineCheckout(planId).finally(function () {
         cta.removeAttribute("aria-busy");
@@ -1001,21 +1042,53 @@
     var mount = paywallEl.querySelector("#nanik-paywall-dodo");
     if (mount) mount.innerHTML = "";
     setPaywallStep("plans");
+    paywallCheckoutPlan = "";
+    paywallMode = "";
+    var shell = paywallEl.querySelector(".nanik-paywall-shell");
+    if (shell) shell.classList.remove("is-story");
     paywallEl.hidden = true;
     document.body.style.overflow = "";
+  }
+
+  function setPaywallCta(label, price) {
+    if (!paywallEl) return;
+    var cta = paywallEl.querySelector("[data-paywall-cta]");
+    if (!cta) return;
+    var labelEl = cta.querySelector("[data-paywall-cta-label]");
+    var priceEl = cta.querySelector("[data-paywall-cta-price]");
+    if (labelEl) labelEl.textContent = label;
+    else cta.textContent = label;
+    if (priceEl) {
+      priceEl.hidden = !price;
+      if (price) priceEl.textContent = price;
+    }
   }
 
   function openPaywall(options) {
     var opts = options || {};
     ensurePaywall();
+    paywallMode = opts.variant === "story" ? "story" : "";
+    paywallStoryCta = String(opts.ctaLabel || "Unlock the story");
+    paywallStoryPrice = String(opts.price || "$1.99");
     paywallSelected = opts.planId === "monthly" ? "monthly" : "yearly";
+    var shell = paywallEl.querySelector(".nanik-paywall-shell");
+    if (shell) shell.classList.toggle("is-story", paywallMode === "story");
+    var story = paywallEl.querySelector("[data-paywall-story]");
+    if (story) {
+      story.hidden = paywallMode !== "story";
+      story.innerHTML = paywallMode === "story" ? String(opts.cardsHtml || "") : "";
+    }
+    var orLine = paywallEl.querySelector("[data-paywall-or]");
+    if (orLine) {
+      orLine.hidden = paywallMode !== "story";
+      if (opts.orLabel) orLine.textContent = String(opts.orLabel);
+    }
     showPaywallPlansStep();
     var titleEl = paywallEl.querySelector("#nanik-paywall-title");
     var status = paywallEl.querySelector("[data-paywall-status]");
     var statusLabel = paywallEl.querySelector("[data-paywall-status-label]");
     var statusValue = paywallEl.querySelector("[data-paywall-status-value]");
     var statusPill = paywallEl.querySelector("[data-paywall-status-pill]");
-    var cta = paywallEl.querySelector("[data-paywall-cta]");
     var showBillingStatus = opts.mode === "billing" || opts.showFreemiumStatus === true;
     if (status) {
       status.hidden = !showBillingStatus;
@@ -1037,10 +1110,11 @@
       ).trim();
     }
     renderPaywallPlans();
-    if (cta && showBillingStatus) {
+    if (showBillingStatus && paywallMode !== "story") {
       var yearly = PAYWALL_PLANS.yearly;
-      cta.textContent =
-        paywallSelected === "yearly" && yearly.trial ? "Upgrade — start free trial" : "Upgrade to Plus";
+      setPaywallCta(
+        paywallSelected === "yearly" && yearly.trial ? "Try for Free 7 days" : "Upgrade to Plus"
+      );
     }
     paywallEl.hidden = false;
     document.body.style.overflow = "hidden";

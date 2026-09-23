@@ -10,7 +10,7 @@
 <title>Nanik</title>
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="dashboard.css?v=20260922fox1">
+<link rel="stylesheet" href="dashboard.css?v=20260923sumback2">
 <script src="geo-lang.js?v=20260920geo1"></script>
 <script>
   (function () {
@@ -126,6 +126,19 @@
           <span class="dash-account-detail-value" id="dash-account-detail-email-value"></span>
         </div>
       </div>
+      <section class="dash-account-billing" id="dash-account-billing-section" hidden>
+        <h2 class="dash-account-sheet-title" id="dash-account-billing-heading">Billing</h2>
+        <button type="button" class="dash-account-row" id="dash-account-billing-page">
+          <span class="dash-account-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 2v2H4V6zm0 12H4v-8h16zM6 14h4v2H6z"/></svg>
+          </span>
+          <span class="dash-account-row-copy">
+            <span class="dash-account-row-title" id="dash-account-billing-page-label">Manage payment</span>
+          </span>
+          <span class="dash-account-row-value">Plus</span>
+          <svg class="dash-account-chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m9.3 6.3-1.4 1.4L12.2 12l-4.3 4.3 1.4 1.4L15 12z"/></svg>
+        </button>
+      </section>
       <button type="button" class="dash-account-row is-danger is-delete" id="dash-account-delete">
         <span class="dash-account-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="M9 3h6l1 2h4v2H4V5h4zm1 6h2v8h-2zm4 0h2v8h-2zM7 9h2v8H7zm-1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9H6z"/></svg>
@@ -147,7 +160,7 @@
         <svg class="dash-account-chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m9.3 6.3-1.4 1.4L12.2 12l-4.3 4.3 1.4 1.4L15 12z"/></svg>
       </button>
       <div class="dash-account-langs" id="dash-account-langs" hidden></div>
-      <button type="button" class="dash-account-row" id="dash-account-billing">
+      <button type="button" class="dash-account-row" id="dash-account-billing" hidden>
         <span class="dash-account-ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 2v2H4V6zm0 12H4v-8h16zM6 14h4v2H6z"/></svg>
         </span>
@@ -187,35 +200,46 @@
   </aside>
 
   <nav class="dash-tab-pill" id="dash-tab-pill" hidden aria-label="Main">
-    <div class="dash-tab-pill-shadow">
-      <div class="dash-tab-pill-bar">
-        <div class="dash-tab-pill-chrome" aria-hidden="true"></div>
-        <div class="dash-tab-pill-row" id="dash-tab-pill-row">
-          <span class="dash-tab-pill-selection" id="dash-tab-pill-selection" aria-hidden="true"></span>
-          <button type="button" class="dash-tab-pill-btn is-on" data-panel="library">
-            <span class="dash-tab-pill-ico" aria-hidden="true">
-              <svg viewBox="0 0 512 512" width="29" height="29"><path fill="currentColor" d="M202.24 74C166.11 56.75 115.61 48.3 48 48a31.36 31.36 0 00-17.92 5.33A32 32 0 0016 79.9V366c0 19.34 13.76 33.93 32 33.93 71.07 0 142.36 6.64 185.06 47a4.11 4.11 0 006.94-3V106.82a15.89 15.89 0 00-5.46-12A143 143 0 00202.24 74zM481.92 53.3A31.33 31.33 0 00464 48c-67.61.3-118.11 8.71-154.24 26a143.31 143.31 0 00-32.31 20.78 15.93 15.93 0 00-5.45 12v337.13a3.93 3.93 0 006.68 2.81c25.67-25.5 70.72-46.82 185.36-46.81a32 32 0 0032-32v-288a32 32 0 00-14.12-26.61z"/></svg>
-            </span>
-            <span class="dash-tab-pill-label" data-ui="tabLibrary">Library</span>
-          </button>
-          <button type="button" class="dash-tab-pill-btn" data-panel="create">
-            <span class="dash-tab-pill-ico" aria-hidden="true">
-              <svg viewBox="0 0 512 512" width="29" height="29"><path fill="currentColor" d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm80 224h-64v64a16 16 0 01-32 0v-64h-64a16 16 0 010-32h64v-64a16 16 0 0132 0v64h64a16 16 0 010 32z"/></svg>
-            </span>
-            <span class="dash-tab-pill-label" data-ui="tabCreate">Create</span>
-          </button>
-          <button type="button" class="dash-tab-pill-btn" data-panel="voices">
-            <span class="dash-tab-pill-ico" aria-hidden="true">
-              <svg viewBox="0 0 512 512" width="29" height="29"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M192 448h128M384 208v32c0 70.4-57.6 128-128 128h0c-70.4 0-128-57.6-128-128v-32M256 368v80"/><path fill="currentColor" d="M256 320a78.83 78.83 0 01-56.55-24.1A80.89 80.89 0 01176 239V128a79.69 79.69 0 0180-80c44.86 0 80 35.14 80 80v111c0 44.66-35.89 81-80 81z"/></svg>
-            </span>
-            <span class="dash-tab-pill-label" data-ui="tabVoices">Voices</span>
-          </button>
-          <button type="button" class="dash-tab-pill-btn" data-panel="kids">
-            <span class="dash-tab-pill-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="29" height="29"><path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-3.3 0-8 1.7-8 4v2h16v-2c0-2.3-4.7-4-8-4z"/></svg>
-            </span>
-            <span class="dash-tab-pill-label" id="dash-tab-pill-kids-label">Kids</span>
-          </button>
+    <div class="dash-tab-pill-stack">
+      <div class="dash-voiceover-bar" id="dash-voiceover-bar" hidden aria-live="polite">
+        <div class="dash-voiceover-bar-copy">
+          <strong id="dash-voiceover-bar-title">Generating voiceover…</strong>
+          <span id="dash-voiceover-bar-pct">0%</span>
+        </div>
+        <div class="dash-voiceover-bar-track" aria-hidden="true">
+          <span class="dash-voiceover-bar-fill" id="dash-voiceover-bar-fill"></span>
+        </div>
+      </div>
+      <div class="dash-tab-pill-shadow">
+        <div class="dash-tab-pill-bar">
+          <div class="dash-tab-pill-chrome" aria-hidden="true"></div>
+          <div class="dash-tab-pill-row" id="dash-tab-pill-row">
+            <span class="dash-tab-pill-selection" id="dash-tab-pill-selection" aria-hidden="true"></span>
+            <button type="button" class="dash-tab-pill-btn is-on" data-panel="library">
+              <span class="dash-tab-pill-ico" aria-hidden="true">
+                <svg viewBox="0 0 512 512" width="29" height="29"><path fill="currentColor" d="M202.24 74C166.11 56.75 115.61 48.3 48 48a31.36 31.36 0 00-17.92 5.33A32 32 0 0016 79.9V366c0 19.34 13.76 33.93 32 33.93 71.07 0 142.36 6.64 185.06 47a4.11 4.11 0 006.94-3V106.82a15.89 15.89 0 00-5.46-12A143 143 0 00202.24 74zM481.92 53.3A31.33 31.33 0 00464 48c-67.61.3-118.11 8.71-154.24 26a143.31 143.31 0 00-32.31 20.78 15.93 15.93 0 00-5.45 12v337.13a3.93 3.93 0 006.68 2.81c25.67-25.5 70.72-46.82 185.36-46.81a32 32 0 0032-32v-288a32 32 0 00-14.12-26.61z"/></svg>
+              </span>
+              <span class="dash-tab-pill-label" data-ui="tabLibrary">Library</span>
+            </button>
+            <button type="button" class="dash-tab-pill-btn" data-panel="create">
+              <span class="dash-tab-pill-ico" aria-hidden="true">
+                <svg viewBox="0 0 512 512" width="29" height="29"><path fill="currentColor" d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm80 224h-64v64a16 16 0 01-32 0v-64h-64a16 16 0 010-32h64v-64a16 16 0 0132 0v64h64a16 16 0 010 32z"/></svg>
+              </span>
+              <span class="dash-tab-pill-label" data-ui="tabCreate">Create</span>
+            </button>
+            <button type="button" class="dash-tab-pill-btn" data-panel="voices">
+              <span class="dash-tab-pill-ico" aria-hidden="true">
+                <svg viewBox="0 0 512 512" width="29" height="29"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M192 448h128M384 208v32c0 70.4-57.6 128-128 128h0c-70.4 0-128-57.6-128-128v-32M256 368v80"/><path fill="currentColor" d="M256 320a78.83 78.83 0 01-56.55-24.1A80.89 80.89 0 01176 239V128a79.69 79.69 0 0180-80c44.86 0 80 35.14 80 80v111c0 44.66-35.89 81-80 81z"/></svg>
+              </span>
+              <span class="dash-tab-pill-label" data-ui="tabVoices">Voices</span>
+            </button>
+            <button type="button" class="dash-tab-pill-btn" data-panel="kids">
+              <span class="dash-tab-pill-ico" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="29" height="29"><path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-3.3 0-8 1.7-8 4v2h16v-2c0-2.3-4.7-4-8-4z"/></svg>
+              </span>
+              <span class="dash-tab-pill-label" id="dash-tab-pill-kids-label">Kids</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -240,25 +264,35 @@
     </section>
 
     <section class="dash-panel" id="panel-voices" hidden>
-      <h1 id="dash-voices-title">Voices</h1>
       <div class="dash-voices" id="dash-voices"></div>
     </section>
 
     <section class="dash-panel is-on" id="panel-library">
       <div id="dash-library-list">
-        <h1 id="dash-library-title">Library</h1>
         <div class="dash-library" id="dash-library"></div>
       </div>
       <article class="dash-reader" id="dash-reader" hidden>
         <header class="dash-reader-top">
-          <button type="button" class="dash-reader-back" id="dash-reader-back" aria-label="Library">
-            <svg class="dash-reader-back-ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.4 4.6a1.1 1.1 0 0 0-1.6 0l-6.6 6.6a1.1 1.1 0 0 0 0 1.6l6.6 6.6a1.1 1.1 0 0 0 1.6-1.6L9.6 12l5.8-5.8a1.1 1.1 0 0 0 0-1.6z"/></svg>
-            <span class="dash-reader-back-label" id="dash-reader-back-label">Library</span>
-          </button>
+          <div class="dash-reader-top-blur" aria-hidden="true">
+            <span class="dash-reader-top-blur-layer is-1"></span>
+            <span class="dash-reader-top-blur-layer is-2"></span>
+            <span class="dash-reader-top-blur-layer is-3"></span>
+            <span class="dash-reader-top-blur-tint"></span>
+          </div>
+          <div class="dash-reader-top-start">
+            <button type="button" class="dash-reader-back" id="dash-reader-back" aria-label="Library">
+              <svg class="dash-reader-back-ico" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.4 4.6a1.1 1.1 0 0 0-1.6 0l-6.6 6.6a1.1 1.1 0 0 0 0 1.6l6.6 6.6a1.1 1.1 0 0 0 1.6-1.6L9.6 12l5.8-5.8a1.1 1.1 0 0 0 0-1.6z"/></svg>
+              <span class="dash-reader-back-label" id="dash-reader-back-label">Library</span>
+            </button>
+            <button type="button" class="dash-reader-voice" id="dash-reader-voice">
+              <svg class="dash-reader-voice-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z"/></svg>
+              <span id="dash-reader-voice-label">Tell with voice</span>
+            </button>
+          </div>
           <div class="dash-reader-actions">
             <button type="button" class="dash-reader-music" id="dash-reader-music" aria-label="Play music" aria-pressed="false">
               <svg class="dash-reader-music-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg>
-              <svg class="dash-reader-music-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M19.1 4.9 4.9 19.1l1.4 1.4 2.2-2.2A4 4 0 0 0 14 17V9.4l5.5-5.5zM12 3v2.2l2 2V3h4v4.2l2 2V3zM8.2 15.4l1.7-1.7A2 2 0 0 1 12 17a2 2 0 0 1-1.9.2z"/></svg>
+              <svg class="dash-reader-music-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg>
             </button>
             <div class="dash-reader-fonts" role="group" aria-label="Text size">
               <button type="button" class="dash-reader-font" id="dash-reader-font-down" aria-label="Smaller text"><span class="is-sm">A</span></button>
@@ -271,17 +305,24 @@
           <input type="range" id="dash-reader-volume-slider" min="0" max="100" value="37" step="1" aria-label="Music volume">
         </div>
         <div class="dash-reader-scroll">
-          <img class="dash-reader-cover" id="dash-reader-cover" alt="" hidden>
+          <div class="dash-reader-cover-wrap" id="dash-reader-cover-wrap" hidden>
+            <img class="dash-reader-cover" id="dash-reader-cover" alt="" hidden>
+            <div class="dash-reader-cover-loading" id="dash-reader-cover-loading" hidden>
+              <div class="dash-reader-cover-morph" aria-hidden="true">
+                <span class="is-a"></span>
+                <span class="is-b"></span>
+                <span class="is-c"></span>
+              </div>
+              <div class="dash-reader-cover-frost" aria-hidden="true"></div>
+              <p class="dash-reader-cover-loading-label" id="dash-reader-cover-loading-label">Creating cover…</p>
+            </div>
+          </div>
           <h1 id="dash-reader-title"></h1>
           <div class="dash-reader-summary" id="dash-reader-summary" hidden></div>
           <p class="dash-reader-body" id="dash-reader-body"></p>
           <p class="dash-reader-note" id="dash-reader-note" hidden></p>
         </div>
         <div class="dash-reader-cta" id="dash-reader-cta">
-          <button type="button" class="dash-reader-voice" id="dash-reader-voice">
-            <svg class="dash-reader-voice-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z"/></svg>
-            <span id="dash-reader-voice-label">Tell with your voice</span>
-          </button>
           <div class="dash-reader-player" id="dash-reader-player" hidden>
             <div class="dash-reader-player-timeline">
               <span class="dash-reader-player-time" id="dash-reader-time-cur">0:00</span>
@@ -292,7 +333,7 @@
               <div class="dash-reader-player-side">
                 <button type="button" class="dash-reader-player-music" id="dash-reader-player-music" aria-label="Play music" aria-pressed="false">
                   <svg class="dash-reader-music-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg>
-                  <svg class="dash-reader-music-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M19.1 4.9 4.9 19.1l1.4 1.4 2.2-2.2A4 4 0 0 0 14 17V9.4l5.5-5.5zM12 3v2.2l2 2V3h4v4.2l2 2V3zM8.2 15.4l1.7-1.7A2 2 0 0 1 12 17a2 2 0 0 1-1.9.2z"/></svg>
+                  <svg class="dash-reader-music-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3z"/></svg>
                 </button>
                 <button type="button" class="dash-reader-player-skip" id="dash-reader-skip-back" aria-label="Back 10 seconds">
                   <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -318,9 +359,12 @@
               <button type="button" class="dash-reader-player-font" id="dash-reader-player-font-up" aria-label="Bigger text"><span class="is-lg">A</span></button>
             </div>
           </div>
-          <div class="dash-reader-next-actions">
-            <button type="button" id="dash-reader-create-another">Create another</button>
-          </div>
+        </div>
+        <div class="dash-reader-bottom-blur" aria-hidden="true">
+          <span class="dash-reader-bottom-blur-layer is-1"></span>
+          <span class="dash-reader-bottom-blur-layer is-2"></span>
+          <span class="dash-reader-bottom-blur-layer is-3"></span>
+          <span class="dash-reader-bottom-blur-tint"></span>
         </div>
       </article>
 
@@ -341,13 +385,14 @@
     <section class="dash-panel" id="panel-create" hidden>
       <div class="guided-create" id="guided-create">
         <div class="guided-card" id="guided-card">
-          <button type="button" class="guided-back" id="guided-back" hidden aria-label="Back">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="m15.4 4.6-1.4-1.4L5.2 12l8.8 8.8 1.4-1.4L8 12z"/></svg>
-            <span>Back</span>
-          </button>
           <header class="guided-title-row" id="guided-title-row">
+            <button type="button" class="guided-back" id="guided-back" hidden aria-label="Back">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="m15.4 4.6-1.4-1.4L5.2 12l8.8 8.8 1.4-1.4L8 12z"/></svg>
+              <span class="guided-back-label">Back</span>
+            </button>
             <h1 id="guided-step-title">How old is your kid?</h1>
           </header>
+          <p class="guided-error" id="guided-error" role="alert" hidden></p>
 
           <section class="guided-step is-on" data-guided-step="basics" data-guided-title="How old is your kid?">
             <div id="guided-profile-pick" class="guided-profile-pick" hidden>
@@ -475,11 +520,10 @@
           </section>
 
           <section class="guided-step guided-purpose-step" data-guided-step="purpose" data-guided-title="What should this story help with?" hidden>
-            <p class="guided-purpose-subtitle">Choose what you'd like the story to focus on.</p>
             <div class="guided-intent-cards guided-purpose-cards" role="radiogroup" aria-label="Story purpose">
               <button type="button" class="guided-choice guided-intent-card has-media guided-purpose-card guided-purpose-card-today" role="radio" aria-checked="false" data-guided-value="Help with something happening today">
                 <span class="guided-intent-card-media" aria-hidden="true">
-                  <img src="images/onboarding-name-voice-hero.png" alt="" width="700" height="700" loading="lazy" decoding="async">
+                  <img src="images/intent-cards/help-today-felt.png?v=20260922felt" alt="" width="1254" height="1254" loading="lazy" decoding="async">
                 </span>
                 <span class="guided-intent-card-copy">
                   <strong class="guided-intent-card-title">Gently support</strong>
@@ -489,7 +533,7 @@
               </button>
               <button type="button" class="guided-choice guided-intent-card has-media guided-purpose-card guided-purpose-card-learn" role="radio" aria-checked="false" data-guided-value="Help them learn or understand something">
                 <span class="guided-intent-card-media" aria-hidden="true">
-                  <img src="images/intent-cards/help-learn-cutout.png?v=20260915learningbook" alt="" width="1254" height="1254" loading="lazy" decoding="async">
+                  <img src="images/intent-cards/help-learn-felt.png?v=20260922felt" alt="" width="1254" height="1254" loading="lazy" decoding="async">
                 </span>
                 <span class="guided-intent-card-copy">
                   <strong class="guided-intent-card-title">Learn something new</strong>
@@ -499,11 +543,9 @@
               </button>
               <div class="guided-purpose-or" aria-hidden="true"><span>OR</span></div>
               <button type="button" class="guided-choice guided-intent-text guided-purpose-fun" role="radio" aria-checked="false" data-guided-value="Just create a great story">
-                <span class="guided-purpose-fun-sparkle" aria-hidden="true">&#10022;</span>
                 <strong class="guided-intent-card-title">Just create a great story</strong>
                 <span class="guided-purpose-fun-arrow" aria-hidden="true">→</span>
               </button>
-              <p class="guided-purpose-footnote">No specific goal - make it fun, engaging, and memorable.</p>
             </div>
           </section>
 
@@ -528,15 +570,14 @@
           </section>
 
           <section class="guided-step" data-guided-step="hero" data-guided-title="Who should be the hero?" hidden>
-            <p class="guided-hero-subtitle" id="guided-hero-subtitle">Choose who takes the lead in the story.</p>
             <div class="guided-intent-cards guided-hero-cards" id="guided-hero-options" role="radiogroup" aria-label="Who should be the hero?"></div>
             <div class="guided-hero-decision">
               <div class="guided-or"><span>or</span></div>
               <button type="button" class="guided-hero-decide" id="guided-hero-decide" aria-pressed="false">
-                <span aria-hidden="true">&#10024;</span> Let the story decide <span aria-hidden="true">&#8594;</span>
+                Let the story decide <span aria-hidden="true">&#8594;</span>
               </button>
             </div>
-            <input type="file" id="guided-toy-input" accept="image/*" capture="environment" hidden>
+            <input type="file" id="guided-toy-input" accept="image/*" hidden>
           </section>
 
           <section class="guided-step" data-guided-step="personal" data-guided-title="Make the story feel like theirs" hidden>
@@ -578,9 +619,14 @@
             </div>
             <div class="guided-plan-block">
               <h2>Anything else your child loves?</h2>
-              <textarea id="guided-plan-likes" rows="2" maxlength="200" placeholder="Dinosaurs, their dog, drawing…" aria-label="Anything else your child loves?"></textarea>
+              <textarea id="guided-plan-likes" rows="1" maxlength="200" placeholder="Dinosaurs, their dog, drawing…" aria-label="Anything else your child loves?"></textarea>
             </div>
-            <button type="button" class="guided-primary guided-plan-cta" id="guided-plan-create">Create story</button>
+            <div class="guided-plan-cta-bar" id="guided-plan-cta-bar">
+              <button type="button" class="guided-plan-back" id="guided-plan-back" aria-label="Back">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="m15.4 4.6-1.4-1.4L5.2 12l8.8 8.8 1.4-1.4L8 12z"/></svg>
+              </button>
+              <button type="button" class="guided-primary guided-plan-cta" id="guided-plan-create">Create story</button>
+            </div>
             <div class="guided-plan-quota" id="guided-plan-quota" hidden>
               <span id="guided-plan-quota-count"></span>
               <a href="#" id="guided-plan-upgrade" data-dodo-checkout="yearly">Upgrade to get more stories</a>
@@ -611,11 +657,8 @@
               <div class="guided-particle-glow" id="guided-particle-glow"></div>
               <div class="guided-particle-layer" id="guided-particle-layer"></div>
             </div>
-            <button type="button" class="guided-cancel" id="guided-cancel">Cancel</button>
           </section>
         </div>
-
-        <p class="guided-error" id="guided-error" role="alert" hidden></p>
 
         <footer class="guided-footer" id="guided-footer">
           <div class="guided-footer-fade" aria-hidden="true"></div>
@@ -717,25 +760,26 @@
     </div>
   </div>
 
-  <div class="dash-voiceover-bar" id="dash-voiceover-bar" hidden aria-live="polite">
-    <div class="dash-voiceover-bar-copy">
-      <strong id="dash-voiceover-bar-title">Generating voiceover…</strong>
-      <span id="dash-voiceover-bar-pct">0%</span>
-    </div>
-    <div class="dash-voiceover-bar-track" aria-hidden="true">
-      <span class="dash-voiceover-bar-fill" id="dash-voiceover-bar-fill"></span>
+  <div class="dash-voice-pick" id="dash-voice-pick" hidden>
+    <button type="button" class="dash-voice-pick-backdrop" id="dash-voice-pick-backdrop" aria-label="Close"></button>
+    <div class="dash-voice-pick-sheet" role="dialog" aria-modal="true" aria-labelledby="dash-voice-pick-title">
+      <div class="dash-voice-pick-head">
+        <h2 id="dash-voice-pick-title">Pick the voice</h2>
+        <button type="button" class="dash-voice-pick-close" id="dash-voice-pick-close" aria-label="Close">×</button>
+      </div>
+      <div class="dash-voice-pick-body" id="dash-voice-pick-body"></div>
     </div>
   </div>
 
-<script src="nanik-api-config.js?v=20260918dodo"></script>
-<script src="pricing-checkout.js?v=20260922purple1"></script>
+<script src="nanik-api-config.js?v=20260923higgs075"></script>
+<script src="pricing-checkout.js?v=2026092250off"></script>
 <script src="story-languages.js?v=20260910bb"></script>
 <script src="voice-languages.js?v=20260920appsamples"></script>
-<script src="nanik-draft.js?v=20260920kid2"></script>
+<script src="nanik-draft.js?v=20260923kidcloud"></script>
 <script src="dash-record-voice.js?v=20260921voicelimit"></script>
-<script src="nanik-tts.js?v=20260920tts1"></script>
-<script src="dashboard.js?v=20260922fox1"></script>
+<script src="nanik-tts.js?v=20260923higgs075"></script>
+<script src="dashboard.js?v=20260923kidcloud"></script>
 <script src="story-plan.js?v=20260921contract2"></script>
-<script src="guided-create.js?v=20260922quota1"></script>
+<script src="guided-create.js?v=20260923sumback2"></script>
 </body>
 </html>

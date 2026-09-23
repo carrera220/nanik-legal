@@ -77,6 +77,70 @@ Without this webhook, checkout can succeed in Dodo while Nanik still shows Free 
 
 ---
 
+## Go live (production keys + live products)
+
+Test and live are **separate**. Test product IDs (`pdt_…` from test) do not work with a live key.
+
+### Current live catalog
+
+| Plan | Live product ID |
+|---|---|
+| Monthly | `pdt_0Nnr0OB8YTU1SFHr6qTB0` |
+| Yearly | `pdt_0Nnr0WGPr5ZQzleOMeG8S` |
+
+### Current test catalog (reference)
+
+| Plan | Test product ID | Price in Dodo |
+|---|---|---|
+| Monthly | `pdt_0NntBxQFKVcFQ7rmdtRDq` | **$9.99**/mo + 3-day trial |
+| Yearly | `pdt_0NntCBN3MeBbp4YchDEil` | **$59.99**/yr + 3-day trial |
+| Collection | `pdc_0NnvLMeFWdjr3hkKAifDI` | Nanik Plus (both plans) |
+
+> Note: the marketing page still shows $14.99 / $89.99. Checkout uses the Dodo product prices above. Align the site copy before or after go-live.
+
+### 1) Create a **live** API key
+
+1. Open https://app.dodopayments.com and switch the toggle to **Live**.
+2. **Developer** → **API Keys** → **Create**.
+3. Copy the key (`dodo_live_…` or the live key format Dodo shows).
+
+### 2) Mirror test products into live
+
+```bash
+cd /Users/gorkroyan/nanik-legal
+DODO_LIVE_API_KEY='paste_live_key_here' WRITE_ENV=1 node scripts/dodo-mirror-live-catalog.mjs
+```
+
+This creates live monthly + yearly + collection and writes `supabase/.env.dodo.live` (gitignored).
+
+### 3) Live webhook
+
+1. Still in **Live** mode → **Developer** → **Webhooks** → **Create**.
+2. URL:
+
+```text
+https://zljowsxavbpqfdskekwd.supabase.co/functions/v1/dodo-webhook
+```
+
+3. Same subscription events as test.
+4. Paste the live **Signing Secret** into `DODO_PAYMENTS_WEBHOOK_KEY` in `.env.dodo.live`.
+
+### 4) Upload live secrets to Supabase
+
+```bash
+supabase secrets set --env-file supabase/.env.dodo.live --project-ref zljowsxavbpqfdskekwd
+```
+
+Confirm `DODO_PAYMENTS_ENVIRONMENT=live_mode` and the new `pdt_…` / `pdc_…` IDs are set.
+
+### 5) Smoke-check before announcing
+
+- One real $ checkout (small / cancel after) or a live-mode verification with a real card.
+- Confirm webhook updates the account to Plus.
+- Keep a copy of test secrets so you can roll back to `test_mode` if needed.
+
+---
+
 ## Add secrets in Supabase
 
 1. Open https://supabase.com/dashboard/project/zljowsxavbpqfdskekwd/settings/functions  

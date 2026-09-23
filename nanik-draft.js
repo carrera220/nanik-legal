@@ -18,6 +18,39 @@
     }
   }
 
+  function sessionUserId() {
+    var s = readSession();
+    if (s && s.user && s.user.id) return String(s.user.id);
+    var token = s && s.access_token;
+    if (!token) return "";
+    try {
+      var part = String(token).split(".")[1] || "";
+      part = part.replace(/-/g, "+").replace(/_/g, "/");
+      while (part.length % 4) part += "=";
+      var payload = JSON.parse(atob(part));
+      return payload && payload.sub ? String(payload.sub) : "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function scopedKey(base) {
+    var uid = sessionUserId();
+    return uid ? base + ":" + uid : base + ":anon";
+  }
+
+  function childrenKey() {
+    return scopedKey(CHILDREN_KEY);
+  }
+
+  function activeChildKey() {
+    return scopedKey(ACTIVE_CHILD_KEY);
+  }
+
+  function childKey() {
+    return scopedKey(CHILD_KEY);
+  }
+
   function storeGet(key) {
     try {
       return sessionStorage.getItem(key) || localStorage.getItem(key) || "";
@@ -95,9 +128,27 @@
     };
   }
 
-  function readChildrenRaw() {
+  function readLegacyUnscopedChildren() {
     try {
       var raw = localStorage.getItem(CHILDREN_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed.map(normalizeChild).filter(Boolean);
+      }
+    } catch (e) {}
+    try {
+      var legacy = localStorage.getItem(CHILD_KEY);
+      if (!legacy) return [];
+      var one = normalizeChild(JSON.parse(legacy));
+      return one ? [one] : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function readChildrenRaw() {
+    try {
+      var raw = localStorage.getItem(childrenKey());
       if (raw) {
         var parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
@@ -105,33 +156,39 @@
         }
       }
     } catch (e) {}
-    // Migrate legacy single profile.
+    // One-time migrate old device-wide profiles into this signed-in account.
+    var legacy = readLegacyUnscopedChildren();
+    if (!legacy.length) return [];
+    var activeId = "";
     try {
-      var legacy = localStorage.getItem(CHILD_KEY);
-      if (!legacy) return [];
-      var one = normalizeChild(JSON.parse(legacy));
-      if (!one) return [];
-      writeChildren([one], one.id);
-      return [one];
-    } catch (err) {
-      return [];
-    }
+      activeId = localStorage.getItem(ACTIVE_CHILD_KEY) || (legacy[0] && legacy[0].id) || "";
+    } catch (err) {}
+    writeChildren(legacy, activeId);
+    try {
+      localStorage.removeItem(CHILDREN_KEY);
+      localStorage.removeItem(ACTIVE_CHILD_KEY);
+      localStorage.removeItem(CHILD_KEY);
+    } catch (clearErr) {}
+    return legacy;
   }
 
   function writeChildren(list, activeId) {
     var kids = (list || []).map(normalizeChild).filter(Boolean);
+    var storeChildren = childrenKey();
+    var storeActive = activeChildKey();
+    var storeOne = childKey();
     try {
       if (!kids.length) {
-        localStorage.removeItem(CHILDREN_KEY);
-        localStorage.removeItem(ACTIVE_CHILD_KEY);
-        localStorage.removeItem(CHILD_KEY);
+        localStorage.removeItem(storeChildren);
+        localStorage.removeItem(storeActive);
+        localStorage.removeItem(storeOne);
         setAge("");
         return;
       }
-      localStorage.setItem(CHILDREN_KEY, JSON.stringify(kids));
+      localStorage.setItem(storeChildren, JSON.stringify(kids));
       var active = kids.find(function (kid) { return kid.id === activeId; }) || kids[0];
-      localStorage.setItem(ACTIVE_CHILD_KEY, active.id);
-      localStorage.setItem(CHILD_KEY, JSON.stringify({
+      localStorage.setItem(storeActive, active.id);
+      localStorage.setItem(storeOne, JSON.stringify({
         name: active.name,
         age: active.age,
         id: active.id,
@@ -148,12 +205,36 @@
     return readChildrenRaw();
   }
 
+  /** Replace the full local list (used after cloud pull). Keeps photos by id when omitted. */
+  function replaceChildren(list, activeId) {
+    var prevById = {};
+    getChildren().forEach(function (kid) {
+      prevById[kid.id] = kid;
+    });
+    var next = (list || []).map(function (raw) {
+      var kid = normalizeChild(raw);
+      if (!kid) return null;
+      var prev = prevById[kid.id];
+      if (prev) {
+        if (!kid.photo && prev.photo) kid.photo = prev.photo;
+        if (!kid.likes && prev.likes) kid.likes = prev.likes;
+        if (!kid.gender && prev.gender) kid.gender = prev.gender;
+      }
+      return kid;
+    }).filter(Boolean);
+    writeChildren(next, activeId || (next[0] && next[0].id) || "");
+    try {
+      window.dispatchEvent(new CustomEvent("nanik:child-profile"));
+    } catch (err) {}
+    return next;
+  }
+
   function getChild() {
     var kids = getChildren();
     if (!kids.length) return null;
     var activeId = "";
     try {
-      activeId = localStorage.getItem(ACTIVE_CHILD_KEY) || "";
+      activeId = localStorage.getItem(activeChildKey()) || "";
     } catch (e) {}
     var active = kids.find(function (kid) { return kid.id === activeId; }) || kids[0];
     return {
@@ -344,6 +425,7 @@
     getChild: getChild,
     setChild: setChild,
     getChildren: getChildren,
+    replaceChildren: replaceChildren,
     selectChild: selectChild,
     removeChild: removeChild,
     hasDraft: hasDraft,
