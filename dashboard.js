@@ -176,6 +176,7 @@
       unlockMoreVoices: "Unlock more voices",
       readerBack: "← Library",
       storeCta: "Download on the App Store",
+      libraryDownloadApp: "Download in App Store",
       status: ["Reading your idea…", "Finding the hero…", "Writing the story…", "Choosing the world…", "Painting the cover…", "Almost ready…"],
       fallbacks: {
         age: "How old is the child this story will be told to?",
@@ -368,6 +369,7 @@
       unlockMoreVoices: "Բացել ավելի շատ ձայներ",
       readerBack: "← Գրադարան",
       storeCta: "Բեռնել App Store-ից",
+      libraryDownloadApp: "Բեռնել App Store-ից",
       status: ["Կարդում եմ գաղափարը…", "Գտնում եմ հերոսին…", "Գրում եմ հեքիաթը…", "Ընտրում եմ աշխարհը…", "Նկարում եմ շապիկը…", "Գրեթե պատրաստ է…"],
       fallbacks: {
         age: "Քանի՞ տարեկան է երեխան, ում համար է այս հեքիաթը։",
@@ -563,6 +565,7 @@
       unlockMoreVoices: "Открыть больше голосов",
       readerBack: "← Библиотека",
       storeCta: "Скачать в App Store",
+      libraryDownloadApp: "Скачать в App Store",
       status: ["Читаю идею…", "Ищу героя…", "Пишу сказку…", "Выбираю мир…", "Рисую обложку…", "Почти готово…"],
       fallbacks: {
         age: "Сколько лет ребёнку, для которого эта сказка?",
@@ -5180,6 +5183,9 @@
     if (name === "play") {
       return '<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>';
     }
+    if (name === "download") {
+      return '<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v8.6l2.3-2.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.4L11 12.6V4a1 1 0 0 1 1-1zM5 18a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"/></svg>';
+    }
     return '<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M4 5v14l8-7-8-7zm9 0v14h2V5h-2zm4 0v14h2V5h-2z"/></svg>';
   }
 
@@ -5246,15 +5252,15 @@
           (summary ? '<div class="dash-story-summary">' + summary + "</div>" : "") +
           "</div>" +
           '<div class="dash-story-actions">' +
-          '<button type="button" class="dash-story-pill" data-action="continue">' +
-          pillIcon("skip") +
-          escapeHtml(pack.continueStory || en.continueStory) +
-          "</button>" +
           '<button type="button" class="dash-story-pill is-voice" data-action="' +
           voiceAction +
           '">' +
           pillIcon(voiceIco) +
           escapeHtml(voiceLabel) +
+          "</button>" +
+          '<button type="button" class="dash-story-pill" data-action="download-app">' +
+          pillIcon("download") +
+          escapeHtml(pack.libraryDownloadApp || en.libraryDownloadApp || pack.storeCta || "Download in App Store") +
           "</button>" +
           "</div>" +
           divider +
@@ -5281,7 +5287,7 @@
             openVoicesForPick(voiceStory || activeReaderStory);
             return;
           }
-          if (action === "continue") {
+          if (action === "download-app") {
             window.open(appStoreUrl(), "_blank", "noopener");
             return;
           }

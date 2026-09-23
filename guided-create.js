@@ -2885,7 +2885,8 @@
         detail: heroDetails,
         image: state.image || (plan.hero.mode === "child"
           ? "images/intent-cards/my-child-transparent.png?v=20260915alpha"
-          : "images/intent-cards/made-up-character-transparent.png?v=20260915alpha")
+          : "images/intent-cards/made-up-character-transparent.png?v=20260915alpha"),
+        userPhoto: !!String(state.image || "").trim()
       }
     ];
     if (plan.direction && plan.direction.answer) {
@@ -2909,7 +2910,9 @@
     }
     return '<div class="guided-plan-cards">' + cards.map(function (card) {
       return '<article class="guided-plan-card is-' + card.kind + '">' +
-        '<span class="guided-plan-card-media" aria-hidden="true"><img src="' + escapeHtml(card.image) + '" alt=""></span>' +
+        '<span class="guided-plan-card-media" aria-hidden="true"><img class="' +
+        (card.userPhoto ? "is-user-photo" : "") +
+        '" src="' + escapeHtml(card.image) + '" alt=""></span>' +
         '<span class="guided-plan-card-copy"><span class="guided-plan-card-eyebrow">' + escapeHtml(card.eyebrow) + '</span>' +
         '<strong>' + escapeHtml(card.title) + '</strong>' +
         (card.detail ? '<span class="guided-plan-card-detail">' + escapeHtml(card.detail) + '</span>' : '') +
