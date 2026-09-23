@@ -596,10 +596,12 @@
       list.innerHTML = "";
       return;
     }
-    var activeId = planner.childId || (window.NANIK_DRAFT && window.NANIK_DRAFT.getChild && window.NANIK_DRAFT.getChild() && window.NANIK_DRAFT.getChild().id) || "";
+    // Only highlight a profile the user chose in this create session — never inherit
+    // draft selection, or a prior story leaves a card selected and Next skips to summary.
+    var activeId = planner.childId || "";
     list.className = "guided-profile-list dash-kids-hero-cards";
     list.innerHTML = kids.map(function (kid) {
-      var selected = kid.id === activeId || (!activeId && String(kid.age) === String(planner.age));
+      var selected = !!activeId && kid.id === activeId;
       var title = kid.name || ageYearsLabel(kid.age);
       var desc = kid.name ? ageYearsLabel(kid.age) : kid.likes || "";
       if (kid.name && kid.likes) desc = ageYearsLabel(kid.age);
@@ -4075,11 +4077,9 @@
       }
       rememberChild();
       addingNewProfile = false;
-      if (!hasIntent()) {
-        showStep("intent");
-        return;
-      }
-      showStep("plan");
+      // Age-first flow: always continue to intent. Never jump to plan/summary — leftover
+      // intent from a previous story made Create open on the summary screen.
+      showStep("intent");
       return;
     }
 
@@ -4598,15 +4598,20 @@
   function applySavedChildProfile() {
     var draft = window.NANIK_DRAFT || {};
     var savedChild = draft.getChild ? draft.getChild() : null;
+    // With a profile picker, leave cards deselected so Create starts on "Whose story?".
+    if (shouldShowProfilePicker()) {
+      planner.childId = "";
+      return false;
+    }
     if (savedChild && savedChild.id) planner.childId = savedChild.id;
-    if (savedChild && savedChild.age && !planner.age && !shouldShowProfilePicker()) {
+    if (savedChild && savedChild.age && !planner.age) {
       planner.age = String(savedChild.age);
       sources.age = "draft";
       state.age = planner.age;
       if (el("guided-age")) el("guided-age").value = planner.age;
       syncAgeChips(planner.age);
     }
-    if (savedChild && savedChild.name && !planner.name && !shouldShowProfilePicker()) {
+    if (savedChild && savedChild.name && !planner.name) {
       planner.name = savedChild.name;
       sources.name = "draft";
       state.childName = savedChild.name;
@@ -4626,6 +4631,58 @@
       if (draft.setImage) draft.setImage(savedChild.photo);
     }
     return !!planner.age;
+  }
+
+  function clearStoryAnswersKeepProfile() {
+    state.intent = "";
+    state.purpose = "";
+    state.topic = "";
+    state.detail = "";
+    state.about = "";
+    state.discover = "";
+    state.feeling = "";
+    state.adventure = "";
+    state.bedtime = "";
+    state.support = "";
+    state.heroKind = "";
+    state.heroPick = "";
+    state.heroDescription = "";
+    state.madeUpName = "";
+    state.madeUpDescription = "";
+    state.madeUpType = "";
+    planner.intentKey = "";
+    planner.intentLabel = "";
+    planner.idea = "";
+    planner.purpose = "";
+    planner.purposeKey = "";
+    planner.hero = "";
+    planner.emotion = "";
+    planner.topic = "";
+    planner.context = "";
+    planner.companion = "";
+    planner.setting = "";
+    planner.mood = "";
+    planner.support = "";
+    planner.clarifyingQuestion = "";
+    ["intentKey", "intentLabel", "idea", "purpose", "purposeKey", "hero", "emotion", "topic", "context", "companion", "setting", "mood", "support"].forEach(function (key) {
+      sources[key] = "";
+    });
+    aiQuestion = null;
+    visibleQuestion = null;
+    heroQuestion = null;
+    followupAnswered = false;
+    followupCount = 0;
+    followupAnswers = [];
+    directorSequence += 1;
+    clearPurposeChipPrefetch();
+    purposeShownChips = { today: [], learn: [] };
+    window.NANIK_STORY_SUMMARY = null;
+    clearTypeInsert("guided-intent-custom", "guided-intent-insert");
+    clearTypeInsert("guided-topic-custom", "guided-topic-insert");
+    clearTypeInsert("guided-detail-custom", "guided-detail-insert");
+    clearTypeInsert("guided-hero-description", "guided-hero-insert");
+    setSelected(document.querySelector('[data-guided-step="intent"] .guided-choice-grid'), "", false);
+    syncSharedPlanner();
   }
 
   function startCreateFlow() {
@@ -5204,6 +5261,7 @@
           }
         }
         if (!child) return;
+        clearStoryAnswersKeepProfile();
         applySelectedProfile(child);
         paintProfilePicker();
         beginChoiceTransition(button);
@@ -5236,6 +5294,7 @@
           return;
         }
         addingNewProfile = true;
+        clearStoryAnswersKeepProfile();
         planner.childId = "";
         planner.age = "";
         planner.name = "";
@@ -5388,9 +5447,10 @@
       plan.addEventListener("input", readPlanFields);
       plan.addEventListener("change", readPlanFields);
     }
-    document.querySelectorAll('.dash-nav-btn[data-panel="create"]').forEach(function (button) {
+    document.querySelectorAll('.dash-nav-btn[data-panel="create"], .dash-tab-pill-btn[data-panel="create"]').forEach(function (button) {
       button.addEventListener("click", function () {
-        if (!hasChildProfile() || finished) startCreateFlow();
+        // Always start fresh — after a successful story, stale intent was skipping to summary.
+        startCreateFlow();
       });
     });
     window.addEventListener("nanik:langchange", function () {
