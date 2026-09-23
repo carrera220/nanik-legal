@@ -2085,8 +2085,21 @@ body.is-create-panel .dash-main {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow: none;
   text-decoration: none;
   white-space: nowrap;
+}
+.dash-story-store:hover {
+  background: transparent;
+  color: #fff;
+  border-color: #fff;
+  opacity: 0.9;
+}
+.dash-story-store svg {
+  color: #fff;
 }
 .dash-story-store span {
   font-weight: 400;
