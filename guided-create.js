@@ -4424,6 +4424,31 @@
     };
   }
 
+  function trackWebStoryCreated(story) {
+    try {
+      var plan = summaryPlan();
+      var storyType =
+        (INTENT_LABELS[planner.intentLabel] || planner.intentLabel || plan.storyKind || "custom");
+      var purpose = plan.purpose === "today" ? "support" : plan.purpose || "fun";
+      if (purpose !== "learn" && purpose !== "support" && purpose !== "fun") purpose = "fun";
+      var heroMode = plan.hero && plan.hero.mode;
+      var hero =
+        heroMode === "child"
+          ? "my_child"
+          : heroMode === "created"
+          ? "create_hero"
+          : "story_decides";
+      if (window.NanikAnalytics && typeof window.NanikAnalytics.track === "function") {
+        window.NanikAnalytics.track("web_story_created", {
+          story_type: String(storyType),
+          purpose: String(purpose),
+          hero: String(hero),
+          story_id: story && (story.id || story.story_id) ? String(story.id || story.story_id) : undefined,
+        });
+      }
+    } catch (e) {}
+  }
+
   function openStoryReadyPaywall() {
     var hy = isArmenianUi();
     var cardsHtml = planSummaryCardsHtml();
@@ -4500,6 +4525,7 @@
         persistChildAfterStory();
         stopGenerationAnimation();
         finished = true;
+        trackWebStoryCreated(story);
         setGenerationStatus(GENERATION_COPY.length - 1);
         setParticleProgress(100, true);
         var titleEl = el("guided-generating-title");

@@ -78,6 +78,7 @@
       libraryTitle: "Library",
       noStoriesYet: "No stories yet",
       noStoriesSub: "Your generated stories will appear here",
+      noImage: "No image",
       createFirstStory: "Create a new story",
       summaryHeroLabel: "Hero",
       summarySettingLabel: "World",
@@ -274,6 +275,7 @@
       libraryTitle: "Գրադարան",
       noStoriesYet: "Դեռ հեքիաթներ չկան",
       noStoriesSub: "Ձեր ստեղծած հեքիաթները կհայտնվեն այստեղ",
+      noImage: "Նկար չկա",
       createFirstStory: "Ստեղծել նոր հեքիաթ",
       summaryHeroLabel: "Հերոս",
       summarySettingLabel: "Աշխարհ",
@@ -470,6 +472,7 @@
       libraryTitle: "Библиотека",
       noStoriesYet: "Историй пока нет",
       noStoriesSub: "Созданные истории появятся здесь",
+      noImage: "Нет изображения",
       createFirstStory: "Создать новую сказку",
       summaryHeroLabel: "Герой",
       summarySettingLabel: "Мир",
@@ -4941,16 +4944,38 @@
     return "Creating cover…";
   }
 
+  function noImageLabel() {
+    var pack = ui();
+    return pack.noImage || COPY.en.noImage || "No image";
+  }
+
+  function emptyCoverHtml(ariaLabel) {
+    return (
+      '<div class="dash-story-cover-ph is-empty" aria-label="' +
+      escapeHtml(ariaLabel || noImageLabel()) +
+      '">' +
+      '<img src="images/feature-library.jpg" alt="" aria-hidden="true">' +
+      "<span>" +
+      escapeHtml(ariaLabel || noImageLabel()) +
+      "</span></div>"
+    );
+  }
+
   function setReaderCoverState(story) {
     var wrap = document.getElementById("dash-reader-cover-wrap");
     var cover = document.getElementById("dash-reader-cover");
     var loading = document.getElementById("dash-reader-cover-loading");
+    var empty = document.getElementById("dash-reader-cover-empty");
+    var emptyLabel = document.getElementById("dash-reader-cover-empty-label");
     var label = document.getElementById("dash-reader-cover-loading-label");
     var url = story && String(story.cover || "").trim();
     var pending = !!(story && story.coverPending);
-    if (wrap) wrap.hidden = !(pending || url);
+    var showEmpty = !pending && !url;
+    if (wrap) wrap.hidden = !(pending || url || showEmpty);
     if (label) label.textContent = coverLoadingLabel();
     if (loading) loading.hidden = !pending;
+    if (emptyLabel) emptyLabel.textContent = noImageLabel();
+    if (empty) empty.hidden = !showEmpty;
     if (cover) {
       if (url && !pending) {
         if (cover.getAttribute("src") !== url) cover.src = url;
@@ -5189,6 +5214,10 @@
     return '<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path fill="currentColor" d="M4 5v14l8-7-8-7zm9 0v14h2V5h-2zm4 0v14h2V5h-2z"/></svg>';
   }
 
+  function appleStoreIcon() {
+    return '<svg viewBox="0 0 384 512" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>';
+  }
+
   function appStoreUrl() {
     return (ui().appStoreUrl || COPY.en.appStoreUrl || "https://apps.apple.com/app/id6762894314");
   }
@@ -5228,7 +5257,7 @@
             ? '<div class="dash-story-cover-ph is-loading" aria-label="' +
               escapeHtml(coverLoadingLabel()) +
               '"></div>'
-            : '<div class="dash-story-cover-ph"></div>';
+            : emptyCoverHtml();
         var summary = storySummaryHtml(story);
         var divider =
           index + 1 < list.length ? '<div class="dash-story-divider" aria-hidden="true"></div>' : "";
@@ -5258,10 +5287,13 @@
           pillIcon(voiceIco) +
           escapeHtml(voiceLabel) +
           "</button>" +
-          '<button type="button" class="dash-story-pill" data-action="download-app">' +
-          pillIcon("download") +
-          escapeHtml(pack.libraryDownloadApp || en.libraryDownloadApp || pack.storeCta || "Download in App Store") +
-          "</button>" +
+          '<a class="dash-story-pill dash-story-store" data-action="download-app" href="' +
+          escapeHtml(appStoreUrl()) +
+          '" target="_blank" rel="noopener">' +
+          appleStoreIcon() +
+          "<span>" +
+          escapeHtml(pack.storeCta || en.storeCta || "Download on the App Store") +
+          "</span></a>" +
           "</div>" +
           divider +
           "</article>"
