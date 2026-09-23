@@ -1316,10 +1316,16 @@
     }));
   }
 
+  function chipsShouldBeArmenian() {
+    // App language wins: if the product UI is Armenian, generated chips must be Armenian
+    // even when the story language was left English by mistake.
+    return isArmenianUi() || isArmenian();
+  }
+
   function directorContext(text, forceQuestion, kind) {
     var support = kind === "support";
     var purposeLearn = kind === "purpose_learn";
-    var armenian = isArmenian();
+    var armenian = chipsShouldBeArmenian();
     var recentlyShownSupports = followupAnswers.reduce(function (all, item) {
       return all.concat(item && item.field === "support" ? (item.offeredChips || []) : []);
     }, []).filter(function (label, index, all) {
@@ -1368,9 +1374,9 @@
         childAge: planner.age || "",
         recently_shown_chips: (purposeShownChips[purposeKey()] || []).slice(-12),
       } : undefined,
-      output_language: storyLanguage(),
+      output_language: armenian ? "hy" : storyLanguage(),
       app_language: siteUiLang(),
-      product_language: productLanguageName(),
+      product_language: isArmenianUi() ? "Armenian" : productLanguageName(),
       story_kind: planner.intentLabel || "",
       custom_text: String(text || latestTypedContext || "").trim() || null,
       followup_number: followupCount + 1,
@@ -1466,9 +1472,9 @@
           locked: locked,
           text: typed,
           typed_context: typed,
-          output_language: storyLanguage(),
+          output_language: isArmenianUi() ? "hy" : storyLanguage(),
           app_language: siteUiLang(),
-          product_language: isArmenianUi() ? "Armenian" : "English",
+          product_language: isArmenianUi() ? "Armenian" : productLanguageName(),
         },
       },
       directJson: true,
@@ -1481,7 +1487,12 @@
   }
 
   function normalizedQuestionText(value) {
-    return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    // Keep Armenian (and other) letters — older /[^a-z0-9]/ wiped hy chips to "" and discarded them.
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   function questionWasAlreadyAsked(title) {
@@ -1558,11 +1569,11 @@
       return chip.label ? chip : null;
     }).filter(Boolean).slice(0, CHIP_COUNT);
     if (chips.length < 3) return null;
-    if (isArmenian() && !chipsAreArmenian(chips)) return null;
+    if (chipsShouldBeArmenian() && !chipsAreArmenian(chips)) return null;
     if (allowSupport) title = supportTitle();
     var hints = (Array.isArray(raw.hints) ? raw.hints : []).map(function (hint) {
       return stripAgeMentions(cleanPhrase(hint, 80));
-    }).filter(function (hint) { return hint && (!isArmenian() || hasArmenian(hint)); }).slice(0, 3);
+    }).filter(function (hint) { return hint && (!chipsShouldBeArmenian() || hasArmenian(hint)); }).slice(0, 3);
     return { title: title, field: field, chips: chips, hints: hints, enough: false };
   }
 
@@ -2001,7 +2012,7 @@
       });
     }
     if (!chips || chips.length < 3) return null;
-    if (isArmenian() && !chipsAreArmenian(chips)) return null;
+    if (chipsShouldBeArmenian() && !chipsAreArmenian(chips)) return null;
     return {
       title: purposeQuestionTitle(key),
       field: key === "learn" ? "topic" : "context",
@@ -2016,7 +2027,7 @@
     var question = normalizeQuestion(source, true);
     var chips = (question && question.chips) || chipsFromRawQuestion(source, true);
     if (!chips || chips.length < 3) return null;
-    if (isArmenian() && !chipsAreArmenian(chips)) return null;
+    if (chipsShouldBeArmenian() && !chipsAreArmenian(chips)) return null;
     return {
       title: supportTitle(),
       field: "support",
@@ -5384,7 +5395,7 @@
     });
     window.addEventListener("nanik:langchange", function () {
       syncLanguageFromApp();
-      if (isArmenian() && aiQuestion && !hasArmenian([aiQuestion.title].concat((aiQuestion.chips || []).map(function (chip) { return chip.label; })).join(" "))) {
+      if (chipsShouldBeArmenian() && aiQuestion && !hasArmenian([aiQuestion.title].concat((aiQuestion.chips || []).map(function (chip) { return chip.label; })).join(" "))) {
         aiQuestion = null;
         visibleQuestion = null;
         heroQuestion = null;

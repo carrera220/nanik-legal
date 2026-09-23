@@ -135,6 +135,107 @@
     return true;
   }
 
+  function exceedsChunkLimits(text, limits) {
+    var trimmed = String(text || "").trim();
+    if (!trimmed) return false;
+    return (
+      trimmed.length > limits.maxChars ||
+      countNarrationWords(trimmed) > limits.maxWords ||
+      estimateHiggsTokens(trimmed) > limits.maxTokens
+    );
+  }
+
+  function hardSplitText(text, maxChars) {
+    var trimmed = String(text || "").trim();
+    if (!trimmed) return [];
+    if (trimmed.length <= maxChars) return [trimmed];
+    var out = [];
+    var start = 0;
+    while (start < trimmed.length) {
+      var end = Math.min(trimmed.length, start + maxChars);
+      if (end < trimmed.length) {
+        var slice = trimmed.slice(start, end);
+        var space = slice.lastIndexOf(" ");
+        if (space > Math.floor(maxChars * 0.4)) end = start + space;
+      }
+      var piece = trimmed.slice(start, end).trim();
+      if (piece) out.push(piece);
+      start = end;
+      while (start < trimmed.length && trimmed.charAt(start) === " ") start += 1;
+    }
+    return out;
+  }
+
+  function splitByWordCount(text, maxWords) {
+    var words = String(text || "").trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    if (words.length <= maxWords) return [words.join(" ")];
+    var out = [];
+    for (var i = 0; i < words.length; i += maxWords) {
+      out.push(words.slice(i, i + maxWords).join(" "));
+    }
+    return out;
+  }
+
+  /** Last resort when a single sentence still exceeds char/word caps (matches app). */
+  function splitLongSentenceByWords(sentence, maxChars, maxWords) {
+    var out = [];
+    var parts = splitByWordCount(sentence, maxWords);
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].length <= maxChars) out.push(parts[i].trim());
+      else out.push.apply(out, hardSplitText(parts[i], maxChars));
+    }
+    return out.filter(Boolean);
+  }
+
+  function splitAtCommaBoundaries(text) {
+    var normalized = String(text || "").replace(/\s+/g, " ").trim();
+    if (!normalized) return [];
+    var segments = [];
+    var current = "";
+    for (var i = 0; i < normalized.length; i++) {
+      var ch = normalized.charAt(i);
+      current += ch;
+      if (ch === "," || ch === "،" || ch === "‚") {
+        var piece = current.trim();
+        if (piece) segments.push(piece);
+        current = "";
+      }
+    }
+    var tail = current.trim();
+    if (tail) segments.push(tail);
+    return segments.length ? segments : [normalized];
+  }
+
+  function splitOversizedAtCommasThenWords(text, limits) {
+    var trimmed = String(text || "").trim();
+    if (!trimmed) return [];
+    if (fitsChunkLimits(trimmed, limits)) return [trimmed];
+    var clauses = splitAtCommaBoundaries(trimmed);
+    if (clauses.length > 1) {
+      var grouped = [];
+      var batch = "";
+      for (var i = 0; i < clauses.length; i++) {
+        var piece = clauses[i].trim();
+        if (!piece) continue;
+        var candidate = batch ? batch + " " + piece : piece;
+        if (fitsChunkLimits(candidate, limits)) {
+          batch = candidate;
+          continue;
+        }
+        if (batch.trim()) {
+          grouped.push(batch.trim());
+          batch = "";
+        }
+        if (fitsChunkLimits(piece, limits)) batch = piece;
+        else grouped.push.apply(grouped, splitLongSentenceByWords(piece, limits.maxChars, limits.maxWords));
+      }
+      if (batch.trim()) grouped.push(batch.trim());
+      if (grouped.length) return grouped;
+    }
+    return splitLongSentenceByWords(trimmed, limits.maxChars, limits.maxWords);
+  }
+
   function canMergeChunks(a, b, limits) {
     var merged = (a + " " + b).trim();
     if (splitAtTtsSentenceBoundaries(merged).length > limits.sentencesMax) return false;
@@ -165,18 +266,29 @@
     return out;
   }
 
+  /**
+   * Split story text into Higgs-safe packs. Oversized packs used to stay as one request,
+   * so max_new_tokens (2047) truncated audio around ~37s — even though concat worked.
+   */
   function computeNarrationChunks(text) {
     var limits = chunkLimits();
-    var scenes = String(text || "")
+    // Paragraph breaks often replace periods in generated stories — treat them as boundaries.
+    var normalized = String(text || "")
+      .replace(/\r\n/g, "\n")
+      .replace(/\n{2,}/g, ". ")
+      .replace(/\n/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!normalized) return [];
+
+    var scenes = normalized
       .split(/\s*\[SCENE_BREAKS?\]\s*/gi)
       .map(function (s) {
         return s.trim();
       })
       .filter(Boolean);
-    if (!scenes.length) {
-      var single = String(text || "").trim();
-      return single ? [single] : [];
-    }
+    if (!scenes.length) scenes = [normalized];
+
     var packs = [];
     for (var s = 0; s < scenes.length; s++) {
       var sentences = splitAtTtsSentenceBoundaries(scenes[s]);
@@ -184,24 +296,35 @@
       for (var i = 0; i < sentences.length; i++) {
         var sentence = sentences[i];
         if (!batch.length) {
-          batch.push(sentence);
+          if (exceedsChunkLimits(sentence, limits)) {
+            packs.push.apply(packs, splitOversizedAtCommasThenWords(sentence, limits));
+          } else {
+            batch.push(sentence);
+          }
           continue;
         }
         var candidate = (batch.join(" ") + " " + sentence).trim();
-        var over =
-          countNarrationWords(candidate) > limits.maxWords ||
-          candidate.length > limits.maxChars ||
-          estimateHiggsTokens(candidate) > limits.maxTokens;
+        var over = exceedsChunkLimits(candidate, limits);
         if (over || batch.length >= limits.sentencesMax) {
           packs.push(batch.join(" ").trim());
-          batch = [sentence];
+          batch = [];
+          if (exceedsChunkLimits(sentence, limits)) {
+            packs.push.apply(packs, splitOversizedAtCommasThenWords(sentence, limits));
+          } else {
+            batch = [sentence];
+          }
         } else {
           batch.push(sentence);
         }
       }
       if (batch.length) packs.push(batch.join(" ").trim());
     }
-    return coalesceUndersizedChunks(packs.filter(Boolean), limits);
+    return coalesceUndersizedChunks(
+      packs.filter(Boolean).filter(function (pack) {
+        return !!String(pack).trim();
+      }),
+      limits
+    );
   }
 
   function decodeBase64Bytes(b64) {
@@ -213,7 +336,14 @@
 
   function bytesToPcm16Le(bytes) {
     var even = bytes.byteLength - (bytes.byteLength % 2);
-    return new Int16Array(bytes.buffer, bytes.byteOffset, even / 2);
+    var view = new Int16Array(bytes.buffer, bytes.byteOffset, even / 2);
+    // Copy out of the decode buffer so later parts cannot share/alias memory.
+    return new Int16Array(view);
+  }
+
+  function silencePcm16(sampleRate, ms) {
+    var samples = Math.max(0, Math.round((Number(sampleRate) || 24000) * (Math.max(0, Number(ms) || 0) / 1000)));
+    return new Int16Array(samples);
   }
 
   function concatPcm16(parts) {
@@ -423,10 +553,12 @@
         var mime = String(res.mimeType || "").toLowerCase();
         var fmt = String(sampling.responseFormat || "pcm").toLowerCase();
         if (fmt === "pcm" || mime.indexOf("pcm") >= 0 || (!mime && fmt === "pcm")) {
+          if (pcmParts.length) pcmParts.push(silencePcm16(sampling.sampleRate, 120));
           pcmParts.push(bytesToPcm16Le(bytes));
         } else if (mime.indexOf("wav") >= 0) {
           // Skip RIFF header if present (44 bytes) — rare override path.
           var pcmStart = bytes.byteLength > 44 ? 44 : 0;
+          if (pcmParts.length) pcmParts.push(silencePcm16(sampling.sampleRate, 120));
           pcmParts.push(bytesToPcm16Le(bytes.subarray(pcmStart)));
         } else {
           throw new Error("Unexpected TTS audio format; expected PCM.");

@@ -1638,17 +1638,17 @@ body.is-create-panel .dash-main {
 .dash-kids-hero-media {
   display: grid;
   width: 100%;
-  height: 184px;
-  flex: 0 0 184px;
-  margin: 4px 0 8px;
+  height: 168px;
+  flex: 0 0 168px;
+  margin: 4px 0 16px;
   place-items: center;
-  overflow: visible;
+  overflow: hidden;
   background: transparent;
 }
 .dash-kids-hero-media img {
   width: 100%;
   height: 100%;
-  padding: 4px 10px 0;
+  padding: 8px 12px 0;
   box-sizing: border-box;
   object-fit: contain;
   object-position: center center;
@@ -1662,13 +1662,15 @@ body.is-create-panel .dash-main {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 4px 0 0;
-  padding: 0;
-  min-height: 0;
+  margin: 0;
+  padding: 4px 2px 0;
+  min-height: 52px;
   flex: 1;
   background: transparent;
   text-align: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 .dash-kids-hero-title {
   margin: 0;
@@ -1678,6 +1680,9 @@ body.is-create-panel .dash-main {
   line-height: 1.15;
   letter-spacing: 0;
   text-align: center;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .dash-kids-hero-desc {
   display: block;
@@ -1709,11 +1714,11 @@ body.is-create-panel .dash-main {
     min-height: 310px;
   }
   .dash-kids-hero-media {
-    height: 170px;
-    flex-basis: 170px;
-    margin-bottom: 6px;
+    height: 152px;
+    flex-basis: 152px;
+    margin-bottom: 14px;
   }
-  .dash-kids-hero-copy { margin-top: 8px; }
+  .dash-kids-hero-copy { margin-top: 0; padding-top: 2px; }
   .dash-kids-hero-title { font-size: 18px; }
   .dash-kids-hero-arrow {
     width: 44px;
@@ -6089,18 +6094,18 @@ body.dash:has(.guided-step[data-guided-step="generating"].is-on) #guided-title-r
 .guided-hero-flip-front .guided-intent-card-media {
   display: grid;
   width: 100%;
-  height: 184px;
-  margin: 4px 0 8px;
+  height: 168px;
+  margin: 4px 0 16px;
   place-items: center;
   aspect-ratio: auto;
   background: transparent;
-  overflow: visible;
+  overflow: hidden;
 }
 .guided-hero-card-media img,
 .guided-hero-flip-front .guided-intent-card-media img {
   width: 100%;
   height: 100%;
-  padding: 4px 10px 0;
+  padding: 8px 12px 0;
   box-sizing: border-box;
   object-fit: contain;
   object-position: center center;
@@ -6109,11 +6114,13 @@ body.dash:has(.guided-step[data-guided-step="generating"].is-on) #guided-title-r
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin: 4px 0 0;
-  padding: 0;
-  min-height: 0;
+  margin: 0;
+  padding: 4px 2px 0;
+  min-height: 52px;
   flex: 1;
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 .guided-hero-flip-front .guided-intent-card-title {
   margin: 0;
@@ -7239,12 +7246,25 @@ body.dash:has(.guided-step[data-guided-step="hero"].is-on) .guided-title-row {
   max-width: 220px;
   width: auto;
   min-width: 0;
-  height: auto;
-  min-height: 0;
+  height: 332px;
+  min-height: 332px;
+  padding: 10px 16px 16px;
   text-align: left;
   color: #071142;
   border: 0;
   background: #ddecff;
+  overflow: hidden;
+}
+.guided-profile-list .dash-kids-hero-card.guided-profile-card .dash-kids-hero-media {
+  height: 160px;
+  flex: 0 0 160px;
+  margin: 0 0 16px;
+  overflow: hidden;
+}
+.guided-profile-list .dash-kids-hero-card.guided-profile-card .dash-kids-hero-copy {
+  margin: 0;
+  padding-top: 2px;
+  min-height: 56px;
 }
 .guided-profile-list .dash-kids-hero-card.guided-profile-card:nth-child(2) { background: #eadfff; }
 .guided-profile-list .dash-kids-hero-card.guided-profile-card:nth-child(3) { background: #ffe2ed; }
@@ -8627,8 +8647,9 @@ body:not(.is-create-panel) #guided-title-row {
   }
   .guided-hero-card-media,
   .guided-hero-flip-front .guided-intent-card-media {
-    height: 178px;
-    margin-top: 4px;
+    height: 156px;
+    margin: 4px 0 14px;
+    overflow: hidden;
   }
 }
 
@@ -8651,7 +8672,6 @@ body:not(.is-create-panel) #guided-title-row {
     width: 44px;
     height: 44px;
     margin-top: 8px;
-  }
     font-size: 24px;
   }
   .guided-hero-flip-card,
@@ -8662,10 +8682,11 @@ body:not(.is-create-panel) #guided-title-row {
   }
   .guided-hero-card-media,
   .guided-hero-flip-front .guided-intent-card-media {
-    height: 170px;
-    margin-bottom: 6px;
+    height: 148px;
+    margin: 4px 0 14px;
+    overflow: hidden;
   }
-  .guided-hero-flip-front .guided-intent-card-copy { margin-top: 8px; }
+  .guided-hero-flip-front .guided-intent-card-copy { margin-top: 0; padding-top: 2px; }
   .guided-hero-flip-front .guided-intent-card-title { font-size: 18px; }
   .guided-hero-flip-front .guided-intent-card-desc { font-size: 13px; }
   .guided-hero-flip-front .guided-intent-card-arrow {
