@@ -310,8 +310,13 @@
     return !!(getPrompt() || getImage());
   }
 
-  function dashboardUrl() {
-    return /\/hy\//.test(location.pathname || "") ? "../dashboard.html" : "dashboard.html";
+  function dashboardUrl(panel) {
+    var base = /\/hy\//.test(location.pathname || "") ? "../dashboard.html" : "dashboard.html";
+    var name = String(panel || "").trim().toLowerCase();
+    if (name === "create" || name === "library" || name === "voices" || name === "kids" || name === "account") {
+      return base + "?panel=" + encodeURIComponent(name);
+    }
+    return base;
   }
 
   function writeAuthSession(session) {
@@ -372,8 +377,8 @@
 
   var authReturn = consumeAuthReturn();
 
-  function goDashboard() {
-    location.replace(dashboardUrl());
+  function goDashboard(panel) {
+    location.replace(dashboardUrl(panel));
   }
 
   function compressImage(file, maxEdge, quality) {

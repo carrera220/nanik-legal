@@ -207,7 +207,7 @@
       var draft = window.NANIK_DRAFT;
       var session = draft && draft.readSession ? draft.readSession() : null;
       if (session && session.access_token && draft && draft.goDashboard) {
-        draft.goDashboard();
+        draft.goDashboard("create");
         return;
       }
       if (typeof window.NANIK_OPEN_SIGNUP === "function") {

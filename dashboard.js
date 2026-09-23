@@ -7985,7 +7985,7 @@
         applyCustomAnswer(text);
       });
     }
-    showPanel("library");
+    showPanel(initialPanelFromUrl());
     paintChrome();
     wireAccountChrome();
     paintStoriesCapsule();
@@ -8016,6 +8016,37 @@
       phIdx = 0;
       if (step === "idle") startPhRotate();
     });
+  }
+
+  function initialPanelFromUrl() {
+    try {
+      var params = new URLSearchParams(location.search || "");
+      var panel = String(params.get("panel") || "").trim().toLowerCase();
+      if (
+        panel === "create" ||
+        panel === "library" ||
+        panel === "voices" ||
+        panel === "kids" ||
+        panel === "account"
+      ) {
+        if (panel === "create") {
+          window.setTimeout(function () {
+            try {
+              window.dispatchEvent(new CustomEvent("nanik:create-new"));
+            } catch (e) {}
+          }, 0);
+          try {
+            var clean = new URL(location.href);
+            clean.searchParams.delete("panel");
+            var qs = clean.searchParams.toString();
+            history.replaceState({}, "", clean.pathname + (qs ? "?" + qs : "") + clean.hash);
+          } catch (e2) {}
+        }
+        return panel;
+      }
+      if (String(location.hash || "").replace(/^#/, "").toLowerCase() === "create") return "create";
+    } catch (err) {}
+    return "library";
   }
 
   if (document.readyState === "loading") {

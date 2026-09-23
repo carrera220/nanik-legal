@@ -818,10 +818,12 @@
     if (!session || !session.access_token) return false;
     closeModal();
     if (window.NANIK_DRAFT && window.NANIK_DRAFT.goDashboard) {
-      window.NANIK_DRAFT.goDashboard();
+      window.NANIK_DRAFT.goDashboard("create");
       return true;
     }
-    location.replace(/\/hy\//.test(location.pathname || "") ? "../dashboard.html" : "dashboard.html");
+    location.replace(
+      (/\/hy\//.test(location.pathname || "") ? "../dashboard.html" : "dashboard.html") + "?panel=create"
+    );
     return true;
   }
 
