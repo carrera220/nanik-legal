@@ -470,6 +470,23 @@
     return html || "en";
   }
 
+  /** Best-effort ISO country for Dodo billing prefill (editable on checkout). */
+  function guessBillingCountry() {
+    try {
+      var locale = String(Intl.DateTimeFormat().resolvedOptions().locale || "").trim();
+      var region = locale.match(/[-_]([A-Za-z]{2})\b/);
+      if (region && region[1]) return region[1].toUpperCase();
+    } catch (e) {}
+    try {
+      var langs = navigator.languages || [navigator.language];
+      for (var i = 0; i < langs.length; i++) {
+        var m = String(langs[i] || "").match(/[-_]([A-Za-z]{2})\b/);
+        if (m && m[1]) return m[1].toUpperCase();
+      }
+    } catch (e2) {}
+    return undefined;
+  }
+
   function currentReturnUrl() {
     try {
       var url = new URL(window.location.href);
@@ -506,7 +523,7 @@
             returnUrl: returnUrl,
             forceProduct: opts.forceProduct !== false,
             language: opts.language || siteLanguage(),
-            billingCountry: opts.billingCountry || undefined,
+            billingCountry: opts.billingCountry || guessBillingCountry(),
           },
           fresh,
           "checkout"
