@@ -504,8 +504,9 @@
           {
             planId: planId,
             returnUrl: returnUrl,
-            forceProduct: opts.forceProduct === true,
+            forceProduct: opts.forceProduct !== false,
             language: opts.language || siteLanguage(),
+            billingCountry: opts.billingCountry || undefined,
           },
           fresh,
           "checkout"
