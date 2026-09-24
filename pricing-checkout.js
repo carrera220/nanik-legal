@@ -470,23 +470,18 @@
     return html || "en";
   }
 
-  /** Best-effort ISO country for Dodo billing prefill (editable on checkout). */
+  /**
+   * Soft hints only — never use browser language region (Safari en-GB → UK).
+   * Server prefers Cloudflare IP country over this value.
+   */
   function guessBillingCountry() {
     try {
       if (siteLanguage() === "hy") return "AM";
     } catch (e0) {}
     try {
-      var locale = String(Intl.DateTimeFormat().resolvedOptions().locale || "").trim();
-      var region = locale.match(/[-_]([A-Za-z]{2})\b/);
-      if (region && region[1]) return region[1].toUpperCase();
-    } catch (e) {}
-    try {
-      var langs = navigator.languages || [navigator.language];
-      for (var i = 0; i < langs.length; i++) {
-        var m = String(langs[i] || "").match(/[-_]([A-Za-z]{2})\b/);
-        if (m && m[1]) return m[1].toUpperCase();
-      }
-    } catch (e2) {}
+      var tz = String(Intl.DateTimeFormat().resolvedOptions().timeZone || "");
+      if (tz === "Asia/Yerevan") return "AM";
+    } catch (e1) {}
     return undefined;
   }
 
