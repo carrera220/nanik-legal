@@ -473,6 +473,9 @@
   /** Best-effort ISO country for Dodo billing prefill (editable on checkout). */
   function guessBillingCountry() {
     try {
+      if (siteLanguage() === "hy") return "AM";
+    } catch (e0) {}
+    try {
       var locale = String(Intl.DateTimeFormat().resolvedOptions().locale || "").trim();
       var region = locale.match(/[-_]([A-Za-z]{2})\b/);
       if (region && region[1]) return region[1].toUpperCase();
