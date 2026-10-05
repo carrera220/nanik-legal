@@ -96,7 +96,6 @@ Test and live are **separate**. Test product IDs (`pdt_…` from test) do not wo
 | Yearly | `pdt_0NntCBN3MeBbp4YchDEil` | **$59.99**/yr + 3-day trial |
 | Collection | `pdc_0NnvLMeFWdjr3hkKAifDI` | Nanik Plus (both plans) |
 
-> Note: the marketing page still shows $14.99 / $89.99. Checkout uses the Dodo product prices above. Align the site copy before or after go-live.
 
 ### 1) Create a **live** API key
 
