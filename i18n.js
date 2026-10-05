@@ -95,7 +95,7 @@
       'footer.copy': '© 2026 Nanik · ',
 
       'index.title': 'Nanik: True-Voice Bedtime Stories in 100+ Languages',
-      'index.h1': 'Create a story made just for your child',
+      'index.h1': 'Personalized bedtime stories in your own voice',
       'index.lead': 'Their world. Their story. <span class="hero-lead-voice">Told in <strong>your own voice</strong>.</span>',
       'hero.chat.label': 'Tell Nanik a story idea',
       'hero.chat.send': 'Start creating',
