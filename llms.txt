@@ -22,6 +22,7 @@ Nanik is an iOS app where a parent or guardian creates a personalized bedtime st
 ## Key URLs
 
 - Homepage: https://nanik.app/
+- Bedtime stories in your own voice: https://nanik.app/bedtime-stories-in-your-voice
 - App Store: https://apps.apple.com/app/id6762894314
 - Languages: https://nanik.app/languages.html
 - Stories: https://nanik.app/stories.html
