@@ -1608,6 +1608,9 @@ body.hero-narrating .hero-magic-sub {
 .plan-card .price { font-size: 15px; color: var(--muted); margin-bottom: 14px; }
 .plan-card ul { padding-left: 20px; margin: 0; }
 .plan-card li { margin-bottom: 6px; }
+body.pricing-page {
+  background: linear-gradient(180deg, #9b1cff 0%, #6238f5 35%, #3a5fd9 70%, #228fc6 100%);
+}
 .pricing-matrix-wrap {
   margin: 28px 0;
   overflow-x: auto;
