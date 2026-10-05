@@ -9,7 +9,7 @@
 <link rel="canonical" href="https://nanik.app/pricing.html">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20261005promo">
+<link rel="stylesheet" href="style.css?v=20261005yearlycol">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nanik">
@@ -39,19 +39,6 @@
 <h1 data-i18n="price.h1">Simple pricing, free to start</h1>
 <p class="effective" data-i18n="price.lead">Try Nanik free, then upgrade to Nanik Plus for more stories, more voice clones, and advanced storytelling.</p>
 
-<section class="yearly-promo" aria-labelledby="yearly-promo-title">
-  <span class="yearly-promo-ribbon" data-i18n="price.promo.best">Best value</span>
-  <div class="yearly-promo-badges">
-    <span class="yearly-promo-save" data-i18n="price.promo.save">Save 50%</span>
-    <span class="yearly-promo-trial" data-i18n="price.promo.trial">7-day free trial</span>
-  </div>
-  <h2 id="yearly-promo-title" class="yearly-promo-title" data-i18n="price.promo.title">Nanik Plus Yearly</h2>
-  <p class="yearly-promo-price"><s>$119.88</s> <strong>$59.99</strong><span data-i18n="price.promo.per">/year</span></p>
-  <p class="yearly-promo-sub" data-i18n="price.promo.sub">Just $5 a month · 60 stories every month · unlimited voice clones</p>
-  <button type="button" class="btn yearly-promo-cta" data-dodo-plan="yearly"><span data-i18n="price.cta">Activate 7-day trial</span></button>
-  <p class="yearly-promo-fine" data-i18n="price.promo.fine">Free for 7 days, then $59.99/year. Cancel anytime.</p>
-</section>
-
 <div class="pricing-matrix-wrap">
   <table class="pricing-matrix">
     <thead>
@@ -59,7 +46,14 @@
         <th scope="col" data-i18n="price.matrix.feature">Feature</th>
         <th scope="col" data-i18n="price.free.h">Free</th>
         <th scope="col" class="plus" data-i18n="price.plus.monthly.h">Plus Monthly</th>
-        <th scope="col" class="plus plus-yearly" data-i18n="price.plus.yearly.h">Plus Yearly</th>
+        <th scope="col" class="plus plus-yearly">
+          <span class="matrix-ribbon" data-i18n="price.promo.best">Best value</span>
+          <span class="matrix-plan-name" data-i18n="price.plus.yearly.h">Plus Yearly</span>
+          <span class="matrix-badges">
+            <span class="matrix-badge matrix-badge-save" data-i18n="price.promo.save">Save 50%</span>
+            <span class="matrix-badge matrix-badge-trial" data-i18n="price.promo.trial">7-day free trial</span>
+          </span>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -73,8 +67,9 @@
         </td>
         <td class="plus plus-yearly">
           <div class="matrix-price">
-            <span class="matrix-discount" data-i18n="price.plus.yearly.discount">Save 50%</span>
+            <span class="matrix-price-was"><s>$119.88</s></span>
             <span class="matrix-price-amount" data-i18n="price.plus.yearly.price">$59.99/yr*</span>
+            <span class="matrix-price-per" data-i18n="price.promo.permonth">Just $5 a month</span>
           </div>
         </td>
       </tr>
@@ -254,7 +249,7 @@
 <script src="site-nav.js?v=20260729u" defer></script>
 <script src="signup.js?v=20260924gacct" defer></script>
 <script src="geo-lang.js?v=20260920geo1" defer></script>
-<script src="i18n.js?v=20261005promo2" defer></script>
+<script src="i18n.js?v=20261005yearlycol" defer></script>
 <script src="nanik-api-config.js?v=20260918dodo"></script>
 <script src="pricing-checkout.js?v=20260924ipcountry" defer></script>
 <script src="play-waitlist.js?v=20260812n" defer></script>

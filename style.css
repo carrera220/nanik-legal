@@ -1611,111 +1611,6 @@ body.hero-narrating .hero-magic-sub {
 body.pricing-page {
   background: linear-gradient(180deg, #9b1cff 0%, #6238f5 35%, #3a5fd9 70%, #228fc6 100%);
 }
-.yearly-promo {
-  position: relative;
-  margin: 32px 0 8px;
-  padding: 34px 24px 26px;
-  border-radius: 26px;
-  text-align: center;
-  color: #ffffff;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 214, 102, 0.28) 0%, rgba(255, 214, 102, 0) 60%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%);
-  border: 2px solid rgba(245, 200, 66, 0.85);
-  box-shadow:
-    0 18px 40px rgba(26, 15, 53, 0.35),
-    0 0 0 6px rgba(245, 200, 66, 0.12);
-}
-.yearly-promo-ribbon {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 6px 16px;
-  border-radius: 999px;
-  background: linear-gradient(105deg, #f3a69d 0%, #f5c842 100%);
-  color: #2a1250;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  box-shadow: 0 6px 16px rgba(26, 15, 53, 0.3);
-}
-.yearly-promo-badges {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.yearly-promo-save,
-.yearly-promo-trial {
-  display: inline-flex;
-  align-items: center;
-  padding: 7px 14px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.1;
-}
-.yearly-promo-save {
-  background: #7ddea5;
-  color: #0f3b24;
-}
-.yearly-promo-trial {
-  background: #ffffff;
-  color: #4b1fb8;
-}
-.legal-main .yearly-promo-title {
-  margin: 0 0 6px;
-  font-size: clamp(22px, 4vw, 28px);
-}
-.yearly-promo-price {
-  margin: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.yearly-promo-price s {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 20px;
-  font-weight: 600;
-}
-.yearly-promo-price strong {
-  font-size: clamp(44px, 9vw, 60px);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.yearly-promo-price > span {
-  font-size: 18px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-}
-.yearly-promo-sub {
-  margin: 12px auto 18px;
-  max-width: 34rem;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.92);
-}
-.yearly-promo .yearly-promo-cta {
-  margin-top: 0;
-  min-height: 54px;
-  padding: 0 32px;
-  font-size: 17px;
-  font-weight: 800;
-  background: #ffffff;
-  color: #2a1250 !important;
-  box-shadow: 0 10px 22px rgba(26, 15, 53, 0.3);
-}
-.yearly-promo-fine {
-  margin: 12px 0 0;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.78);
-}
 .pricing-matrix-wrap {
   margin: 28px 0;
   overflow-x: auto;
@@ -1761,7 +1656,112 @@ body.pricing-page {
 .pricing-matrix th.plus-yearly,
 .pricing-matrix td.plus-yearly {
   background: rgba(224, 179, 76, 0.12);
-  border-left: 1px solid rgba(224, 179, 76, 0.35);
+  border-left: 2px solid rgba(245, 200, 66, 0.9);
+  border-right: 2px solid rgba(245, 200, 66, 0.9);
+}
+.pricing-matrix thead th.plus-yearly {
+  border-top: 2px solid rgba(245, 200, 66, 0.9);
+  padding-top: 16px;
+  vertical-align: top;
+}
+.pricing-matrix tbody tr:last-child td.plus-yearly {
+  border-bottom: 2px solid rgba(245, 200, 66, 0.9);
+}
+.pricing-matrix .matrix-ribbon {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: linear-gradient(105deg, #f3a69d 0%, #f5c842 100%);
+  color: #2a1250;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pricing-matrix .matrix-plan-name {
+  display: block;
+}
+.pricing-matrix .matrix-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+}
+.pricing-matrix .matrix-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.pricing-matrix .matrix-badge-save {
+  background: #7ddea5;
+  color: #0f3b24;
+}
+.pricing-matrix .matrix-badge-trial {
+  background: #ffffff;
+  color: #4b1fb8;
+}
+.pricing-matrix .matrix-price-was s {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+}
+.pricing-matrix .matrix-price-per {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.78);
+}
+@media (max-width: 700px) {
+  .pricing-matrix {
+    min-width: 0;
+  }
+  .pricing-matrix th,
+  .pricing-matrix td,
+  .pricing-matrix thead th {
+    padding: 10px 5px;
+    font-size: 12px;
+  }
+  .pricing-matrix tbody th[scope="row"] {
+    width: 31%;
+  }
+  .pricing-matrix td,
+  .pricing-matrix thead th:not(:first-child) {
+    width: 23%;
+  }
+  .pricing-matrix thead th.plus-yearly {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .pricing-matrix .matrix-ribbon {
+    font-size: 9px;
+    padding: 3px 7px;
+    letter-spacing: 0.04em;
+  }
+  .pricing-matrix .matrix-badge {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+  .pricing-matrix .matrix-ribbon,
+  .pricing-matrix .matrix-badge {
+    white-space: normal;
+    max-width: 100%;
+  }
+  .pricing-matrix .matrix-badges {
+    align-self: stretch;
+  }
+  .pricing-matrix .matrix-price-amount {
+    font-size: 12px;
+  }
+  .pricing-matrix .matrix-price-was s {
+    font-size: 11px;
+  }
+  .pricing-matrix .matrix-price-per {
+    font-size: 10px;
+  }
 }
 .pricing-matrix thead th.plus,
 .pricing-matrix thead th.plus-yearly {
