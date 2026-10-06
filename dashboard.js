@@ -96,6 +96,43 @@
       feedbackSending: "Sending…",
       feedbackThanks: "Thank you! We’ll use this to make stories better.",
       feedbackError: "Couldn’t send. Please try again.",
+      nextTitle: "What should we make next?",
+      nextRecTitle: "Continue this story",
+      nextRecLead: "Same characters, same world — and something new is about to happen.",
+      nextNewTitle: "Try something new",
+      nextNewLead: "Choose a completely different feeling, experience or adventure.",
+      whenTitle: "When would you like the next story?",
+      whenLead: "You can create it now, or we’ll prepare it before story time and let you know when it’s ready.",
+      whenNowTitle: "Create it now",
+      whenNowLead: "Have the next story ready in a moment",
+      whenTomorrowTitle: "Have it ready tomorrow",
+      whenTomorrowLead: "We’ll generate it before story time and notify you",
+      whenScheduledTitle: "We’ll have it ready tomorrow",
+      whenScheduledLead: "We’ll generate it before story time and let you know.",
+      whenBack: "Back",
+      whenTimeTitle: "What time is story time?",
+      whenTimeLead: "We’ll have it ready a little before and send you a notification.",
+      whenTime730: "7:30\nPM",
+      whenTime800: "8:00\nPM",
+      whenTime830: "8:30\nPM",
+      whenTimeCustom: "Choose a\ntime",
+      whenTimeContinue: "Continue →",
+      whenTimeEarlier: "Earlier",
+      whenTimeLater: "Later",
+      whenSoundTitle: "How should it sound?",
+      whenSoundLead: "You can have the story narrated in your voice, choose from our storyteller voices, or just prepare the story for you to read it.",
+      whenSoundMineTitle: "My voice",
+      whenSoundMineLead: "Nanik can narrate it in your voice.",
+      whenSoundTellerTitle: "Storyteller voice",
+      whenSoundTellerLead: "Choose from Nanik’s voices.",
+      whenSoundReadTitle: "I’ll read it myself",
+      whenSoundReadLead: "Just prepare the story.",
+      whenNotifyTitle: "Download the Nanik app to get notified",
+      whenNotifyLead: "Once your story is ready tomorrow.",
+      whenNotifyNotIphone: "Not an iPhone user?",
+      whenNotifyEmail: "Send email",
+      whenNotifySentTitle: "We’ll notify you",
+      whenNotifySentLead: "We’ll email you when the story is ready tomorrow.",
       voiceIntroTitle: "Test my voice",
       voiceIntroBody: "Record your voice to hear how stories will sound",
       voiceIntroContinue: "Continue",
@@ -304,6 +341,43 @@
       feedbackSending: "Ուղարկում եմ…",
       feedbackThanks: "Շնորհակալություն։ Սա կօգնի հեքիաթները ավելի լավը դարձնել։",
       feedbackError: "Չհաջողվեց ուղարկել։ Փորձեք կրկին։",
+      nextTitle: "Ի՞նչ ստեղծենք հաջորդը",
+      nextRecTitle: "Շարունակել այս հեքիաթը",
+      nextRecLead: "Նույն հերոսները, նույն աշխարհը, և ինչ-որ նոր բան է սպասվում։",
+      nextNewTitle: "Փորձել նոր բան",
+      nextNewLead: "Ընտրեք բոլորովին այլ զգացում, փորձառություն կամ արկած։",
+      whenTitle: "Ե՞րբ եք ուզում հաջորդ հեքիաթը",
+      whenLead: "Կարող եք ստեղծել հիմա, կամ կպատրաստենք մինչև հեքիաթի ժամը և կտեղեկացնենք, երբ պատրաստ լինի։",
+      whenNowTitle: "Ստեղծել հիմա",
+      whenNowLead: "Հաջորդ հեքիաթը պատրաստ կլինի մի պահում",
+      whenTomorrowTitle: "Պատրաստ լինի վաղը",
+      whenTomorrowLead: "Կստեղծենք մինչև հեքիաթի ժամը և կտեղեկացնենք",
+      whenScheduledTitle: "Վաղը պատրաստ կլինի",
+      whenScheduledLead: "Կստեղծենք մինչև հեքիաթի ժամը և կտեղեկացնենք։",
+      whenBack: "Հետ",
+      whenTimeTitle: "Հեքիաթի ժամը ո՞րն է",
+      whenTimeLead: "Կպատրաստենք մի քիչ ավելի վաղ և կտեղեկացնենք։",
+      whenTime730: "19:30",
+      whenTime800: "20:00",
+      whenTime830: "20:30",
+      whenTimeCustom: "Ընտրել\nժամ",
+      whenTimeContinue: "Շարունակել →",
+      whenTimeEarlier: "Ավելի վաղ",
+      whenTimeLater: "Ավելի ուշ",
+      whenSoundTitle: "Ինչպե՞ս հնչի",
+      whenSoundLead: "Կարող եք լսել ձեր ձայնով, ընտրել պատմողի ձայն, կամ պարզապես պատրաստել հեքիաթը՝ ինքներդ կարդալու համար։",
+      whenSoundMineTitle: "Իմ ձայնը",
+      whenSoundMineLead: "Նանիկը կպատմի ձեր ձայնով։",
+      whenSoundTellerTitle: "Պատմողի ձայն",
+      whenSoundTellerLead: "Ընտրեք Նանիկի ձայներից։",
+      whenSoundReadTitle: "Ինքս կկարդամ",
+      whenSoundReadLead: "Պարզապես պատրաստեք հեքիաթը։",
+      whenNotifyTitle: "Ներբեռնեք Nanik հավելվածը՝ ծանուցում ստանալու համար",
+      whenNotifyLead: "Երբ վաղը հեքիաթը պատրաստ լինի։",
+      whenNotifyNotIphone: "iPhone չունե՞ք",
+      whenNotifyEmail: "Ուղարկել էլ. նամակ",
+      whenNotifySentTitle: "Կտեղեկացնենք",
+      whenNotifySentLead: "Կուղարկենք էլ. նամակ, երբ հեքիաթը պատրաստ լինի վաղը։",
       voiceIntroTitle: "Փորձել իմ ձայնով",
       voiceIntroBody: "Ձայնագրեք Ձեր ձայնը տեսնելու համար թե ինչպես կհնչեն հեքիաթները",
       voiceIntroContinue: "Շարունակել",
@@ -512,6 +586,43 @@
       feedbackSending: "Отправляем…",
       feedbackThanks: "Спасибо! Это поможет сделать истории лучше.",
       feedbackError: "Не удалось отправить. Попробуйте ещё раз.",
+      nextTitle: "Что создадим дальше?",
+      nextRecTitle: "Продолжить эту историю",
+      nextRecLead: "Те же герои, тот же мир — и впереди что-то новое.",
+      nextNewTitle: "Попробовать что-то новое",
+      nextNewLead: "Выберите совсем другое чувство, опыт или приключение.",
+      whenTitle: "Когда нужна следующая история?",
+      whenLead: "Можно создать сейчас — или мы подготовим её к сказке и сообщим, когда будет готово.",
+      whenNowTitle: "Создать сейчас",
+      whenNowLead: "Следующая история будет готова через минуту",
+      whenTomorrowTitle: "Пусть будет готово завтра",
+      whenTomorrowLead: "Сгенерируем до сказки и пришлём уведомление",
+      whenScheduledTitle: "Завтра будет готово",
+      whenScheduledLead: "Сгенерируем до сказки и сообщим вам.",
+      whenBack: "Назад",
+      whenTimeTitle: "Во сколько сказка?",
+      whenTimeLead: "Подготовим чуть раньше и пришлём уведомление.",
+      whenTime730: "19:30",
+      whenTime800: "20:00",
+      whenTime830: "20:30",
+      whenTimeCustom: "Выбрать\nвремя",
+      whenTimeContinue: "Продолжить →",
+      whenTimeEarlier: "Раньше",
+      whenTimeLater: "Позже",
+      whenSoundTitle: "Как она должна звучать?",
+      whenSoundLead: "Можно озвучить вашим голосом, выбрать голос рассказчика или просто подготовить историю, чтобы прочитать самим.",
+      whenSoundMineTitle: "Мой голос",
+      whenSoundMineLead: "Nanik расскажет вашим голосом.",
+      whenSoundTellerTitle: "Голос рассказчика",
+      whenSoundTellerLead: "Выберите из голосов Nanik.",
+      whenSoundReadTitle: "Прочитаю сам",
+      whenSoundReadLead: "Просто подготовьте историю.",
+      whenNotifyTitle: "Скачайте приложение Nanik, чтобы получить уведомление",
+      whenNotifyLead: "Когда история будет готова завтра.",
+      whenNotifyNotIphone: "Нет iPhone?",
+      whenNotifyEmail: "Отправить email",
+      whenNotifySentTitle: "Мы сообщим вам",
+      whenNotifySentLead: "Пришлём письмо, когда история будет готова завтра.",
       voiceIntroTitle: "Проверить мой голос",
       voiceIntroBody: "Запишите голос, чтобы услышать, как будут звучать сказки",
       voiceIntroContinue: "Продолжить",
@@ -3727,6 +3838,7 @@
       heroName: heroName,
       setting: String(raw.setting || raw.settingHint || "").trim(),
       helpsWith: String(raw.helpsWith || raw.therapeuticMechanism || "").trim(),
+      nextHint: String(raw.nextHint || "").trim(),
       createdAt: createdAt,
       fromCloud: true,
     };
@@ -3775,6 +3887,7 @@
       hero: heroName ? { name: heroName } : undefined,
       setting: storySettingText(story) || undefined,
       helpsWith: storyHelpsText(story) || undefined,
+      nextHint: String(story.nextHint || "").trim() || undefined,
       hasVoiceover: !!(story.voice || storyVoiceoverUrl(story)),
       voiceoverUrl: isDurableVoiceoverUrl(storyVoiceoverUrl(story))
         ? storyVoiceoverUrl(story)
@@ -4817,6 +4930,7 @@
     });
     document.body.classList.toggle("is-create-panel", name === "create");
     document.body.classList.remove("is-reader-open");
+    closeWhenPage();
     closeDashMenu();
     closeAccountSheet();
     syncTabPillSelection();
@@ -4860,6 +4974,9 @@
     syncTabPillSelection();
     readerFinishedStoryId = "";
     readerReaction = "";
+    resetNextSection();
+    var when = document.getElementById("dash-when");
+    if (when && !when.hidden) closeWhenPage();
   }
 
   var readerFinishedStoryId = "";
@@ -4957,6 +5074,514 @@
     if (modal) modal.hidden = true;
   }
 
+  function paintNextSheet(story) {
+    var pack = ui();
+    var en = COPY.en;
+    var title = document.getElementById("dash-next-title");
+    var recTitle = document.getElementById("dash-next-rec-title");
+    var recLead = document.getElementById("dash-next-rec-lead");
+    var newTitle = document.getElementById("dash-next-new-title");
+    var newLead = document.getElementById("dash-next-new-lead");
+    var avatar = document.getElementById("dash-next-rec-avatar");
+    if (title) title.textContent = pack.nextTitle || en.nextTitle;
+    if (recTitle) recTitle.textContent = pack.nextRecTitle || en.nextRecTitle;
+    if (recLead) {
+      recLead.textContent = String((story && story.nextHint) || "").trim() ||
+        pack.nextRecLead || en.nextRecLead;
+    }
+    if (newTitle) newTitle.textContent = pack.nextNewTitle || en.nextNewTitle;
+    if (newLead) newLead.textContent = pack.nextNewLead || en.nextNewLead;
+    if (avatar) {
+      var cover = String((story && story.cover) || "").trim();
+      if (/^https?:\/\//i.test(cover) || cover.indexOf("data:image/") === 0) {
+        avatar.innerHTML = "<img alt=\"\" src=\"" + cover.replace(/"/g, "") + "\">";
+      } else {
+        avatar.textContent = "✨";
+      }
+    }
+  }
+
+  function resetNextSection(story) {
+    var section = document.getElementById("dash-next");
+    if (!section) return;
+    section.classList.remove("is-in");
+    if (story) paintNextSheet(story);
+  }
+
+  function revealNextSection() {
+    var section = document.getElementById("dash-next");
+    var scroll = document.querySelector("#dash-reader .dash-reader-scroll");
+    if (!section || !scroll || section.classList.contains("is-in")) return;
+    if (section.getBoundingClientRect().top < scroll.getBoundingClientRect().bottom - 40) {
+      section.classList.add("is-in");
+    }
+  }
+
+  var SCHEDULED_KEY = "nanik-web-scheduled-stories";
+  var pendingContinueStory = null;
+  var whenStep = "when";
+  var whenTime = "20:00";
+  var whenTimeWindow = 19 * 60 + 30;
+  var WHEN_TIME_MIN = 17 * 60;
+  var WHEN_TIME_MAX = 22 * 60;
+
+  function storyExcerpt(text) {
+    var body = String(text || "").replace(/\s+/g, " ").trim();
+    if (body.length <= 900) return body;
+    var slice = body.slice(-900);
+    var cut = slice.search(/[.?!](?:\s|$)/);
+    return (cut >= 0 ? slice.slice(cut + 1) : slice).trim();
+  }
+
+  function continuePayload(story) {
+    var child = draft().getChild ? draft().getChild() : null;
+    var lang = detectLang((story && story.body) || "") || siteLang() || "en";
+    var hint = String((story && story.nextHint) || "").trim();
+    var heroName = String((story && (story.heroName || story.childName)) || (child && child.name) || "").trim();
+    var childName = String((story && story.childName) || (child && child.name) || "").trim();
+    var setting = String((story && story.setting) || "").trim();
+    var support = String((story && story.helpsWith) || "").trim();
+    var excerpt = storyExcerpt(story && story.body);
+    var idea = hint
+      ? "The next night of this story, picking up this quiet thread: " + hint
+      : "The next night of this story, same characters and world.";
+    return {
+      idea: idea,
+      childName: childName,
+      childGender: child && child.gender ? child.gender : "",
+      age: child && child.age ? child.age : "",
+      lang: lang,
+      heroKind: heroName && childName && heroName.toLowerCase() === childName.toLowerCase() ? "kid" : "madeup",
+      heroName: heroName,
+      image: "",
+      likes: child && child.likes ? child.likes : "",
+      setting: setting,
+      support: support,
+      continueFrom: {
+        title: String((story && story.title) || "").trim(),
+        hint: hint,
+        excerpt: excerpt,
+        heroName: heroName,
+        storyId: story ? storyIdKey(story.id) : "",
+      },
+    };
+  }
+
+  function readScheduledStories() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(SCHEDULED_KEY) || "[]");
+      return Array.isArray(raw) ? raw : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function writeScheduledStories(list) {
+    try {
+      localStorage.setItem(SCHEDULED_KEY, JSON.stringify((list || []).slice(0, 20)));
+    } catch (e) {}
+  }
+
+  function tomorrowStoryTime(hhmm) {
+    var parts = String(hhmm || "20:00").split(":");
+    var hour = parseInt(parts[0], 10);
+    var minute = parseInt(parts[1], 10);
+    if (isNaN(hour)) hour = 20;
+    if (isNaN(minute)) minute = 0;
+    var due = new Date();
+    due.setDate(due.getDate() + 1);
+    due.setHours(hour, minute, 0, 0);
+    due.setMinutes(due.getMinutes() - 30);
+    return due.toISOString();
+  }
+
+  function paintWhenPage() {
+    var pack = ui();
+    var en = COPY.en;
+    var map = [
+      ["dash-when-title", "whenTitle"],
+      ["dash-when-lead", "whenLead"],
+      ["dash-when-now-title", "whenNowTitle"],
+      ["dash-when-now-lead", "whenNowLead"],
+      ["dash-when-tomorrow-title", "whenTomorrowTitle"],
+      ["dash-when-tomorrow-lead", "whenTomorrowLead"],
+      ["dash-when-scheduled-title", "whenScheduledTitle"],
+      ["dash-when-scheduled-lead", "whenScheduledLead"],
+      ["dash-when-time-title", "whenTimeTitle"],
+      ["dash-when-time-lead", "whenTimeLead"],
+      ["dash-when-sound-title", "whenSoundTitle"],
+      ["dash-when-sound-lead", "whenSoundLead"],
+      ["dash-when-sound-mine-title", "whenSoundMineTitle"],
+      ["dash-when-sound-mine-lead", "whenSoundMineLead"],
+      ["dash-when-sound-teller-title", "whenSoundTellerTitle"],
+      ["dash-when-sound-teller-lead", "whenSoundTellerLead"],
+      ["dash-when-sound-read-title", "whenSoundReadTitle"],
+      ["dash-when-sound-read-lead", "whenSoundReadLead"],
+      ["dash-when-notify-title", "whenNotifyTitle"],
+      ["dash-when-notify-lead", "whenNotifyLead"],
+      ["dash-when-notify-alt-lead", "whenNotifyNotIphone"],
+      ["dash-when-notify-sent-title", "whenNotifySentTitle"],
+      ["dash-when-notify-sent-lead", "whenNotifySentLead"],
+    ];
+    map.forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (el) el.textContent = pack[pair[1]] || en[pair[1]];
+    });
+    var prev = document.getElementById("dash-when-time-prev");
+    var next = document.getElementById("dash-when-time-next");
+    if (prev) prev.setAttribute("aria-label", pack.whenTimeEarlier || "Earlier");
+    if (next) next.setAttribute("aria-label", pack.whenTimeLater || "Later");
+    var cont = document.getElementById("dash-when-time-continue");
+    if (cont) cont.textContent = pack.whenTimeContinue || en.whenTimeContinue;
+    var back = document.getElementById("dash-when-back");
+    if (back) back.setAttribute("aria-label", pack.whenBack || en.whenBack);
+    var store = document.getElementById("dash-when-notify-store");
+    if (store) store.href = appStoreUrl();
+    var emailBtn = document.getElementById("dash-when-notify-email");
+    if (emailBtn) emailBtn.textContent = pack.whenNotifyEmail || en.whenNotifyEmail;
+    paintNotifyEmailState();
+  }
+
+  function showWhenStep(step) {
+    whenStep = step || "when";
+    var page = document.getElementById("dash-when");
+    if (page) page.setAttribute("data-when-step", whenStep);
+    document.querySelectorAll("[data-when-panel]").forEach(function (panel) {
+      panel.hidden = panel.getAttribute("data-when-panel") !== whenStep;
+    });
+    paintWhenTimes();
+    if (whenStep === "notify") paintNotifyEmailState();
+  }
+
+  function currentScheduledItem(story) {
+    var id = story ? storyIdKey(story.id) : "";
+    if (!id) return null;
+    return readScheduledStories().find(function (item) {
+      return item && item.storyId === id;
+    }) || null;
+  }
+
+  function paintNotifyEmailState() {
+    var story = pendingContinueStory || activeReaderStory;
+    var item = currentScheduledItem(story);
+    var opted = !!(item && item.notifyByEmail);
+    var alt = document.getElementById("dash-when-notify-alt");
+    var sent = document.getElementById("dash-when-notify-sent");
+    if (alt) alt.hidden = opted;
+    if (sent) sent.hidden = !opted;
+  }
+
+  function requestEmailNotify() {
+    var story = pendingContinueStory || activeReaderStory;
+    var item = currentScheduledItem(story);
+    if (!item) return;
+    var identity = getAccountIdentity();
+    item.notifyByEmail = true;
+    item.notifyEmail = (identity && identity.email) || item.notifyEmail || "";
+    var next = readScheduledStories().map(function (row) {
+      return row && row.storyId === item.storyId ? item : row;
+    });
+    writeScheduledStories(next);
+    persistNextStoryNotify(item);
+    paintNotifyEmailState();
+    trackReaderEvent("story_next_email_notify", {
+      story_id: item.storyId,
+      story_time: item.storyTime,
+    });
+  }
+
+  function minutesToHhmm(mins) {
+    var h = Math.floor(mins / 60);
+    var m = mins % 60;
+    return (h < 10 ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m;
+  }
+
+  function hhmmToMinutes(hhmm) {
+    var parts = String(hhmm || "").split(":");
+    var h = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    if (isNaN(h)) h = 20;
+    if (isNaN(m)) m = 0;
+    return h * 60 + m;
+  }
+
+  function formatWhenTimeLabel(hhmm) {
+    var mins = hhmmToMinutes(hhmm);
+    var h = Math.floor(mins / 60);
+    var m = mins % 60;
+    var lang = uiLang();
+    if (lang === "en") {
+      var suffix = h >= 12 ? "PM" : "AM";
+      var hour12 = h % 12;
+      if (!hour12) hour12 = 12;
+      return hour12 + ":" + (m < 10 ? "0" : "") + m + "\n" + suffix;
+    }
+    return minutesToHhmm(mins);
+  }
+
+  function paintWhenTimes() {
+    var slots = document.querySelectorAll("#dash-when-times [data-time-slot]");
+    slots.forEach(function (btn) {
+      var index = parseInt(btn.getAttribute("data-time-slot"), 10) || 0;
+      var value = minutesToHhmm(whenTimeWindow + index * 30);
+      btn.setAttribute("data-time", value);
+      btn.innerHTML = formatWhenTimeLabel(value).replace(/\n/g, "<br>");
+      btn.classList.toggle("is-on", value === whenTime);
+    });
+    var prev = document.getElementById("dash-when-time-prev");
+    var next = document.getElementById("dash-when-time-next");
+    if (prev) prev.disabled = whenTimeWindow <= WHEN_TIME_MIN;
+    if (next) next.disabled = whenTimeWindow + 60 >= WHEN_TIME_MAX;
+  }
+
+  function closeWhenPage() {
+    var page = document.getElementById("dash-when");
+    if (page) page.hidden = true;
+    document.body.classList.remove("is-when-open");
+    pendingContinueStory = null;
+    whenStep = "when";
+    whenTime = "20:00";
+    whenTimeWindow = 19 * 60 + 30;
+  }
+
+  function openWhenPage(story) {
+    var page = document.getElementById("dash-when");
+    var reader = document.getElementById("dash-reader");
+    var listWrap = document.getElementById("dash-library-list");
+    if (!page || !story) return;
+    pendingContinueStory = story;
+    whenTime = "20:00";
+    whenTimeWindow = 19 * 60 + 30;
+    paintWhenPage();
+    var existing = readScheduledStories().find(function (item) {
+      return item && item.storyId === storyIdKey(story.id);
+    });
+    showWhenStep(
+      existing
+        ? existing.voiceMode === "read_myself"
+          ? "notify"
+          : "scheduled"
+        : "when"
+    );
+    if (reader) reader.hidden = true;
+    if (listWrap) listWrap.hidden = true;
+    page.hidden = false;
+    document.body.classList.add("is-when-open");
+    document.body.classList.remove("is-reader-open");
+    stopReaderMusic(true);
+    stopStoryVoiceoverPlayback();
+    hideReaderVolume();
+    syncTabPillSelection();
+  }
+
+  function leaveWhenToReader() {
+    var story = pendingContinueStory || activeReaderStory;
+    closeWhenPage();
+    if (story) openStory(story);
+    else {
+      var listWrap = document.getElementById("dash-library-list");
+      if (listWrap) listWrap.hidden = false;
+    }
+  }
+
+  function backFromWhenPage() {
+    if (whenStep === "time") showWhenStep("when");
+    else if (whenStep === "sound") showWhenStep("time");
+    else if (whenStep === "notify") showWhenStep("sound");
+    else leaveWhenToReader();
+  }
+
+  function startContinueNow(story, readyPayload) {
+    var payload = readyPayload || continuePayload(story);
+    closeWhenPage();
+    closeReader();
+    window.dispatchEvent(new CustomEvent("nanik:continue-story", { detail: payload }));
+  }
+
+  function startTrySomethingNew() {
+    closeWhenPage();
+    closeReader();
+    showPanel("create");
+    window.dispatchEvent(new CustomEvent("nanik:create-new"));
+  }
+
+  function persistNextStoryNotify(item) {
+    var s = session();
+    var base = supabaseUrl();
+    if (!item || !s || !s.access_token || !base) return;
+    fetch(base + "/auth/v1/user", {
+      method: "PUT",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        data: {
+          next_story_notify: {
+            storyId: item.storyId,
+            title: item.title || "",
+            dueAt: item.dueAt,
+            storyTime: item.storyTime,
+            voiceMode: item.voiceMode || "read_myself",
+            notifyByEmail: !!item.notifyByEmail,
+            notifyEmail: item.notifyEmail || "",
+            createdAt: item.createdAt,
+          },
+        },
+      }),
+    }).catch(function () {});
+  }
+
+  function applySoundChoice(story, voiceMode) {
+    if (!story) return;
+    var silent = voiceMode === "storyteller" || voiceMode === "my_voice";
+    scheduleContinueTomorrow(story, voiceMode, { silent: silent });
+    if (voiceMode === "storyteller") {
+      showPanel("voices");
+      return;
+    }
+    if (voiceMode === "my_voice") {
+      showPanel("library");
+      openAddMyVoice();
+      return;
+    }
+    showWhenStep("notify");
+  }
+
+  function scheduleContinueTomorrow(story, voiceMode, opts) {
+    if (!story) return;
+    var payload = continuePayload(story);
+    payload.voiceMode = voiceMode || "read_myself";
+    var next = readScheduledStories().filter(function (item) {
+      return item && item.storyId !== storyIdKey(story.id);
+    });
+    var item = {
+      id: "sched_" + Date.now(),
+      storyId: storyIdKey(story.id),
+      title: story.title || "",
+      dueAt: tomorrowStoryTime(whenTime),
+      storyTime: whenTime,
+      voiceMode: payload.voiceMode,
+      payload: payload,
+      createdAt: new Date().toISOString(),
+    };
+    next.unshift(item);
+    writeScheduledStories(next);
+    if (payload.voiceMode === "read_myself") persistNextStoryNotify(item);
+    if (!opts || !opts.silent) {
+      showWhenStep(payload.voiceMode === "read_myself" ? "notify" : "scheduled");
+    }
+    trackReaderEvent("story_next_scheduled", {
+      story_id: storyIdKey(story.id),
+      due_at: item.dueAt,
+      story_time: whenTime,
+      voice_mode: payload.voiceMode,
+    });
+    try {
+      if (window.Notification && Notification.permission === "default") {
+        Notification.requestPermission().catch(function () {});
+      }
+    } catch (e) {}
+  }
+
+  function processDueContinuations() {
+    var now = Date.now();
+    var firstDue = null;
+    var keep = [];
+    readScheduledStories().forEach(function (item) {
+      if (!item || !item.payload) return;
+      if (!firstDue && new Date(item.dueAt).getTime() <= now) firstDue = item;
+      else keep.push(item);
+    });
+    if (!firstDue) return;
+    writeScheduledStories(keep);
+    startContinueNow({ id: firstDue.storyId, title: firstDue.title }, firstDue.payload);
+  }
+
+  function pickWhenTime(value) {
+    if (!value) return;
+    whenTime = value;
+    paintWhenTimes();
+  }
+
+  function shiftWhenWindow(delta) {
+    var maxStart = WHEN_TIME_MAX - 60;
+    var next = whenTimeWindow + (delta || 0) * 30;
+    next = Math.max(WHEN_TIME_MIN, Math.min(maxStart, next));
+    if (next === whenTimeWindow) return;
+    whenTimeWindow = next;
+    var selected = hhmmToMinutes(whenTime);
+    if (selected < whenTimeWindow || selected > whenTimeWindow + 60) {
+      whenTime = minutesToHhmm(whenTimeWindow + 30);
+    }
+    paintWhenTimes();
+  }
+
+  function wireWhenPage() {
+    var page = document.getElementById("dash-when");
+    if (!page || page.dataset.ready) return;
+    page.dataset.ready = "1";
+    var back = document.getElementById("dash-when-back");
+    if (back) back.addEventListener("click", backFromWhenPage);
+    var cont = document.getElementById("dash-when-time-continue");
+    if (cont) {
+      cont.addEventListener("click", function () {
+        if (!whenTime) return;
+        showWhenStep("sound");
+      });
+    }
+    var emailBtn = document.getElementById("dash-when-notify-email");
+    if (emailBtn) emailBtn.addEventListener("click", requestEmailNotify);
+    page.addEventListener("click", function (event) {
+      var story = pendingContinueStory || activeReaderStory;
+      var shiftBtn = event.target.closest("[data-time-shift]");
+      if (shiftBtn && !shiftBtn.disabled) {
+        shiftWhenWindow(parseInt(shiftBtn.getAttribute("data-time-shift"), 10) || 0);
+        return;
+      }
+      var timeBtn = event.target.closest("[data-time]");
+      if (timeBtn) {
+        pickWhenTime(timeBtn.getAttribute("data-time"));
+        return;
+      }
+      var sound = event.target.closest("[data-sound]");
+      if (sound) {
+        if (!story) return;
+        var voiceMode = sound.getAttribute("data-sound");
+        trackReaderEvent("story_next_sound", {
+          voice_mode: voiceMode,
+          story_id: storyIdKey(story.id),
+        });
+        applySoundChoice(story, voiceMode);
+        return;
+      }
+      var choice = event.target.closest("[data-when]");
+      if (!choice || !story) return;
+      var when = choice.getAttribute("data-when");
+      trackReaderEvent("story_next_when", {
+        when_choice: when,
+        story_id: storyIdKey(story.id),
+      });
+      if (when === "now") startContinueNow(story);
+      else if (when === "tomorrow") showWhenStep("time");
+    });
+  }
+
+  function wireNextSheet() {
+    var section = document.getElementById("dash-next");
+    if (!section || section.dataset.ready) return;
+    section.dataset.ready = "1";
+    section.addEventListener("click", function (event) {
+      var card = event.target.closest("[data-next]");
+      if (!card) return;
+      var choice = card.getAttribute("data-next");
+      var story = activeReaderStory;
+      trackReaderEvent("story_next_choice", {
+        next_choice: choice,
+        story_id: story ? storyIdKey(story.id) : undefined,
+      });
+      if (choice === "continue" && story) openWhenPage(story);
+      else if (choice === "new") startTrySomethingNew();
+    });
+  }
+
   function wireStoryFeedback() {
     var modal = document.getElementById("dash-feedback-modal");
     var form = document.getElementById("dash-feedback-form");
@@ -5010,6 +5635,7 @@
     var scroll = document.querySelector("#dash-reader .dash-reader-scroll");
     var body = document.getElementById("dash-reader-body");
     if (!story || !reader || reader.hidden || !scroll || !body) return;
+    revealNextSection();
     var id = storyIdKey(story.id);
     if (!id || readerFinishedStoryId === id) return;
     if (body.getBoundingClientRect().bottom > scroll.getBoundingClientRect().bottom) return;
@@ -5265,6 +5891,7 @@
     syncReaderMusicButton();
     syncReaderVoiceButton();
     paintReaderReaction();
+    resetNextSection(story);
     window.setTimeout(checkStoryFinished, 600);
     if (storyVoiceoverUrl(story)) {
       ensureVoiceoverAudio(storyVoiceoverUrl(story));
@@ -7327,6 +7954,8 @@
       uiLanguage: (plan && plan.uiLanguage) || siteLang(),
       storyLanguage: { code: chosen.code || lang || "en", name: chosen.name || "" },
       childProfileId: (plan && plan.childProfileId) || answers.childProfileId || "",
+      nextTeaser: true,
+      continueFrom: answers.continueFrom || undefined,
     };
     if (plan) {
       payload.audience = { age: (plan.audience && plan.audience.age) || answers.age || null };
@@ -7701,6 +8330,10 @@
           childName: answers.childName || "",
           setting: answers.setting || "",
           helpsWith: answers.support || "",
+          nextHint: String(result && result.nextHint || "").trim(),
+          parentStoryId: answers.continueFrom && answers.continueFrom.storyId
+            ? answers.continueFrom.storyId
+            : "",
           createdAt: new Date().toISOString(),
         };
         var list = readLocalStories().filter(function (item) {
@@ -7988,6 +8621,9 @@
       answers.likes = String(payload.likes || "").trim();
       answers.setting = String(payload.setting || "").trim();
       answers.support = String(payload.support || "").trim();
+      answers.continueFrom = payload.continueFrom && typeof payload.continueFrom === "object"
+        ? JSON.parse(JSON.stringify(payload.continueFrom))
+        : null;
       answers.voice = false;
       answers.clarify = {};
       if (draft().setAge && answers.age) draft().setAge(answers.age);
@@ -8136,6 +8772,8 @@
     }
     wireReaderChrome();
     wireStoryFeedback();
+    wireNextSheet();
+    wireWhenPage();
 
     var form = document.getElementById("dash-composer");
     if (form) form.addEventListener("submit", onComposerSubmit);
@@ -8223,6 +8861,10 @@
     setPlaceholder();
     void refreshCloudLibrary();
     void refreshCloudChildren();
+    window.setTimeout(processDueContinuations, 800);
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) processDueContinuations();
+    });
     window.addEventListener("nanik:langchange", function () {
       paintChrome();
       paintVoices();

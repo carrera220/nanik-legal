@@ -4552,6 +4552,82 @@
     if (message) setError(message);
   }
 
+  function showGeneratingScreen() {
+    document.querySelectorAll("[data-guided-step]").forEach(function (section) {
+      section.hidden = section.getAttribute("data-guided-step") !== "generating";
+    });
+    if (el("guided-title-row")) el("guided-title-row").hidden = true;
+    if (el("guided-footer")) el("guided-footer").hidden = true;
+    if (el("guided-back")) el("guided-back").hidden = true;
+    setError("");
+    beginGenerationAnimation();
+  }
+
+  function startContinuation(payload) {
+    var api = window.NANIK_GUIDED_CREATE;
+    if (!payload || !api || typeof api.start !== "function") return;
+    if (!hasStoryQuota()) {
+      openCreateStoryPaywall();
+      return;
+    }
+    var panel = el("panel-create");
+    var nav = document.querySelector('.dash-tab-pill-btn[data-panel="create"]') ||
+      document.querySelector('.dash-nav-btn[data-panel="create"]');
+    if (nav) nav.click();
+    else if (panel) panel.hidden = false;
+    quickStoryRunning = true;
+    showGeneratingScreen();
+    var started = api.start(payload, {
+      status: function () {},
+      complete: function (story) {
+        quickStoryRunning = false;
+        persistChildAfterStory();
+        stopGenerationAnimation();
+        finished = true;
+        trackWebStoryCreated(story);
+        setGenerationStatus(GENERATION_COPY.length - 1);
+        setParticleProgress(100, true);
+        var titleEl = el("guided-generating-title");
+        if (titleEl) {
+          titleEl.textContent = isArmenianUi() ? "Հեքիաթդ պատրաստ է" : "Your story is ready";
+        }
+        window.setTimeout(function () {
+          try {
+            if (story && api.openStory) api.openStory(story);
+          } finally {
+            startCreateFlow();
+          }
+        }, 450);
+      },
+      error: function (error) {
+        quickStoryRunning = false;
+        if (error && error.quotaExceeded) {
+          openCreateStoryPaywall();
+          returnToPlan("");
+          return;
+        }
+        returnToPlan(
+          (error && error.message) || "Could not create the story. Please try again."
+        );
+      },
+      cancel: function () {
+        quickStoryRunning = false;
+        returnToPlan("");
+      },
+    });
+    if (!started) {
+      quickStoryRunning = false;
+      if (!hasStoryQuota()) returnToPlan("");
+      else {
+        returnToPlan(
+          isArmenianUi()
+            ? "Հեքիաթներ չեն մնացել։ Թարմացրու՝ ավելի շատ ստեղծելու համար։"
+            : "You have no stories remaining. Upgrade to create more."
+        );
+      }
+    }
+  }
+
   function startGeneration() {
     var api = window.NANIK_GUIDED_CREATE;
     if (!api || typeof api.start !== "function") {
@@ -4565,14 +4641,7 @@
       return;
     }
 
-    document.querySelectorAll("[data-guided-step]").forEach(function (section) {
-      section.hidden = section.getAttribute("data-guided-step") !== "generating";
-    });
-    if (el("guided-title-row")) el("guided-title-row").hidden = true;
-    el("guided-footer").hidden = true;
-    el("guided-back").hidden = true;
-    setError("");
-    beginGenerationAnimation();
+    showGeneratingScreen();
 
     var started = api.start(storyPayload(), {
       status: function () {},
@@ -5502,6 +5571,10 @@
     window.addEventListener("nanik:create-new", function () {
       if (quickStoryRunning) return;
       startCreateFlow();
+    });
+    window.addEventListener("nanik:continue-story", function (event) {
+      if (quickStoryRunning) return;
+      startContinuation(event && event.detail);
     });
     syncSharedPlanner();
     applySavedChildProfile();

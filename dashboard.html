@@ -10,7 +10,7 @@
 <title>Nanik</title>
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="dashboard.css?v=20261006tp">
+<link rel="stylesheet" href="dashboard.css?v=20261006nx16">
 <script src="geo-lang.js?v=20260920geo1"></script>
 <script>
   (function () {
@@ -334,6 +334,23 @@
           <div class="dash-reader-summary" id="dash-reader-summary" hidden></div>
           <p class="dash-reader-body" id="dash-reader-body"></p>
           <p class="dash-reader-note" id="dash-reader-note" hidden></p>
+          <section class="dash-next" id="dash-next" aria-labelledby="dash-next-title">
+            <h2 class="dash-next-title" id="dash-next-title">What should we make next?</h2>
+            <button type="button" class="dash-next-card is-rec" data-next="continue">
+              <span class="dash-next-card-copy">
+                <strong class="dash-next-card-title" id="dash-next-rec-title">Continue this story</strong>
+                <span class="dash-next-card-lead" id="dash-next-rec-lead">Same characters, same world — and something new is about to happen.</span>
+              </span>
+              <span class="dash-next-card-art" id="dash-next-rec-avatar" aria-hidden="true">✨</span>
+            </button>
+            <button type="button" class="dash-next-card is-new" data-next="new">
+              <span class="dash-next-card-copy">
+                <strong class="dash-next-card-title" id="dash-next-new-title">Try something new</strong>
+                <span class="dash-next-card-lead" id="dash-next-new-lead">Choose a completely different feeling, experience or adventure.</span>
+              </span>
+              <span class="dash-next-card-art" aria-hidden="true"><img src="images/intent-cards/surprise-me-felt.png?v=20260915gift" alt="" loading="lazy" decoding="async"></span>
+            </button>
+          </section>
           <div class="dash-reader-reaction" id="dash-reader-reaction">
             <p class="dash-reader-reaction-title" id="dash-reader-reaction-title">How did this story feel?</p>
             <div class="dash-reader-reaction-options" role="group" aria-labelledby="dash-reader-reaction-title">
@@ -382,6 +399,133 @@
           <span class="dash-reader-bottom-blur-layer is-2"></span>
           <span class="dash-reader-bottom-blur-layer is-3"></span>
           <span class="dash-reader-bottom-blur-tint"></span>
+        </div>
+      </article>
+
+      <article class="dash-when" id="dash-when" hidden data-when-step="when">
+        <header class="dash-when-top">
+          <button type="button" class="dash-when-back" id="dash-when-back" aria-label="Back">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M15.4 4.6a1.1 1.1 0 0 0-1.6 0l-6.6 6.6a1.1 1.1 0 0 0 0 1.6l6.6 6.6a1.1 1.1 0 0 0 1.6-1.6L9.6 12l5.8-5.8a1.1 1.1 0 0 0 0-1.6z"/></svg>
+          </button>
+        </header>
+        <div class="dash-when-card" data-when-panel="when">
+          <div class="dash-when-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="36" height="36"><rect x="8" y="10" width="32" height="30" rx="6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8 18h32" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16 8v6M32 8v6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="33" cy="30" r="6.5" fill="#efe7ff" stroke="currentColor" stroke-width="2"/><path d="M33 27v4l2.2 1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h1 class="dash-when-title" id="dash-when-title">When would you like the next story?</h1>
+          <p class="dash-when-lead" id="dash-when-lead">You can create it now, or we’ll prepare it before story time and let you know when it’s ready.</p>
+          <div class="dash-when-choices" id="dash-when-choices">
+            <button type="button" class="dash-when-choice" data-when="now">
+              <span class="dash-when-choice-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M11.2 2.4 4.6 13.1c-.4.6 0 1.4.8 1.4h5.1l-1.2 7.1c-.1.8.9 1.2 1.4.6l7.8-10.7c.4-.6 0-1.5-.8-1.5h-5.2l1.1-6.6c.1-.8-.9-1.2-1.4-.6z"/></svg>
+              </span>
+              <span class="dash-when-choice-copy">
+                <strong class="dash-when-choice-title" id="dash-when-now-title">Create it now</strong>
+                <span class="dash-when-choice-lead" id="dash-when-now-lead">Have the next story ready in a moment</span>
+              </span>
+              <span class="dash-when-choice-chevron" aria-hidden="true">›</span>
+            </button>
+            <button type="button" class="dash-when-choice" data-when="tomorrow">
+              <span class="dash-when-choice-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 3a6 6 0 0 0-6 6v3.1l-1.3 2.3A1.2 1.2 0 0 0 5.8 16h12.4a1.2 1.2 0 0 0 1.1-1.6L18 12.1V9a6 6 0 0 0-6-6zm0 18a2.6 2.6 0 0 0 2.5-2h-5A2.6 2.6 0 0 0 12 21z"/></svg>
+              </span>
+              <span class="dash-when-choice-copy">
+                <strong class="dash-when-choice-title" id="dash-when-tomorrow-title">Have it ready tomorrow</strong>
+                <span class="dash-when-choice-lead" id="dash-when-tomorrow-lead">We’ll generate it before story time and notify you</span>
+              </span>
+              <span class="dash-when-choice-chevron" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+        <div class="dash-when-card" data-when-panel="time" hidden>
+          <div class="dash-when-icon is-moon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="38" height="38"><path fill="currentColor" d="M28.2 8.4a14.8 14.8 0 1 0 11.4 23.6A16.6 16.6 0 0 1 28.2 8.4z"/><circle cx="36.2" cy="12.2" r="1.4" fill="currentColor"/><path fill="currentColor" d="M40.6 17.2 42 19.8l2.6 1.2-2.6 1.2-1.4 2.6-1.4-2.6-2.6-1.2 2.6-1.2z"/></svg>
+          </div>
+          <h1 class="dash-when-title" id="dash-when-time-title">What time is story time?</h1>
+          <p class="dash-when-lead" id="dash-when-time-lead">We’ll have it ready a little before and send you a notification.</p>
+          <div class="dash-when-times" id="dash-when-times" role="group" aria-labelledby="dash-when-time-title">
+            <button type="button" class="dash-when-time-arrow" data-time-shift="-1" id="dash-when-time-prev" aria-label="Earlier">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M15.4 4.6a1.1 1.1 0 0 0-1.6 0l-6.6 6.6a1.1 1.1 0 0 0 0 1.6l6.6 6.6a1.1 1.1 0 0 0 1.6-1.6L9.6 12l5.8-5.8a1.1 1.1 0 0 0 0-1.6z"/></svg>
+            </button>
+            <button type="button" class="dash-when-time" data-time-slot="0"></button>
+            <button type="button" class="dash-when-time is-on" data-time-slot="1"></button>
+            <button type="button" class="dash-when-time" data-time-slot="2"></button>
+            <button type="button" class="dash-when-time-arrow" data-time-shift="1" id="dash-when-time-next" aria-label="Later">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M8.6 4.6a1.1 1.1 0 0 1 1.6 0l6.6 6.6a1.1 1.1 0 0 1 0 1.6l-6.6 6.6a1.1 1.1 0 0 1-1.6-1.6L14.4 12 8.6 6.2a1.1 1.1 0 0 1 0-1.6z"/></svg>
+            </button>
+          </div>
+          <button type="button" class="dash-when-continue" id="dash-when-time-continue">Continue →</button>
+        </div>
+        <div class="dash-when-card" data-when-panel="sound" hidden>
+          <div class="dash-when-sound-art" aria-hidden="true">
+            <svg viewBox="0 0 160 120" width="150" height="112">
+              <ellipse cx="80" cy="112" rx="46" ry="8" fill="#efeafc"/>
+              <path fill="#f3d7c4" d="M64 38c0-12 10-22 22-20 10 2 16 12 14 22-1 6-5 11-10 14-8 4-18 2-23-5-4-5-5-7-3-11z"/>
+              <path fill="#2b2438" d="M62 36c2-14 14-22 26-20 8 1 16 8 16 18 0 4-2 6-5 5-1-8-7-13-14-13-8 0-14 5-16 12-3 0-7-1-7-2z"/>
+              <path fill="#efe7ff" d="M54 78c-2 18 8 28 28 28s32-8 30-26c-1-14-10-22-29-22s-27 6-29 20z"/>
+              <rect x="86" y="62" width="18" height="28" rx="5" fill="#5b4ad6"/>
+              <rect x="90" y="67" width="10" height="16" rx="2" fill="#cfc4ff"/>
+              <path fill="none" stroke="#b8a9f0" stroke-width="2" stroke-linecap="round" d="M112 58c6 6 6 22 0 28M120 52c10 10 10 34 0 44"/>
+            </svg>
+          </div>
+          <h1 class="dash-when-title" id="dash-when-sound-title">How should it sound?</h1>
+          <p class="dash-when-lead" id="dash-when-sound-lead">You can have the story narrated in your voice, choose from our storyteller voices, or just prepare the story for you to read it.</p>
+          <div class="dash-when-choices">
+            <button type="button" class="dash-when-choice" data-sound="my_voice">
+              <span class="dash-when-choice-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11z"/></svg>
+              </span>
+              <span class="dash-when-choice-copy">
+                <strong class="dash-when-choice-title" id="dash-when-sound-mine-title">My voice</strong>
+                <span class="dash-when-choice-lead" id="dash-when-sound-mine-lead">Nanik can narrate it in your voice.</span>
+              </span>
+              <span class="dash-when-choice-chevron" aria-hidden="true">›</span>
+            </button>
+            <button type="button" class="dash-when-choice" data-sound="storyteller">
+              <span class="dash-when-choice-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-3.3 0-8 1.7-8 4v2h16v-2c0-2.3-4.7-4-8-4z"/></svg>
+              </span>
+              <span class="dash-when-choice-copy">
+                <strong class="dash-when-choice-title" id="dash-when-sound-teller-title">Storyteller voice</strong>
+                <span class="dash-when-choice-lead" id="dash-when-sound-teller-lead">Choose from Nanik’s voices.</span>
+              </span>
+              <span class="dash-when-choice-chevron" aria-hidden="true">›</span>
+            </button>
+            <button type="button" class="dash-when-choice" data-sound="read_myself">
+              <span class="dash-when-choice-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6 4h11a2 2 0 0 1 2 2v14l-7.5-3L4 20V6a2 2 0 0 1 2-2zm0 2v11.1l5.5-2.2L17 17.1V6z"/></svg>
+              </span>
+              <span class="dash-when-choice-copy">
+                <strong class="dash-when-choice-title" id="dash-when-sound-read-title">I’ll read it myself</strong>
+                <span class="dash-when-choice-lead" id="dash-when-sound-read-lead">Just prepare the story.</span>
+              </span>
+              <span class="dash-when-choice-chevron" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </div>
+        <div class="dash-when-card" data-when-panel="scheduled" hidden>
+          <div class="dash-when-scheduled" id="dash-when-scheduled">
+            <p class="dash-when-scheduled-title" id="dash-when-scheduled-title">We’ll have it ready tomorrow</p>
+            <p class="dash-when-scheduled-lead" id="dash-when-scheduled-lead">We’ll generate it before story time and let you know.</p>
+          </div>
+        </div>
+        <div class="dash-when-card" data-when-panel="notify" hidden>
+          <div class="dash-when-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="32" height="32"><path fill="currentColor" d="M12 3a6 6 0 0 0-6 6v3.1l-1.3 2.3A1.2 1.2 0 0 0 5.8 16h12.4a1.2 1.2 0 0 0 1.1-1.6L18 12.1V9a6 6 0 0 0-6-6zm0 18a2.6 2.6 0 0 0 2.5-2h-5A2.6 2.6 0 0 0 12 21z"/></svg>
+          </div>
+          <h1 class="dash-when-title" id="dash-when-notify-title">Download the Nanik app to get notified</h1>
+          <p class="dash-when-lead" id="dash-when-notify-lead">Once your story is ready tomorrow.</p>
+          <a class="dash-when-store" id="dash-when-notify-store" href="https://apps.apple.com/app/id6762894314" target="_blank" rel="noopener">
+            <img src="images/badge-app-store.svg" width="168" height="56" alt="Download on the App Store">
+          </a>
+          <div class="dash-when-notify-alt" id="dash-when-notify-alt">
+            <p class="dash-when-notify-alt-lead" id="dash-when-notify-alt-lead">Not an iPhone user?</p>
+            <button type="button" class="dash-when-continue" id="dash-when-notify-email">Send email</button>
+          </div>
+          <div class="dash-when-scheduled" id="dash-when-notify-sent" hidden>
+            <p class="dash-when-scheduled-title" id="dash-when-notify-sent-title">We’ll notify you</p>
+            <p class="dash-when-scheduled-lead" id="dash-when-notify-sent-lead">We’ll email you when the story is ready tomorrow.</p>
+          </div>
         </div>
       </article>
 
@@ -806,8 +950,8 @@
 <script src="nanik-draft.js?v=20261006bf2"></script>
 <script src="dash-record-voice.js?v=20260921voicelimit"></script>
 <script src="nanik-tts.js?v=20260924noemotion"></script>
-<script src="dashboard.js?v=20261006mp"></script>
+<script src="dashboard.js?v=20261006nx16"></script>
 <script src="story-plan.js?v=20260921contract2"></script>
-<script src="guided-create.js?v=20261006prog"></script>
+<script src="guided-create.js?v=20261006cont1"></script>
 </body>
 </html>
