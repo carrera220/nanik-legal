@@ -4490,16 +4490,63 @@
           : heroMode === "created"
           ? "create_hero"
           : "story_decides";
-      if (window.NanikAnalytics && typeof window.NanikAnalytics.track === "function") {
+      if (!window.NanikAnalytics || typeof window.NanikAnalytics.track !== "function") return;
+      var storyId = story && (story.id || story.story_id) ? String(story.id || story.story_id) : "";
+      accountStoryNumber(storyId).then(function (storyNumber) {
         window.NanikAnalytics.track("story_created", {
           source: "web",
           story_type: String(storyType),
           purpose: String(purpose),
           hero: String(hero),
-          story_id: story && (story.id || story.story_id) ? String(story.id || story.story_id) : undefined,
+          story_id: storyId || undefined,
+          story_number: storyNumber,
+          story_index: "story_" + storyNumber,
         });
-      }
+      });
     } catch (e) {}
+  }
+
+  /** 1-based position of a story in the account's `user_stories` library (shared with iOS); guests use local stories. */
+  function accountStoryNumber(storyId) {
+    function localNumber() {
+      try {
+        var list = JSON.parse(localStorage.getItem("nanik-web-stories") || "[]");
+        if (!Array.isArray(list)) return 1;
+        return list.filter(function (item) {
+          return item && String(item.id || "") !== storyId;
+        }).length + 1;
+      } catch (e) {
+        return 1;
+      }
+    }
+    var draftApi = window.NANIK_DRAFT || {};
+    var session = draftApi.readSession ? draftApi.readSession() : null;
+    var api = window.NANIK_API || {};
+    if (!session || !session.access_token || !api.supabaseUrl || !api.supabaseAnonKey || !window.fetch) {
+      return Promise.resolve(localNumber());
+    }
+    var url =
+      String(api.supabaseUrl).replace(/\/+$/, "") +
+      "/rest/v1/user_stories?select=story_id&limit=1" +
+      (storyId ? "&story_id=neq." + encodeURIComponent(storyId) : "");
+    var request = fetch(url, {
+      headers: {
+        apikey: api.supabaseAnonKey,
+        Authorization: "Bearer " + session.access_token,
+        Prefer: "count=exact",
+      },
+    })
+      .then(function (res) {
+        var total = Number(String(res.headers.get("content-range") || "").split("/")[1]);
+        return res.ok && isFinite(total) ? total + 1 : localNumber();
+      })
+      .catch(localNumber);
+    var timeout = new Promise(function (resolve) {
+      setTimeout(function () {
+        resolve(localNumber());
+      }, 2500);
+    });
+    return Promise.race([request, timeout]);
   }
 
   function openStoryReadyPaywall() {
