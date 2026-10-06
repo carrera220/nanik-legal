@@ -274,9 +274,27 @@
     }
   }
 
+  function initHeaderScrollState() {
+    var header = document.querySelector('header.site');
+    if (!header) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      header.classList.toggle('is-scrolled', window.pageYOffset > 8);
+    }
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initHeaderScrollState);
   } else {
     init();
+    initHeaderScrollState();
   }
 })();

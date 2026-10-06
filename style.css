@@ -4084,16 +4084,38 @@ body.bsv-page main {
   text-decoration-color: #ffffff;
 }
 
-/* Header gets a solid backdrop only while it overlaps the white sheet */
-body.bsv-page header.site {
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+/* Progressive blur behind the sticky header once the page scrolls */
+header.site::before,
+header.site::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 -36px 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
-body.bsv-page header.site.is-over-light {
-  background-color: rgba(98, 56, 245, 0.94);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(26, 15, 53, 0.18);
-  padding-bottom: 8px;
+header.site::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(98, 56, 245, 0.86) 0%,
+    rgba(98, 56, 245, 0.6) 55%,
+    rgba(98, 56, 245, 0) 100%
+  );
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+}
+header.site::after {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 75%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 75%);
+}
+header.site.is-scrolled::before,
+header.site.is-scrolled::after {
+  opacity: 1;
 }
 
 /* App Store rating line */
