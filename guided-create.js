@@ -4491,7 +4491,8 @@
           ? "create_hero"
           : "story_decides";
       if (window.NanikAnalytics && typeof window.NanikAnalytics.track === "function") {
-        window.NanikAnalytics.track("web_story_created", {
+        window.NanikAnalytics.track("story_created", {
+          source: "web",
           story_type: String(storyType),
           purpose: String(purpose),
           hero: String(hero),
