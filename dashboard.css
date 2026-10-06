@@ -9370,3 +9370,6 @@ body.has-tab-pill #panel-kids:has(.dash-kids-list.is-kid-focus) .dash-kids-list.
   min-height: 0;
   max-height: 100%;
 }
+
+body.is-reader-open .dash-tab-pill { display: none; }
+body.has-tab-pill.is-reader-open { --dash-tab-pill-space: max(8px, var(--dash-safe-bottom)); }
