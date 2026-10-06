@@ -12,7 +12,7 @@
 <link rel="alternate" hreflang="x-default" href="https://nanik.app/">
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20261006solidbg">
+<link rel="stylesheet" href="style.css?v=20261006ph">
 <script>
 (function () {
   try {
@@ -210,8 +210,8 @@
     <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav-links" aria-label="Մենյու"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
     <a class="brand" href="hy.html">Nanik</a>
     <div id="site-nav-links" class="site-nav-links">
-      <a href="hy.html">Գլխավոր</a>
-      <a href="languages.html">Լեզուներ</a>
+      <a href="hy.html#features">Հնարավորություններ</a>
+      <a href="hy.html#use-cases">Օգտագործման դեպքեր</a>
       <a href="hy/stories.html">Հեքիաթներ</a>
       <a href="pricing.html">Գներ</a>
     </div>
@@ -223,7 +223,7 @@
     <div>
       <h1 data-i18n="index.h1" data-i18n-html>Ստեղծիր հեքիաթներ <strong>քո ձայնով</strong></h1>
       <div class="hero-lead-wrap" id="hero-lead-wrap">
-        <p class="lead" id="hero-lead" data-i18n="index.lead">Լուսանկարիր երեխային կամ սիրելի խաղալիքը → ընտրիր՝ ինչ աջակցի հեքիաթը → Nanik-ը կկարդա քո ձայնով։</p>
+        <p class="lead" id="hero-lead" data-i18n="index.lead">Ինչո՞վ օգնի այսօրվա հեքիաթը։</p>
         <div class="hero-narration-bar" id="hero-narration-bar" hidden>
           <button type="button" class="hero-narration-toggle" id="hero-narration-toggle" aria-pressed="false" aria-label="Նվագարկել">
             <svg class="hero-narration-icon icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"/></svg>
@@ -234,14 +234,49 @@
           </div>
         </div>
       </div>
+      <div id="use-cases" class="use-cases" role="region" aria-label="Օգտագործման դեպքեր" data-use-cases>
+        <div class="use-cases-carousel">
+          <button type="button" class="use-cases-arrow" data-uc-prev disabled aria-label="Նախորդը">&#8249;</button>
+          <div class="use-cases-track" data-uc-track role="list">
+            <article class="use-case-card use-case-card--night" role="listitem">
+              <picture class="use-case-media" aria-hidden="true"><source srcset="images/use-cases/bedtime.webp" type="image/webp"><img src="images/use-cases/bedtime.png" width="440" height="440" alt="" loading="lazy" decoding="async"></picture>
+              <h3>Քուն և վախեր</h3>
+              <p>Գիշերը ավելի ապահով զգալ հեքիաթի միջոցով։</p>
+              <a class="use-case-cta" href="bedtime-fears.html"><span class="visually-hidden">Ստեղծել հեքիաթ</span><span aria-hidden="true">&rarr;</span></a>
+            </article>
+            <article class="use-case-card use-case-card--feelings" role="listitem">
+              <picture class="use-case-media" aria-hidden="true"><source srcset="images/use-cases/feelings.webp" type="image/webp"><img src="images/use-cases/feelings.png" width="440" height="440" alt="" loading="lazy" decoding="async"></picture>
+              <h3>Մեծ զգացմունքներ</h3>
+              <p>Դժվար զգացմունքները դարձնել ավելի հեշտ հասկանալի։</p>
+              <a class="use-case-cta" href="/stories-about-feelings-for-kids"><span class="visually-hidden">Ստեղծել հեքիաթ</span><span aria-hidden="true">&rarr;</span></a>
+            </article>
+            <article class="use-case-card use-case-card--new" role="listitem">
+              <picture class="use-case-media" aria-hidden="true"><source srcset="images/use-cases/new.webp" type="image/webp"><img src="images/use-cases/new.png" width="440" height="440" alt="" loading="lazy" decoding="async"></picture>
+              <h3>Նոր փորձառություններ</h3>
+              <p>Մեծ «առաջին անգամները» վերածել արկածի։</p>
+              <a class="use-case-cta" href="/stories-for-new-experiences"><span class="visually-hidden">Ստեղծել հեքիաթ</span><span aria-hidden="true">&rarr;</span></a>
+            </article>
+            <article class="use-case-card use-case-card--learn" role="listitem">
+              <picture class="use-case-media" aria-hidden="true"><source srcset="images/use-cases/learn.webp" type="image/webp"><img src="images/use-cases/learn.png" width="440" height="440" alt="" loading="lazy" decoding="async"></picture>
+              <h3>Սովորել</h3>
+              <p>Հետաքրքրասիրությունը վերածել սեփական արկածի։</p>
+              <a class="use-case-cta" href="/educational-stories-for-kids"><span class="visually-hidden">Ստեղծել հեքիաթ</span><span aria-hidden="true">&rarr;</span></a>
+            </article>
+          </div>
+          <button type="button" class="use-cases-arrow" data-uc-next aria-label="Հաջորդը">&#8250;</button>
+        </div>
+        <div class="use-cases-dots" data-uc-dots aria-hidden="true"></div>
+      </div>
+      <p class="hero-or"><span>կամ</span></p>
       <div class="download-cta">
         <button type="button" class="btn hero-start-cta" onclick="window.NANIK_OPEN_SIGNUP ? window.NANIK_OPEN_SIGNUP() : document.getElementById('site-signup-open')?.click()">
-          <span data-i18n="hero.chat.send">Ստեղծել հեքիաթ</span>
+          <span data-i18n="hero.chat.send">Ստեղծիր քո հեքիաթը</span>
         </button>
+        <p class="hero-prefer-app" data-i18n="index.preferApp">Նախընտրու՞մ եք հավելվածը</p>
         <div class="hero-cta">
-          <a class="btn" href="https://apps.apple.com/app/id6762894314"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg><span data-i18n="cta.appStore">Ներբեռնել App Store-ից</span></a>
+          <a class="store-badge store-badge-apple store-badge--lg" href="https://apps.apple.com/app/id6762894314" aria-label="Download on the App Store"><img src="images/badge-app-store.svg" width="150" height="50" alt="Download on the App Store"></a>
         </div>
-        <p class="app-rating"><span class="app-rating-stars" aria-hidden="true">★★★★★</span> <span data-i18n="cta.rating">4.9 · 64 App Store ratings</span></p>
+        <p class="app-rating"><span class="app-rating-stars" aria-hidden="true">★★★★★</span> <span data-i18n="index.rating">4.9 · 64 գնահատական</span></p>
       </div>
     </div>
   </section>
@@ -250,7 +285,7 @@
     <article class="feature">
       <div class="feature-copy">
         <h2>Անհատական հեքիաթներ <strong>ձեր ձայնով</strong></h2>
-        <p>Մեկ անգամ ձայնագրեք մոտ 10 վայրկյան։ Nanik-ը կպատմի նոր արկածներ, որ երեխան լսի ծանոթ ձայն, նույնիսկ երբ զբաղված եք։ Չե՞ք ուզում ձայնագրել։ ընտրեք դասական մանկական հեղինակների ոճ։</p>
+        <p>Մեկ անգամ ձայնագրեք 10 վայրկյան։ Nanik-ը կպատմի ամեն նոր հեքիաթ ձեր ձայնով, կամ ընտրեք դասական պատմողի ոճ։</p>
         <a class="btn feature-voice-cta" href="https://nanik.app/bedtime-stories-in-your-voice">Իմանալ ավելին</a>
       </div>
       <div class="feature-media feature-media--voice">
@@ -591,7 +626,6 @@
       <a class="store-badge store-badge-apple" href="https://apps.apple.com/app/id6762894314" aria-label="Download on the App Store">
         <img src="images/badge-app-store.svg" width="120" height="40" alt="Download on the App Store" loading="lazy">
       </a>
-      <button type="button" class="store-badge store-badge-play" data-open-play-waitlist aria-haspopup="dialog" aria-controls="play-waitlist-modal" aria-label="Get it on Google Play"><img src="images/badge-google-play.png?v=20260812q" width="134" height="40" alt="Get it on Google Play"></button>
     </div>
     <p class="store-cta-trial" data-i18n="cta.trial">Բեռնիր հիմա և ստացիր 3 օր անվճար</p>
   </div>
@@ -602,14 +636,15 @@
   </div>
 </footer>
 <script src="nanik-api-config.js?v=20260909d"></script>
-<script src="nanik-draft.js?v=20260924createpanel"></script>
+<script src="nanik-draft.js?v=20261006bf2"></script>
 <script src="voice-languages.js?v=20260805lang1"></script>
 <script src="app-store-cta.js?v=20260822mp" defer></script>
-<script src="site-nav.js?v=20261006blur" defer></script>
-<script src="signup.js?v=20260924createpanel" defer></script>
+<script src="site-nav.js?v=20261006uc" defer></script>
+<script src="signup.js?v=20261006bf" defer></script>
 <script src="geo-lang.js?v=20260920geo1" defer></script>
-<script src="i18n.js?v=20261006plans" defer></script>
+<script src="i18n.js?v=20261006ed" defer></script>
 <script src="voice-magic.js?v=20260924noemotion" defer></script>
+<script src="use-cases.js?v=20261006uc" defer></script>
 <script src="world-slider.js?v=20260728bw" defer></script>
 <script src="play-waitlist.js?v=20260812n" defer></script>
 </body>

@@ -11,18 +11,18 @@
     describe: "Describe the character",
   };
   var GENERATION_COPY = [
-    "Understanding your idea…",
-    "Finding the right adventure…",
-    "Building their story world…",
-    "Bringing characters to life…",
-    "Adding finishing touches…",
+    "Bringing the hero to life…",
+    "Finding the right words for tonight…",
+    "Shaping it around what they need…",
+    "Adding a little magic…",
+    "Almost ready for story time…",
   ];
   var GENERATION_COPY_HY = [
-    "Կարդում եմ գաղափարը…",
-    "Գտնում եմ արկածը…",
-    "Կառուցում եմ հեքիաթի աշխարհը…",
-    "Կենդանացնում եմ հերոսներին…",
-    "Վերջին շտրիխներն եմ դնում…",
+    "Կենդանացնում եմ հերոսին…",
+    "Գտնում եմ ճիշտ բառերը այս գիշերվա համար…",
+    "Հարմարեցնում եմ նրա կարիքներին…",
+    "Ավելացնում եմ մի քիչ կախարդանք…",
+    "Հեքիաթի ժամը գրեթե պատրաստ է…",
   ];
   var PARTICLE_COLORS = ["#8FC0FF", "#C9A6FF", "#FFD8A6", "#FFFFFF", "#7FE3FF", "#B49BFF"];
   var PROGRESS_PARTICLE_COUNT = 110;
@@ -716,6 +716,7 @@
   var topicChipsLoading = false;
   var generationIndex = 0;
   var generationProgress = 8;
+  var quickStoryRunning = false;
   var state = {
     intent: "",
     purpose: "",
@@ -2462,8 +2463,17 @@
     var prompt = draft.getPrompt ? String(draft.getPrompt() || "").trim() : "";
     var image = draft.getImage ? String(draft.getImage() || "") : "";
     var age = draft.getAge ? String(draft.getAge() || "") : "";
+    var draftLang = draft.getLanguage ? String(draft.getLanguage() || "") : "";
     if (draft.setPrompt) draft.setPrompt("");
     if (draft.setImage) draft.setImage("");
+    if (draft.setLanguage) draft.setLanguage("");
+    var langSelect = el("guided-language");
+    if (draftLang && langSelect && langSelect.querySelector('option[value="' + draftLang + '"]')) {
+      langSelect.value = draftLang;
+      state.lang = draftLang;
+      planner.language = draftLang;
+      sources.language = "select";
+    }
     if (prompt === "Learn something new" || isWelcomePrompt(prompt)) {
       prompt = "";
       if (draft.setPrompt) draft.setPrompt("");
@@ -2917,6 +2927,7 @@
         kind: "help",
         eyebrow: hy ? "Ինչպես է հեքիաթն օգնում" : "How the story helps",
         title: plan.direction.answer,
+        teaser: true,
         detail: "",
         image: plan.purpose === "learn"
           ? "images/intent-cards/help-learn-cutout.png?v=20260915learningbook"
@@ -2937,10 +2948,19 @@
         (card.userPhoto ? "is-user-photo" : "") +
         '" src="' + escapeHtml(card.image) + '" alt=""></span>' +
         '<span class="guided-plan-card-copy"><span class="guided-plan-card-eyebrow">' + escapeHtml(card.eyebrow) + '</span>' +
-        '<strong>' + escapeHtml(card.title) + '</strong>' +
+        (card.teaser ? planCardTeaser(card.title) : '<strong>' + escapeHtml(card.title) + '</strong>') +
         (card.detail ? '<span class="guided-plan-card-detail">' + escapeHtml(card.detail) + '</span>' : '') +
         '</span></article>';
     }).join("") + "</div>";
+  }
+
+  function planCardTeaser(text) {
+    var words = String(text || "").trim().split(/\s+/).filter(Boolean);
+    var shown = 4;
+    if (words.length <= shown) return '<strong>' + escapeHtml(words.join(" ")) + '</strong>';
+    var hidden = words.slice(shown, shown + 6).join(" ");
+    return '<strong class="guided-plan-card-teaser">' + escapeHtml(words.slice(0, shown).join(" ")) +
+      ' <span class="guided-plan-card-blur" aria-hidden="true">' + escapeHtml(hidden) + '</span></strong>';
   }
 
   function paintPlan() {
@@ -4524,6 +4544,7 @@
   }
 
   function returnToPlan(message) {
+    quickStoryRunning = false;
     stopGenerationAnimation();
     stepKey = "plan";
     stepIndex = Math.max(0, flowSteps().indexOf("plan"));
@@ -4534,10 +4555,12 @@
   function startGeneration() {
     var api = window.NANIK_GUIDED_CREATE;
     if (!api || typeof api.start !== "function") {
+      quickStoryRunning = false;
       setError("Story creation is unavailable. Refresh the page and try again.");
       return;
     }
     if (!hasStoryQuota()) {
+      quickStoryRunning = false;
       openCreateStoryPaywall();
       return;
     }
@@ -4554,6 +4577,7 @@
     var started = api.start(storyPayload(), {
       status: function () {},
       complete: function (story) {
+        quickStoryRunning = false;
         persistChildAfterStory();
         stopGenerationAnimation();
         finished = true;
@@ -5475,13 +5499,100 @@
       paintLanguageChrome();
       renderStep();
     });
-    window.addEventListener("nanik:create-new", startCreateFlow);
+    window.addEventListener("nanik:create-new", function () {
+      if (quickStoryRunning) return;
+      startCreateFlow();
+    });
     syncSharedPlanner();
     applySavedChildProfile();
     history = ["basics"];
     stepKey = "basics";
     stepIndex = 0;
     renderStep();
+    startQuickStory();
+  }
+
+  function quickStoryChildId(name, age) {
+    var kids = listChildProfiles();
+    var wanted = String(name || "").trim().toLowerCase();
+    var match = kids.filter(function (kid) {
+      if (!kid) return false;
+      if (wanted) return String(kid.name || "").trim().toLowerCase() === wanted;
+      return String(kid.age || "") === String(age || "");
+    })[0];
+    return match && match.id ? match.id : "";
+  }
+
+  function applyQuickStory(quick) {
+    var age = String(parseInt(quick.age, 10) || "");
+    var name = cleanPhrase(quick.name, 40);
+    var support = tidyPhrase(quick.support);
+    applyIntentChip(INTENT_BY_KEY[quick.kind] || "Bedtime");
+    applyPurposeChip("Help with something happening today");
+    if (age) {
+      planner.age = age;
+      state.age = age;
+      sources.age = "draft";
+      if (el("guided-age") && el("guided-age").querySelector('option[value="' + age + '"]')) el("guided-age").value = age;
+      syncAgeChips(age);
+    }
+    planner.childId = quickStoryChildId(name, age);
+    planner.support = support;
+    sources.support = "text";
+    state.support = support;
+    followupAnswers = [{ question: supportTitle(), field: "support", answer: support, source: "text", offeredChips: [] }];
+    followupAnswered = true;
+    if (name) {
+      planner.name = name;
+      sources.name = "text";
+      state.childName = name;
+      state.heroPick = "kid";
+      state.heroKind = "kid";
+      planner.hero = name;
+      state.heroDescription = "";
+    } else {
+      state.heroPick = "surprise";
+      state.heroKind = "surprise";
+      planner.hero = isArmenianUi() ? "Թող հեքիաթը որոշի" : "Let the story decide";
+      state.heroDescription = planner.hero;
+    }
+    sources.hero = "chip";
+    var langSelect = el("guided-language");
+    if (quick.lang && langSelect && langSelect.querySelector('option[value="' + quick.lang + '"]')) {
+      langSelect.value = quick.lang;
+      state.lang = quick.lang;
+      planner.language = quick.lang;
+      sources.language = "select";
+    }
+    syncSharedPlanner();
+    history = ["basics", "intent", "purpose", "topic", "hero", "plan"];
+    stepKey = "plan";
+    stepIndex = Math.max(0, flowSteps().indexOf("plan"));
+  }
+
+  function startQuickStory() {
+    var draft = window.NANIK_DRAFT || {};
+    var quick = draft.getQuickStory ? draft.getQuickStory() : null;
+    if (!quick || !quick.support) return;
+    var session = draft.readSession ? draft.readSession() : null;
+    if (!session || !session.access_token) return;
+    draft.setQuickStory(null);
+    quickStoryRunning = true;
+    var tries = 0;
+    function go() {
+      var api = window.NANIK_GUIDED_CREATE;
+      if ((!api || typeof api.start !== "function") && tries++ < 40) {
+        window.setTimeout(go, 100);
+        return;
+      }
+      var panel = el("panel-create");
+      var nav = document.querySelector('.dash-nav-btn[data-panel="create"]');
+      if (panel && panel.hidden && nav) nav.click();
+      applyQuickStory(quick);
+      startGeneration();
+    }
+    // Let the dashboard pick its initial panel first.
+    window.setTimeout(go, 150);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

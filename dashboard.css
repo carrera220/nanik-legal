@@ -2449,10 +2449,229 @@ body.is-create-panel .dash-main {
 .dash-reader-volume:not([hidden]) ~ .dash-reader-scroll {
   padding-top: 8px;
 }
-.dash-reader-scroll > h1 {
+.dash-reader-head {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-right, 0px))) 4px calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding: 6px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px));
+}
+.dash-reader-reaction {
+  margin: 28px 0 8px;
+  padding: 18px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  text-align: center;
+}
+.dash-reader-reaction-title {
   margin: 0 0 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+}
+.dash-reader-reaction-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.dash-reader-reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+}
+.dash-reader-reaction-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+.dash-reader-reaction-btn:active {
+  transform: scale(0.96);
+}
+.dash-reader-reaction-btn.is-picked {
+  border-color: #fff;
+  background: #fff;
+  color: #2a1a8a;
+}
+.dash-feedback-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.dash-feedback-modal[hidden] { display: none !important; }
+.dash-feedback-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 6, 40, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.dash-feedback-sheet {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 26px 20px 20px;
+  border-radius: 22px;
+  background: #fff;
+  color: #071142;
+  box-shadow: 0 24px 60px rgba(10, 6, 40, 0.35);
+  text-align: center;
+}
+.dash-feedback-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f2f8;
+  color: #34477c;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.dash-feedback-title {
+  margin: 4px 24px 14px;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.dash-feedback-text {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #d7dcec;
+  border-radius: 14px;
+  background: #f8f9fd;
+  color: #071142;
+  font: inherit;
+  font-size: 15px;
+  resize: none;
+}
+.dash-feedback-text:focus {
+  outline: none;
+  border-color: #6d4cff;
+  box-shadow: 0 0 0 3px rgba(109, 76, 255, 0.15);
+}
+.dash-feedback-submit {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #071142;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.dash-feedback-submit:disabled {
+  background: #c9cde0;
+  cursor: default;
+}
+.dash-feedback-status {
+  margin: 10px 0 0;
+  color: #34477c;
+  font-size: 14px;
+  font-weight: 600;
+}
+.dash-reader-head-blur {
+  position: fixed;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--dash-reader-head-bottom, 0px) + 36px);
+  pointer-events: none;
+}
+.dash-reader-head-blur > span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.dash-reader-head.is-stuck .dash-reader-head-blur > span {
+  opacity: 1;
+}
+.dash-reader-head-blur-layer.is-1 {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+}
+.dash-reader-head-blur-layer.is-2 {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 66%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 66%, transparent 90%);
+}
+.dash-reader-head-blur-layer.is-3 {
+  backdrop-filter: blur(24px) saturate(1.08);
+  -webkit-backdrop-filter: blur(24px) saturate(1.08);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 80%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 80%);
+}
+.dash-reader-head-blur-tint {
+  background: linear-gradient(
+    to bottom,
+    rgba(52, 30, 160, 0.34) 0%,
+    rgba(52, 30, 160, 0.22) 65%,
+    rgba(52, 30, 160, 0) 100%
+  );
+}
+.dash-reader-top-blur {
+  transition: opacity 0.25s ease;
+}
+.dash-reader:has(.dash-reader-head.is-stuck) .dash-reader-top-blur {
+  opacity: 0;
+}
+.dash-reader-head > h1 {
+  margin: 0;
   max-width: none;
-  text-align: left;
+  text-align: center;
+}
+.dash-reader-head .dash-reader-voice,
+.dash-reader-head .dash-reader-voice.is-playing {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(10, 6, 40, 0.16);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  animation: none;
+}
+.dash-reader-head .dash-reader-voice span,
+.dash-reader-head .dash-reader-voice svg {
+  color: #fff;
+}
+.dash-reader-head .dash-reader-voice:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
 }
 .dash-reader-cover-wrap {
   position: relative;
@@ -6463,6 +6682,11 @@ body.dash:has(.guided-step[data-guided-step="generating"].is-on) #guided-title-r
   overflow-wrap: anywhere;
   font-size: 16px;
   line-height: 1.2;
+}
+.guided-plan-card-blur {
+  filter: blur(4px);
+  user-select: none;
+  pointer-events: none;
 }
 .guided-plan-card-detail {
   margin-top: 5px;

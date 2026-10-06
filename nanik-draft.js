@@ -4,6 +4,7 @@
   var PROMPT_KEY = "nanik-hero-prompt";
   var IMAGE_KEY = "nanik-hero-image";
   var AGE_KEY = "nanik-hero-age";
+  var LANG_KEY = "nanik-hero-lang";
   var CHILD_KEY = "nanik-child-profile";
   var CHILDREN_KEY = "nanik-child-profiles";
   var ACTIVE_CHILD_KEY = "nanik-active-child-id";
@@ -103,6 +104,44 @@
     var n = parseInt(age, 10);
     if (n >= 2 && n <= 16) storeSet(AGE_KEY, String(n));
     else storeSet(AGE_KEY, "");
+  }
+
+  function getLanguage() {
+    var code = String(storeGet(LANG_KEY) || "").trim().toLowerCase();
+    return /^[a-z]{2,3}$/.test(code) ? code : "";
+  }
+
+  function setLanguage(code) {
+    var value = String(code || "").trim().toLowerCase();
+    storeSet(LANG_KEY, /^[a-z]{2,3}$/.test(value) ? value : "");
+  }
+
+  var QUICK_KEY = "nanik-quick-story";
+  var QUICK_TTL_MS = 30 * 60 * 1000;
+
+  function getQuickStory() {
+    try {
+      var quick = JSON.parse(storeGet(QUICK_KEY) || "null");
+      if (!quick || typeof quick !== "object") return null;
+      if (!quick.ts || Date.now() - quick.ts > QUICK_TTL_MS) {
+        storeSet(QUICK_KEY, "");
+        return null;
+      }
+      return quick;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function setQuickStory(quick) {
+    if (!quick) {
+      storeSet(QUICK_KEY, "");
+      return;
+    }
+    var value = {};
+    Object.keys(quick).forEach(function (key) { value[key] = quick[key]; });
+    value.ts = Date.now();
+    storeSet(QUICK_KEY, JSON.stringify(value));
   }
 
   function newChildId() {
@@ -427,6 +466,10 @@
     setImage: setImage,
     getAge: getAge,
     setAge: setAge,
+    getLanguage: getLanguage,
+    setLanguage: setLanguage,
+    getQuickStory: getQuickStory,
+    setQuickStory: setQuickStory,
     getChild: getChild,
     setChild: setChild,
     getChildren: getChildren,

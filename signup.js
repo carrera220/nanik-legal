@@ -5,6 +5,7 @@
   var PKCE_KEY = "nanik-pkce-verifier";
   var APP_STORE = "https://apps.apple.com/app/id6762894314";
   var formMode = "signup";
+  var customCopy = null;
 
   var COPY = {
     en: {
@@ -698,6 +699,7 @@
       '<div class="signup-sheet" role="document">' +
       '<button type="button" class="signup-close" data-signup-close data-i18n-title="signup.close" aria-label="Close">&times;</button>' +
       '<h2 id="signup-title" data-i18n="signup.title"></h2>' +
+      '<p class="signup-lead signup-lead--intro" id="signup-intro" hidden></p>' +
       '<p class="signup-status" id="signup-status" hidden></p>' +
       '<div class="signup-actions" id="signup-actions">' +
       '<button type="button" class="signup-provider signup-provider-google" data-signup-provider="google">' +
@@ -763,7 +765,13 @@
       btn.setAttribute("data-i18n", user ? "signup.account" : "nav.startFree");
       if (user && name) btn.removeAttribute("data-i18n");
     }
-    if (title) title.textContent = user ? copy.welcome : (formMode === "login" ? copy.loginTitle : copy.title);
+    var custom = !user && formMode === "signup" ? customCopy : null;
+    if (title) title.textContent = user ? copy.welcome : (formMode === "login" ? copy.loginTitle : (custom && custom.title) || copy.title);
+    var intro = document.getElementById("signup-intro");
+    if (intro) {
+      intro.textContent = (custom && custom.lead) || "";
+      intro.hidden = !intro.textContent;
+    }
     if (signedLead) signedLead.textContent = copy.signedLead;
     if (actions) actions.hidden = !!user;
     if (signed) signed.hidden = !user;
@@ -831,7 +839,8 @@
     return !!(window.NANIK_DRAFT && window.NANIK_DRAFT.authReturn && window.NANIK_DRAFT.authReturn.captured);
   }
 
-  function openModal(mode) {
+  function openModal(mode, opts) {
+    customCopy = opts && (opts.title || opts.lead) ? { title: opts.title || "", lead: opts.lead || "" } : null;
     ensureUi();
     var session = readSession();
     // Already signed in → go straight to the web product.
@@ -847,7 +856,7 @@
     else dialog.setAttribute("open", "");
   }
 
-  window.NANIK_OPEN_SIGNUP = function () { openModal("signup"); };
+  window.NANIK_OPEN_SIGNUP = function (opts) { openModal("signup", opts); };
   window.NANIK_OPEN_LOGIN = function () { openModal("login"); };
 
   function closeModal() {

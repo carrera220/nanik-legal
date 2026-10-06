@@ -145,6 +145,13 @@
     }
   }
 
+  /** Header height plus its 36px scroll fade (header.site::before), so targets land fully visible. */
+  function sectionOffset() {
+    var header = document.querySelector('header.site');
+    if (!header) return 12;
+    return Math.ceil(header.getBoundingClientRect().height) + 44;
+  }
+
   function normalizePath(path) {
     return String(path || '/')
       .replace(/\/index\.html$/i, '/')
@@ -153,16 +160,10 @@
 
   /** Smooth-scroll same-page hash links (Features, fact chips, etc.) so motion is visible. */
   function initSmoothSectionScroll() {
-    function headerOffset() {
-      var header = document.querySelector('header.site');
-      if (!header) return 12;
-      return Math.ceil(header.getBoundingClientRect().height) + 12;
-    }
-
     function scrollToId(id, behavior) {
       var target = document.getElementById(id);
       if (!target) return false;
-      var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset();
+      var top = target.getBoundingClientRect().top + window.pageYOffset - sectionOffset();
       top = Math.max(0, Math.round(top));
       window.scrollTo({
         top: top,
@@ -257,8 +258,7 @@
       var id = decodeURIComponent(location.hash.slice(1));
       var target = document.getElementById(id);
       if (target) {
-        var header = document.querySelector('header.site');
-        var offset = header ? Math.ceil(header.getBoundingClientRect().height) + 12 : 12;
+        var offset = sectionOffset();
         var reduce = prefersReduce();
         // Jump to section without first flashing the top of the page.
         var top = Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - offset));

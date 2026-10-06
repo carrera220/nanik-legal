@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-itunes-app" content="app-id=6762894314">
+<title>Stories About Feelings for Kids | Nanik</title>
+<meta name="description" content="Angry, sad, jealous, worried or having friendship trouble? Tell Nanik what your child is feeling and get a personalized story that helps them understand it.">
+<link rel="canonical" href="https://nanik.app/stories-about-feelings-for-kids">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css?v=20261006ph">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nanik">
+<meta property="og:url" content="https://nanik.app/stories-about-feelings-for-kids">
+<meta property="og:title" content="Stories About Feelings for Kids | Nanik">
+<meta property="og:description" content="Turn big feelings into a story your child can understand.">
+<meta property="og:image" content="https://nanik.app/images/og-share.png?v=20260924c">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="solid-bg bf-page" data-i18n-page-title="sf.title">
+<header class="site">
+  <div class="nav-shell">
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav-links" aria-label="Menu"><span class="nav-toggle-bars" aria-hidden="true"></span></button>
+    <a class="brand" href="/">Nanik</a>
+    <div id="site-nav-links" class="site-nav-links">
+      <a href="/#features" data-i18n="nav.howItWorks">Features</a>
+      <a href="/#use-cases" data-i18n="nav.useCases">Use cases</a>
+      <a href="stories.html" data-i18n="nav.stories">Stories</a>
+      <a href="pricing.html" data-i18n="nav.pricing">Pricing</a>
+    </div>
+    <div id="site-lang-slot" class="site-lang-slot"></div>
+  </div>
+</header>
+<main>
+  <section class="hero bf-hero" aria-labelledby="bf-h1">
+    <div>
+      <h1 id="bf-h1" data-i18n="sf.h1" data-i18n-html>Turn big feelings into a story <strong>they can understand</strong></h1>
+    </div>
+
+    <form class="bf-composer" id="bf-form" data-bf-kind="emotional_support" novalidate>
+      <label class="bf-visually-hidden" for="bf-text" data-i18n="sf.textLabel">Describe what your child is feeling</label>
+      <div class="bf-box">
+        <div class="bf-picked" data-bf-picked hidden></div>
+        <textarea id="bf-text" class="bf-text" rows="3" maxlength="600" data-i18n-placeholder="sf.placeholder" placeholder="Tell us in your own words, e.g. “He gets upset when his sister plays with his toys.”"></textarea>
+      </div>
+
+      <div class="bf-chips bf-chips--wrap" role="group" aria-label="Common big feelings">
+        <button type="button" class="bf-chip" data-bf-chip="Feeling angry" aria-pressed="false"><span aria-hidden="true">😠</span> <span data-i18n="sf.chip.angry">Feeling angry</span></button>
+        <button type="button" class="bf-chip" data-bf-chip="Feeling sad" aria-pressed="false"><span aria-hidden="true">😢</span> <span data-i18n="sf.chip.sad">Feeling sad</span></button>
+        <button type="button" class="bf-chip" data-bf-chip="Jealousy" aria-pressed="false"><span aria-hidden="true">💚</span> <span data-i18n="sf.chip.jealous">Jealousy</span></button>
+        <button type="button" class="bf-chip" data-bf-chip="Friendship trouble" aria-pressed="false"><span aria-hidden="true">🤝</span> <span data-i18n="sf.chip.friends">Friendship trouble</span></button>
+        <button type="button" class="bf-chip" data-bf-chip="Feeling worried" aria-pressed="false"><span aria-hidden="true">😟</span> <span data-i18n="sf.chip.worried">Feeling worried</span></button>
+      </div>
+
+      <div class="bf-field">
+        <span class="bf-label" id="bf-age-label" data-i18n="bf.age">Select age</span>
+        <div class="bf-ages" role="radiogroup" aria-labelledby="bf-age-label">
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="2">2</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="3">3</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="4">4</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="5">5</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="6">6</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="7">7</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="8">8</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="9">9</button>
+          <button type="button" class="bf-age" role="radio" aria-checked="false" data-bf-age="10">10+</button>
+        </div>
+      </div>
+
+      <div class="bf-field">
+        <label class="bf-visually-hidden" for="bf-name" data-i18n="bf.namePlaceholder">Your child's name (optional)</label>
+        <input id="bf-name" class="bf-input" type="text" maxlength="40" autocomplete="off" data-i18n-placeholder="bf.namePlaceholder" placeholder="Your child's name (optional)">
+      </div>
+
+      <div class="bf-field">
+        <label class="bf-label" for="bf-lang" data-i18n="bf.lang">Story language</label>
+        <select id="bf-lang" class="bf-input bf-select"></select>
+      </div>
+
+      <button type="submit" class="bf-submit" id="bf-submit">Create story</button>
+    </form>
+  </section>
+
+  <section class="bf-more" aria-labelledby="bf-more-title">
+    <h2 id="bf-more-title" class="bf-more-title" data-i18n="bf.moreTitle">More you can do with Nanik app</h2>
+    <div class="use-cases" data-use-cases>
+      <div class="use-cases-carousel">
+        <button type="button" class="use-cases-arrow" data-uc-prev disabled aria-label="Previous feature">&#8249;</button>
+        <div class="use-cases-track" data-uc-track role="list">
+          <figure class="bf-feature" role="listitem">
+            <img src="images/feature-voice.jpg" width="473" height="1024" alt="Custom tales in your voice: record 10 seconds and Nanik tells stories in your voice" loading="lazy" decoding="async">
+          </figure>
+          <figure class="bf-feature" role="listitem">
+            <img src="images/feature-supports.jpg" width="473" height="1024" alt="Gently support their day: weave today's feelings into the story" loading="lazy" decoding="async">
+          </figure>
+          <figure class="bf-feature" role="listitem">
+            <img src="images/feature-hero.jpg" width="473" height="1024" alt="Watch their toys come alive: a photo of a toy becomes an illustrated hero" loading="lazy" decoding="async">
+          </figure>
+          <figure class="bf-feature" role="listitem">
+            <img src="images/feature-world.jpg" width="473" height="1024" alt="Build any world you imagine: set the perfect scene for their adventure" loading="lazy" decoding="async">
+          </figure>
+          <figure class="bf-feature" role="listitem">
+            <img src="images/feature-library.jpg" width="473" height="1024" alt="A library of your own: save and revisit your best stories anytime" loading="lazy" decoding="async">
+          </figure>
+          <figure class="bf-feature" role="listitem">
+            <img src="images/feature-series.jpg" width="473" height="1024" alt="Turn stories into a series: keep the same hero for the next chapter" loading="lazy" decoding="async">
+          </figure>
+        </div>
+        <button type="button" class="use-cases-arrow" data-uc-next aria-label="Next feature">&#8250;</button>
+      </div>
+      <div class="use-cases-dots" data-uc-dots aria-hidden="true"></div>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="store-cta store-cta--footer">
+    <div class="store-cta-badges">
+      <a class="store-badge store-badge-apple" href="https://apps.apple.com/app/id6762894314" aria-label="Download on the App Store">
+        <img src="images/badge-app-store.svg" width="120" height="40" alt="Download on the App Store" loading="lazy">
+      </a>
+    </div>
+    <p class="store-cta-trial" data-i18n="cta.trial">Download now and get 3 days free</p>
+  </div>
+  <p class="footer-discover"><span class="footer-discover-label">Discover</span> <a href="/bedtime-stories-in-your-voice">Stories in your voice</a> · <a href="languages.html" data-i18n="nav.languages">Languages</a> · <a href="stories.html" data-i18n="nav.stories">Stories</a> · <a href="pricing.html" data-i18n="nav.pricing">Pricing</a></p>
+  <div class="footer-meta">
+    &copy; 2026 Nanik · <a href="support.html" data-i18n="nav.support">Support</a> · <a href="privacy.html" data-i18n="nav.privacy">Privacy</a> · <a href="terms.html" data-i18n="nav.terms">Terms</a> · <a href="mailto:info@nanik.app">info@nanik.app</a>
+  </div>
+</footer>
+<script src="nanik-api-config.js?v=20260923higgs075"></script>
+<script src="nanik-draft.js?v=20261006bf2"></script>
+<script src="app-store-cta.js?v=20260822mp" defer></script>
+<script src="site-nav.js?v=20261006uc" defer></script>
+<script src="signup.js?v=20261006bf" defer></script>
+<script src="geo-lang.js?v=20260920geo1" defer></script>
+<script src="i18n.js?v=20261006ed" defer></script>
+<script src="use-cases.js?v=20261006uc" defer></script>
+<script src="story-languages.js" defer></script>
+<script src="bedtime-fears.js?v=20261006sf" defer></script>
+</body>
+</html>

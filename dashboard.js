@@ -85,7 +85,17 @@
       summaryHelpsLabel: "Help",
       tellWithVoice: "Tell with my voice",
       continueStory: "New chapter",
-      tellWithYourVoice: "Tell with voice",
+      tellWithYourVoice: "Hear this story in your voice",
+      reactionTitle: "How did this story feel?",
+      reactionLoved: "Loved it",
+      reactionGood: "Good",
+      reactionNotQuite: "Not quite",
+      feedbackTitle: "Can you describe it in a couple of words?",
+      feedbackPlaceholder: "What could be better?",
+      feedbackSend: "Send",
+      feedbackSending: "Sending…",
+      feedbackThanks: "Thank you! We’ll use this to make stories better.",
+      feedbackError: "Couldn’t send. Please try again.",
       voiceIntroTitle: "Test my voice",
       voiceIntroBody: "Record your voice to hear how stories will sound",
       voiceIntroContinue: "Continue",
@@ -283,7 +293,17 @@
       summaryHelpsLabel: "Օգնում է",
       tellWithVoice: "Ձայնագրել իմ ձայնով",
       continueStory: "Նոր գլուխ",
-      tellWithYourVoice: "Պատմիր քո ձայնով",
+      tellWithYourVoice: "Լսիր այս հեքիաթը քո ձայնով",
+      reactionTitle: "Ինչպե՞ս էր այս հեքիաթը",
+      reactionLoved: "Շատ հավանեցի",
+      reactionGood: "Լավ էր",
+      reactionNotQuite: "Այնքան էլ ոչ",
+      feedbackTitle: "Կարո՞ղ եք մի քանի բառով նկարագրել",
+      feedbackPlaceholder: "Ի՞նչը կարող էր ավելի լավ լինել",
+      feedbackSend: "Ուղարկել",
+      feedbackSending: "Ուղարկում եմ…",
+      feedbackThanks: "Շնորհակալություն։ Սա կօգնի հեքիաթները ավելի լավը դարձնել։",
+      feedbackError: "Չհաջողվեց ուղարկել։ Փորձեք կրկին։",
       voiceIntroTitle: "Փորձել իմ ձայնով",
       voiceIntroBody: "Ձայնագրեք Ձեր ձայնը տեսնելու համար թե ինչպես կհնչեն հեքիաթները",
       voiceIntroContinue: "Շարունակել",
@@ -481,7 +501,17 @@
       summaryHelpsLabel: "Помогает",
       tellWithVoice: "Рассказать моим голосом",
       continueStory: "Новая глава",
-      tellWithYourVoice: "Рассказать своим голосом",
+      tellWithYourVoice: "Послушайте эту историю своим голосом",
+      reactionTitle: "Как вам эта история?",
+      reactionLoved: "Очень понравилась",
+      reactionGood: "Хорошо",
+      reactionNotQuite: "Не совсем",
+      feedbackTitle: "Опишите в паре слов?",
+      feedbackPlaceholder: "Что можно сделать лучше?",
+      feedbackSend: "Отправить",
+      feedbackSending: "Отправляем…",
+      feedbackThanks: "Спасибо! Это поможет сделать истории лучше.",
+      feedbackError: "Не удалось отправить. Попробуйте ещё раз.",
       voiceIntroTitle: "Проверить мой голос",
       voiceIntroBody: "Запишите голос, чтобы услышать, как будут звучать сказки",
       voiceIntroContinue: "Продолжить",
@@ -2555,7 +2585,7 @@
         label.textContent = pack.playVoiceover || en.playVoiceover || pack.playVoiceSample || "Play";
         iconKind = "play";
       } else {
-        label.textContent = pack.tellWithYourVoice || en.tellWithYourVoice || "Tell with voice";
+        label.textContent = pack.tellWithYourVoice || en.tellWithYourVoice || "Hear this story in your voice";
       }
     }
     if (btn) {
@@ -4828,6 +4858,159 @@
     stopStoryVoiceoverPlayback();
     hideReaderVolume();
     syncTabPillSelection();
+    readerFinishedStoryId = "";
+    readerReaction = "";
+  }
+
+  var readerFinishedStoryId = "";
+  var readerReaction = "";
+
+  function trackReaderEvent(name, props) {
+    try {
+      if (window.NanikAnalytics && typeof window.NanikAnalytics.track === "function") {
+        window.NanikAnalytics.track(name, props);
+      }
+    } catch (e) {}
+  }
+
+  function paintReaderReaction() {
+    var box = document.getElementById("dash-reader-reaction");
+    if (!box) return;
+    var pack = ui();
+    var en = COPY.en;
+    var titleEl = document.getElementById("dash-reader-reaction-title");
+    if (titleEl) titleEl.textContent = pack.reactionTitle || en.reactionTitle;
+    box.querySelectorAll("[data-reaction-label]").forEach(function (label) {
+      var key = label.getAttribute("data-reaction-label");
+      label.textContent = pack[key] || en[key];
+    });
+    box.querySelectorAll("[data-reaction]").forEach(function (btn) {
+      var on = btn.getAttribute("data-reaction") === readerReaction;
+      btn.classList.toggle("is-picked", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function pickStoryReaction(reaction) {
+    var story = activeReaderStory;
+    if (!story || !reaction) return;
+    var id = storyIdKey(story.id);
+    readerReaction = reaction;
+    paintReaderReaction();
+    trackReaderEvent("story_reaction", {
+      story_reaction: reaction,
+      story_id: id || undefined,
+    });
+    if (reaction !== "loved_it") openStoryFeedback(reaction);
+  }
+
+  function storyFeedbackCopy() {
+    var pack = ui();
+    var en = COPY.en;
+    return {
+      title: pack.feedbackTitle || en.feedbackTitle,
+      placeholder: pack.feedbackPlaceholder || en.feedbackPlaceholder,
+      send: pack.feedbackSend || en.feedbackSend,
+      sending: pack.feedbackSending || en.feedbackSending,
+      thanks: pack.feedbackThanks || en.feedbackThanks,
+      error: pack.feedbackError || en.feedbackError,
+    };
+  }
+
+  function sendStoryFeedback(data) {
+    if (!window.NanikAnalytics || typeof window.NanikAnalytics.track !== "function") {
+      return Promise.reject(new Error("analytics unavailable"));
+    }
+    trackReaderEvent("story_feedback", {
+      story_reaction: data.reaction,
+      feedback_text: data.message.slice(0, 500),
+      story_id: data.storyId || undefined,
+      story_title: data.storyTitle || undefined,
+    });
+    return Promise.resolve();
+  }
+
+  function openStoryFeedback(reaction) {
+    var modal = document.getElementById("dash-feedback-modal");
+    var text = document.getElementById("dash-feedback-text");
+    var submit = document.getElementById("dash-feedback-submit");
+    var status = document.getElementById("dash-feedback-status");
+    if (!modal || !text || !submit) return;
+    var copy = storyFeedbackCopy();
+    modal.dataset.reaction = reaction;
+    document.getElementById("dash-feedback-title").textContent = copy.title;
+    text.placeholder = copy.placeholder;
+    text.value = "";
+    submit.textContent = copy.send;
+    submit.disabled = true;
+    if (status) status.hidden = true;
+    modal.hidden = false;
+    window.setTimeout(function () { text.focus(); }, 50);
+  }
+
+  function closeStoryFeedback() {
+    var modal = document.getElementById("dash-feedback-modal");
+    if (modal) modal.hidden = true;
+  }
+
+  function wireStoryFeedback() {
+    var modal = document.getElementById("dash-feedback-modal");
+    var form = document.getElementById("dash-feedback-form");
+    var text = document.getElementById("dash-feedback-text");
+    var submit = document.getElementById("dash-feedback-submit");
+    var status = document.getElementById("dash-feedback-status");
+    if (!modal || !form || !text || !submit) return;
+    modal.addEventListener("click", function (event) {
+      if (event.target.closest("[data-feedback-close]")) closeStoryFeedback();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !modal.hidden) closeStoryFeedback();
+    });
+    text.addEventListener("input", function () {
+      submit.disabled = !text.value.trim();
+    });
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var message = text.value.trim();
+      var story = activeReaderStory;
+      if (!message || !story) return;
+      var copy = storyFeedbackCopy();
+      submit.disabled = true;
+      submit.textContent = copy.sending;
+      sendStoryFeedback({
+        reaction: modal.dataset.reaction || "",
+        message: message,
+        storyId: storyIdKey(story.id),
+        storyTitle: story.title || "",
+      }).then(function () {
+        submit.textContent = "✓";
+        if (status) {
+          status.textContent = copy.thanks;
+          status.hidden = false;
+        }
+        window.setTimeout(closeStoryFeedback, 1400);
+      }).catch(function () {
+        submit.disabled = false;
+        submit.textContent = copy.send;
+        if (status) {
+          status.textContent = copy.error;
+          status.hidden = false;
+        }
+      });
+    });
+  }
+
+  function checkStoryFinished() {
+    var story = activeReaderStory;
+    var reader = document.getElementById("dash-reader");
+    var scroll = document.querySelector("#dash-reader .dash-reader-scroll");
+    var body = document.getElementById("dash-reader-body");
+    if (!story || !reader || reader.hidden || !scroll || !body) return;
+    var id = storyIdKey(story.id);
+    if (!id || readerFinishedStoryId === id) return;
+    if (body.getBoundingClientRect().bottom > scroll.getBoundingClientRect().bottom) return;
+    readerFinishedStoryId = id;
+    trackReaderEvent("story_finished", { story_id: id });
   }
 
   var READER_FONT_MIN = 13;
@@ -5051,6 +5234,7 @@
       storyIdKey(activeReaderStory.id) !== storyIdKey(story.id)
     ) {
       stopStoryVoiceoverPlayback();
+      readerReaction = "";
     }
     activeReaderStory = story;
     if (listWrap) listWrap.hidden = true;
@@ -5076,6 +5260,8 @@
     hideReaderVolume();
     syncReaderMusicButton();
     syncReaderVoiceButton();
+    paintReaderReaction();
+    window.setTimeout(checkStoryFinished, 600);
     if (storyVoiceoverUrl(story)) {
       ensureVoiceoverAudio(storyVoiceoverUrl(story));
       syncReaderPlayerUi();
@@ -5136,9 +5322,27 @@
     });
     var readerScroll = document.querySelector("#dash-reader .dash-reader-scroll");
     if (readerScroll) {
-      readerScroll.addEventListener("click", function () {
+      readerScroll.addEventListener("click", function (event) {
         hideReaderVolume();
+        var reactionBtn = event.target && event.target.closest ? event.target.closest("[data-reaction]") : null;
+        if (reactionBtn) pickStoryReaction(reactionBtn.getAttribute("data-reaction"));
       });
+      var readerHead = document.getElementById("dash-reader-head");
+      if (readerHead) {
+        var syncReaderHeadStuck = function () {
+          var stickyTop =
+            (parseFloat(window.getComputedStyle(readerHead).top) || 0) +
+            (parseFloat(window.getComputedStyle(readerScroll).paddingTop) || 0);
+          var headRect = readerHead.getBoundingClientRect();
+          var offset = headRect.top - readerScroll.getBoundingClientRect().top;
+          var stuck = readerScroll.scrollTop > 0 && offset <= stickyTop + 1;
+          readerHead.classList.toggle("is-stuck", stuck);
+          if (stuck) readerHead.style.setProperty("--dash-reader-head-bottom", headRect.bottom + "px");
+        };
+        readerScroll.addEventListener("scroll", syncReaderHeadStuck, { passive: true });
+        readerScroll.addEventListener("scroll", checkStoryFinished, { passive: true });
+        window.addEventListener("resize", syncReaderHeadStuck);
+      }
     }
     if (slider) {
       slider.value = String(volumeToProgress(readerMusicVolume));
@@ -5167,11 +5371,6 @@
         icon: "location",
         label: pack.summarySettingLabel || en.summarySettingLabel,
         value: storySettingText(story),
-      },
-      {
-        icon: "heart",
-        label: pack.summaryHelpsLabel || en.summaryHelpsLabel,
-        value: storyHelpsText(story),
       },
     ].filter(function (row) {
       return (row.value || "").trim().length > 0;
@@ -7254,7 +7453,9 @@
    * prompt as Style → Scene → Composition (same contract as the app).
    */
   var ILLUSTRATION_ART_STYLE =
-    "Authentic claymation stop-motion film still, whimsical character design. Tactile polymer clay and plasticine, sculpted with visible fingerprints, surface imperfections, and soft smudges. Handcrafted miniature diorama set with real-world materials. Shot with macro photography, shallow depth of field (bokeh), and cinematic miniature studio lighting";
+    "Create a whimsical children’s picture-book illustration with a handmade, slightly imperfect feel. " +
+    "Use a mix of gouache, colored pencil, wax crayon, dry brush, and rough digital paint textures. Keep visible brush marks, uneven outlines, scribbly details, and imperfect hand-drawn shapes. " +
+    "Characters should have funny exaggerated proportions, expressive faces, slightly oversized heads, simple bodies, quirky hairstyles, and playful gestures. Their expressions should feel lively, mischievous, and full of personality rather than cute or polished.";
   var ILLUSTRATION_COMPOSITION_DEFAULT = "dynamic action shot, sense of the action";
   var HERO_REFERENCE_FACE_PHRASE = "with the face of the reference image";
 
@@ -7930,6 +8131,7 @@
       });
     }
     wireReaderChrome();
+    wireStoryFeedback();
 
     var form = document.getElementById("dash-composer");
     if (form) form.addEventListener("submit", onComposerSubmit);
