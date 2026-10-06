@@ -3,6 +3,7 @@
 :root {
   color-scheme: light dark;
   --bg: linear-gradient(180deg, #9b1cff 0%, #6238f5 18%, #228fc6 35%, #d8f3f6 48%, #ffffff 62%, #ffffff 100%);
+  --bg-solid: linear-gradient(180deg, #9b1cff 0%, #6238f5 35%, #3a5fd9 70%, #228fc6 100%);
   --fg: #ffffff;
   --muted: #ffffff;
   --accent: #e0b34c;
@@ -1608,8 +1609,9 @@ body.hero-narrating .hero-magic-sub {
 .plan-card .price { font-size: 15px; color: var(--muted); margin-bottom: 14px; }
 .plan-card ul { padding-left: 20px; margin: 0; }
 .plan-card li { margin-bottom: 6px; }
-body.pricing-page {
-  background: linear-gradient(180deg, #9b1cff 0%, #6238f5 35%, #3a5fd9 70%, #228fc6 100%);
+body.pricing-page,
+body.solid-bg {
+  background: var(--bg-solid);
 }
 .pricing-matrix-wrap {
   margin: 28px 0;
@@ -3646,7 +3648,7 @@ body.signin-page main.signin-main {
 
 /* ---------- Bedtime stories in your voice (landing) ---------- */
 body.bsv-page {
-  background: linear-gradient(180deg, #9b1cff 0%, #6238f5 28%, #3a5fd9 60%, #228fc6 100%);
+  background: var(--bg-solid);
 }
 body.bsv-page main {
   padding-bottom: 0;
@@ -4098,14 +4100,14 @@ header.site::after {
 header.site::before {
   background: linear-gradient(
     to bottom,
-    rgba(98, 56, 245, 0.86) 0%,
-    rgba(98, 56, 245, 0.6) 55%,
+    #6238f5 0%,
+    rgba(98, 56, 245, 0.96) 72%,
     rgba(98, 56, 245, 0) 100%
   );
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
 }
 header.site::after {
   backdrop-filter: blur(14px);
