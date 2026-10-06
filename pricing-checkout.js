@@ -653,26 +653,47 @@
   var paywallStoryCta = "Unlock the story";
   var paywallStoryPrice = "$1.99";
   var paywallInlineBusy = false;
-  var PAYWALL_PLANS = {
-    monthly: {
-      id: "monthly",
-      label: "Monthly",
-      price: "9.99$",
-      period: "/month",
-      trial: false,
-    },
-    yearly: {
-      id: "yearly",
-      label: "Yearly",
-      price: "59.99$",
-      period: "/year",
-      perMonth: "5.00$",
-      strikeMonthly: "9.99$",
-      savings: 50,
-      trialDays: 7,
-      trial: true,
-    },
-  };
+  function planCatalog() {
+    return window.NANIK_PLANS || {
+      monthly: { price: 9.99, trialDays: 0 },
+      yearly: {
+        price: 59.99,
+        monthlyEquivalent: 5,
+        strikeMonthly: 9.99,
+        savingsPercent: 50,
+        trialDays: 7,
+      },
+      plus: { stories: 60 },
+    };
+  }
+
+  function paywallPlansFromCatalog() {
+    var catalog = planCatalog();
+    var monthly = catalog.monthly;
+    var yearly = catalog.yearly;
+    return {
+      monthly: {
+        id: "monthly",
+        label: "Monthly",
+        price: monthly.price + "$",
+        period: "/month",
+        trial: !!monthly.trialDays,
+      },
+      yearly: {
+        id: "yearly",
+        label: "Yearly",
+        price: yearly.price + "$",
+        period: "/year",
+        perMonth: yearly.monthlyEquivalent.toFixed(2) + "$",
+        strikeMonthly: yearly.strikeMonthly + "$",
+        savings: yearly.savingsPercent,
+        trialDays: yearly.trialDays,
+        trial: !!yearly.trialDays,
+      },
+    };
+  }
+
+  var PAYWALL_PLANS = paywallPlansFromCatalog();
 
   function ensurePaywallStyles() {
     var existing = document.getElementById("nanik-paywall-styles");
@@ -988,16 +1009,16 @@
       '<div class="nanik-paywall-benefits">' +
       '<div class="nanik-paywall-benefit"><span class="nanik-paywall-ico" aria-hidden="true">' +
       paywallIcon("book") +
-      "</span>60 stories every month</div>" +
+      "</span>" + planCatalog().plus.stories + " stories every month</div>" +
       '<div class="nanik-paywall-benefit"><span class="nanik-paywall-ico" aria-hidden="true">' +
       paywallIcon("voice") +
       "</span>Tell with voice</div>" +
       '<div class="nanik-paywall-benefit"><span class="nanik-paywall-ico" aria-hidden="true">' +
       paywallIcon("mic") +
-      "</span>More than 1 voice clone</div>" +
+      "</span>Unlimited voice clones</div>" +
       '<div class="nanik-paywall-benefit"><span class="nanik-paywall-ico" aria-hidden="true">' +
       paywallIcon("book") +
-      "</span>More than 1 child profile</div>" +
+      "</span>Unlimited child profiles</div>" +
       '<div class="nanik-paywall-benefit"><span class="nanik-paywall-ico" aria-hidden="true">' +
       paywallIcon("zap") +
       "</span>Advanced AI models for story generation</div>" +

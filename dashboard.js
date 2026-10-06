@@ -1609,19 +1609,28 @@
     paintKidsAddChrome();
   }
 
-  var FREE_KIDS_PROFILES = 1;
-  var MAX_KIDS_PROFILES = 10;
+  function planConfig() {
+    return window.NANIK_PLANS || {
+      free: { stories: 3, voiceClones: 1, childProfiles: 1 },
+      plus: { stories: 60, voiceClones: Infinity, childProfiles: Infinity },
+    };
+  }
+
+  function kidsLimit() {
+    var isPlus = typeof quotaState !== "undefined" && quotaState && quotaState.isPlus;
+    return planConfig()[isPlus ? "plus" : "free"].childProfiles;
+  }
 
   function kidsProfileCount() {
     return allChildren().length;
   }
 
   function needsPlusForNextKid() {
-    return kidsProfileCount() >= FREE_KIDS_PROFILES && !quotaState.isPlus;
+    return kidsProfileCount() >= planConfig().free.childProfiles && !quotaState.isPlus;
   }
 
   function canAddChildProfile() {
-    if (kidsProfileCount() >= MAX_KIDS_PROFILES) return false;
+    if (kidsProfileCount() >= kidsLimit()) return false;
     if (needsPlusForNextKid()) return false;
     return true;
   }
@@ -1629,7 +1638,7 @@
   function paintKidsAddChrome() {
     var kidsAdd = document.getElementById("dash-kids-add");
     var guidedAdd = document.getElementById("guided-profile-add");
-    var atLimit = kidsProfileCount() >= MAX_KIDS_PROFILES;
+    var atLimit = kidsProfileCount() >= kidsLimit();
     var locked = needsPlusForNextKid();
     var editing = !!editingChildId;
     if (kidsAdd) {
@@ -1646,7 +1655,7 @@
   }
 
   function requestAddChildProfile() {
-    if (kidsProfileCount() >= MAX_KIDS_PROFILES) {
+    if (kidsProfileCount() >= kidsLimit()) {
       paintKidsAddChrome();
       return false;
     }
@@ -2156,7 +2165,7 @@
   }
 
   function addChildProfile() {
-    if (kidsProfileCount() >= MAX_KIDS_PROFILES) {
+    if (kidsProfileCount() >= kidsLimit()) {
       paintKidsAddChrome();
       return;
     }
@@ -2966,10 +2975,10 @@
     });
   }
 
-  var FREEMIUM_LIFETIME_STORIES = 3;
-  var PLUS_MONTHLY_STORIES = 60;
-  var FREE_VOICE_CLONE_LIMIT = 1;
-  var PLUS_VOICE_CLONE_LIMIT = 3;
+  var FREEMIUM_LIFETIME_STORIES = planConfig().free.stories;
+  var PLUS_MONTHLY_STORIES = planConfig().plus.stories;
+  var FREE_VOICE_CLONE_LIMIT = planConfig().free.voiceClones;
+  var PLUS_VOICE_CLONE_LIMIT = planConfig().plus.voiceClones;
   var quotaState = {
     isPlus: false,
     storiesRemaining: FREEMIUM_LIFETIME_STORIES,
@@ -4517,7 +4526,7 @@
   }
 
   /**
-   * Freemium has 1 slot, Plus has more (3). Gate before the record flow so users do not
+   * Freemium has 1 slot, Plus is unlimited. Gate before the record flow so users do not
    * record a full sample only to be told the slot is full on save.
    */
   function assertVoiceCloneSlot() {
