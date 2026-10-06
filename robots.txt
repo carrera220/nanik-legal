@@ -2,45 +2,82 @@
 User-agent: *
 Allow: /
 
-# AI search / live retrieval — keep these allowed so Nanik can appear in real-time AI answers
+# OpenAI / ChatGPT (search, live fetch, and training)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: OAISearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+# Anthropic / Claude
 User-agent: Claude-SearchBot
 Allow: /
 
 User-agent: Claude-User
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google / Gemini
 User-agent: Google-Extended
 Allow: /
 
-User-agent: GPTBot
+User-agent: Google-CloudVertexBot
 Allow: /
 
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
+# Perplexity
 User-agent: PerplexityBot
 Allow: /
 
 User-agent: Perplexity-User
 Allow: /
 
-# Training-only crawlers (opt out of model training corpora; does not affect AI search/retrieval above)
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
-User-agent: Meta-ExternalAgent
-Disallow: /
+# Apple Intelligence
+User-agent: Applebot
+Allow: /
 
 User-agent: Applebot-Extended
-Disallow: /
+Allow: /
+
+# Meta / Llama
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Microsoft Copilot
+User-agent: Bingbot
+Allow: /
+
+# Amazon
+User-agent: Amazonbot
+Allow: /
+
+# Common Crawl / others used by LLM pipelines
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
 
 Sitemap: https://nanik.app/sitemap.xml
