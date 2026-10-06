@@ -2464,15 +2464,13 @@ body.is-create-panel .dash-main {
 .dash-reader-reaction {
   margin: 28px 0 8px;
   padding: 18px 12px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.12);
   text-align: center;
 }
 .dash-reader-reaction-title {
   margin: 0 0 12px;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 800;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 400;
 }
 .dash-reader-reaction-options {
   display: flex;

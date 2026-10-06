@@ -4292,7 +4292,7 @@ header.site.is-scrolled::after {
 }
 
 /* Bedtime fears use-case page */
-.bf-hero { padding-bottom: 0; }
+.bf-hero { padding-top: 38px; padding-bottom: 0; }
 .bf-hero h1 { font-size: clamp(38px, 6vw, 68px); }
 .bf-visually-hidden {
   position: absolute;

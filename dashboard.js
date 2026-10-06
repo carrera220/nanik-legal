@@ -4868,7 +4868,11 @@
   function trackReaderEvent(name, props) {
     try {
       if (window.NanikAnalytics && typeof window.NanikAnalytics.track === "function") {
-        window.NanikAnalytics.track(name, props);
+        var identity = getAccountIdentity();
+        window.NanikAnalytics.track(name, Object.assign({
+          user_id: identity.userId || undefined,
+          user_email: identity.email || undefined,
+        }, props));
       }
     } catch (e) {}
   }
