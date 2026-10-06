@@ -243,14 +243,22 @@
   }
 
   function trackAppStoreClick(anchor) {
+    var props = {
+      source: clickSource(anchor),
+      page: pageName(),
+    };
+    if (window.NanikAnalytics && typeof window.NanikAnalytics.track === "function") {
+      window.NanikAnalytics.track("Download from App Store", props);
+      return;
+    }
     var properties = {
       token: MIXPANEL_TOKEN,
       distinct_id: distinctId(),
       time: Math.floor(Date.now() / 1000),
       mp_lib: "nanik_web",
       channel: "website",
-      source: clickSource(anchor),
-      page: pageName(),
+      source: props.source,
+      page: props.page,
     };
     var payload = [{ event: "Download from App Store", properties: properties }];
     var url = MIXPANEL_URL + "&data=" + encodeURIComponent(encodeMixpanelData(payload));
