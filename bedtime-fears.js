@@ -130,6 +130,26 @@
         .map(function (chip) { return chip.textContent.replace(/\s+/g, " ").trim().replace(/^\S+\s/, ""); });
       var free = String(text.value || "").trim();
       var support = [picked.join(", "), free].filter(Boolean).join(". ");
+      var kind = form.getAttribute("data-bf-kind") || "bedtime";
+
+      if (window.NanikAnalytics) {
+        var chipKeys = chips
+          .filter(function (chip) { return chip.getAttribute("aria-pressed") === "true"; })
+          .map(function (chip) { return chip.getAttribute("data-bf-chip") || chip.textContent.trim(); });
+        var useCaseNames = { bedtime: "bedtime_fears", emotional_support: "big_feelings", new: "new_experiences", discover: "learning" };
+        window.NanikAnalytics.track("use_case_param", {
+          use_case: useCaseNames[kind] || kind,
+          story_kind: kind,
+          input_type: chipKeys.length && free ? "chip_and_text" : chipKeys.length ? "chip" : "text",
+          chips: chipKeys,
+          chip_count: chipKeys.length,
+          description_text: free.slice(0, 255),
+          has_description: !!free,
+          child_age: selectedAge,
+          story_language: langSelect.value,
+          has_child_name: !!name,
+        });
+      }
 
       var draft = window.NANIK_DRAFT;
       if (draft) {
@@ -137,7 +157,7 @@
         if (draft.setAge && selectedAge) draft.setAge(selectedAge);
         if (draft.setLanguage) draft.setLanguage(langSelect.value);
         if (draft.setQuickStory) {
-          draft.setQuickStory({ kind: form.getAttribute("data-bf-kind") || "bedtime", support: support, name: name, age: selectedAge, lang: langSelect.value });
+          draft.setQuickStory({ kind: kind, support: support, name: name, age: selectedAge, lang: langSelect.value });
         }
       }
       var readyTpl = name ? (c.readyNameS && /s$/i.test(name) ? c.readyNameS : c.readyName) : c.ready;

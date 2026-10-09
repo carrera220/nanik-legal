@@ -436,9 +436,16 @@
     return ready.then(function (session) {
       writeSession(session);
       sessionRef.current = session;
+      syncAnalyticsIdentity();
       goProduct();
       return session;
     });
+  }
+
+  function syncAnalyticsIdentity() {
+    try {
+      if (window.NanikAnalytics && window.NanikAnalytics.syncIdentity) window.NanikAnalytics.syncIdentity();
+    } catch (e) {}
   }
 
   function goProduct() {
@@ -583,7 +590,10 @@
         showStatus(window.__NANIK_SIGNIN_ERROR, true);
         return;
       }
-      if (session && session.access_token) goProduct();
+      if (session && session.access_token) {
+        syncAnalyticsIdentity();
+        goProduct();
+      }
     });
   }
 

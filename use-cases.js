@@ -39,6 +39,28 @@
     }, { passive: true });
     window.addEventListener('resize', update);
     update();
+
+    track.addEventListener('click', function (e) {
+      var link = e.target.closest && e.target.closest('a.use-case-cta');
+      if (!link || !window.NanikAnalytics) return;
+      var card = link.closest('.use-case-card');
+      var title = card && card.querySelector('h3');
+      var href = link.getAttribute('href') || '';
+      window.NanikAnalytics.track('use_case_clicked', {
+        use_case: useCaseFromHref(href),
+        use_case_title: title ? title.textContent.trim() : '',
+        use_case_position: card ? cards.indexOf(card) + 1 : 0,
+        destination: href,
+      });
+    });
+  }
+
+  function useCaseFromHref(href) {
+    if (href.indexOf('bedtime-fears') !== -1) return 'bedtime_fears';
+    if (href.indexOf('feelings') !== -1) return 'big_feelings';
+    if (href.indexOf('new-experiences') !== -1) return 'new_experiences';
+    if (href.indexOf('educational') !== -1) return 'learning';
+    return href.replace(/^\/+|\.html$/g, '') || 'unknown';
   }
 
   function boot() {

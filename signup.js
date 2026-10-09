@@ -521,6 +521,7 @@
     return ready.then(function (session) {
       writeSession(session);
       sessionRef.current = session;
+      syncAnalyticsIdentity();
       goProduct(session);
       return session;
     });
@@ -822,6 +823,12 @@
     }
   }
 
+  function syncAnalyticsIdentity() {
+    try {
+      if (window.NanikAnalytics && window.NanikAnalytics.syncIdentity) window.NanikAnalytics.syncIdentity();
+    } catch (e) {}
+  }
+
   function goProduct(session) {
     if (!session || !session.access_token) return false;
     closeModal();
@@ -967,6 +974,7 @@
     loadSession().then(function (session) {
       sessionRef.current = session;
       paint(session);
+      if (session) syncAnalyticsIdentity();
       if (window.__NANIK_SIGNUP_ERROR && !session) {
         var last = readLastOAuthReturn();
         if (last && last.href) {

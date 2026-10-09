@@ -5,8 +5,13 @@
   var MIXPANEL_URL = "https://api-eu.mixpanel.com/track?ip=1&verbose=1";
   var DISTINCT_KEY = "nanik.mixpanel.distinct_id";
   var ATTR_KEY = "nanik.attribution";
+  var SESSION_KEY = "nanik-web-auth-session";
+  var IDENTIFIED_KEY = "nanik.mixpanel.identified_user";
+  var SIGNUP_CHECKED_PREFIX = "nanik.mixpanel.signup_checked:";
+  var NEW_USER_WINDOW_MS = 15 * 60 * 1000;
 
-  function distinctId() {
+  /** Stable per-browser id; becomes Mixpanel $device_id. */
+  function deviceId() {
     try {
       var existing = localStorage.getItem(DISTINCT_KEY);
       if (existing && existing.trim()) return existing.trim();
@@ -29,6 +34,67 @@
     } catch (e) {
       return btoa(json);
     }
+  }
+
+  function jwtPayload(token) {
+    try {
+      var part = String(token || "").split(".")[1] || "";
+      part = part.replace(/-/g, "+").replace(/_/g, "/");
+      while (part.length % 4) part += "=";
+      return JSON.parse(atob(part));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /** Signed-in Supabase user from the shared web session, or null for guests / anonymous accounts. */
+  function authUser() {
+    var session = null;
+    try {
+      session = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    } catch (e) {}
+    if (!session || !session.access_token) return null;
+    var user = session.user || {};
+    var payload = jwtPayload(session.access_token) || {};
+    var id = String(user.id || payload.sub || "").trim();
+    if (!id) return null;
+    if (user.is_anonymous || payload.is_anonymous === true) return null;
+    var appMeta = user.app_metadata || payload.app_metadata || {};
+    return {
+      id: id,
+      email: String(user.email || payload.email || "").trim(),
+      provider: String(appMeta.provider || "").trim().toLowerCase(),
+      createdAt: user.created_at ? Date.parse(user.created_at) : NaN,
+    };
+  }
+
+  /**
+   * One person across the funnel: anonymous events carry $device_id, signed-in events add
+   * $user_id, so Mixpanel merges the landing steps with sign up and story events.
+   */
+  function identityProps() {
+    var device = deviceId();
+    var user = authUser();
+    if (user) {
+      return { distinct_id: user.id, $device_id: device, $user_id: user.id, user_id: user.id };
+    }
+    return { distinct_id: "$device:" + device, $device_id: device };
+  }
+
+  function distinctId() {
+    return identityProps().distinct_id;
+  }
+
+  function send(eventName, properties) {
+    var payload = [{ event: String(eventName), properties: properties }];
+    var url = MIXPANEL_URL + "&data=" + encodeURIComponent(encodeMixpanelData(payload));
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(url)) return;
+    } catch (e) {}
+    try {
+      var img = new Image();
+      img.src = url;
+    } catch (e2) {}
   }
 
   function queryParam(name) {
@@ -162,7 +228,6 @@
     var properties = Object.assign(
       {
         token: MIXPANEL_TOKEN,
-        distinct_id: distinctId(),
         time: Math.floor(Date.now() / 1000),
         mp_lib: "nanik_web",
         channel: "website",
@@ -170,23 +235,57 @@
         path: location.pathname || "/",
       },
       attributionProps(),
-      props && typeof props === "object" ? props : {}
+      props && typeof props === "object" ? props : {},
+      identityProps()
     );
-    var payload = [{ event: String(eventName), properties: properties }];
-    var url = MIXPANEL_URL + "&data=" + encodeURIComponent(encodeMixpanelData(payload));
+    send(eventName, properties);
+  }
+
+  function storageGet(key) {
     try {
-      if (navigator.sendBeacon && navigator.sendBeacon(url)) return;
+      return localStorage.getItem(key) || "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function storageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
     } catch (e) {}
-    try {
-      var img = new Image();
-      img.src = url;
-    } catch (e2) {}
+  }
+
+  /**
+   * Links this browser's anonymous events to the signed-in account and fires sign_up once
+   * for accounts created in the last few minutes.
+   */
+  function syncIdentity() {
+    var user = authUser();
+    if (!user) return;
+    if (storageGet(IDENTIFIED_KEY) !== user.id) {
+      send("$identify", {
+        token: MIXPANEL_TOKEN,
+        distinct_id: user.id,
+        $identified_id: user.id,
+        $anon_id: "$device:" + deviceId(),
+      });
+      storageSet(IDENTIFIED_KEY, user.id);
+    }
+    var checkedKey = SIGNUP_CHECKED_PREFIX + user.id;
+    if (storageGet(checkedKey) || !isFinite(user.createdAt)) return;
+    storageSet(checkedKey, "1");
+    if (Date.now() - user.createdAt > NEW_USER_WINDOW_MS) return;
+    track("sign_up", {
+      signup_method: user.provider || "email",
+      signup_provider: user.provider || "email",
+    });
   }
 
   function bootPageView() {
     if (root.__nanikPageViewSent) return;
     root.__nanikPageViewSent = true;
     captureAttribution();
+    syncIdentity();
     track("page_view", {
       landing_url: location.href,
     });
@@ -201,6 +300,8 @@
   root.NanikAnalytics = {
     track: track,
     distinctId: distinctId,
+    deviceId: deviceId,
+    syncIdentity: syncIdentity,
     attribution: attributionProps,
     pageName: pageName,
   };
